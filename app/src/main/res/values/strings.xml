@@ -18,6 +18,8 @@
     <!--  Timer  -->
 
     <!--  Bottom Sheet  -->
+    <string name="bottom_sheet_default">BottomSheet Default Title</string>
+    <string name="bottom_sheet_complete">완료</string>
 
     <!--  Dialog  -->
     <string name="dialog_default">Dialog Default Text : Title</string>
