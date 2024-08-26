@@ -11,4 +11,9 @@
     <option name="button2Url" value="" />
     <option name="customApplicationId" value="" />
   </component>
+<<<<<<< Updated upstream
+=======
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+>>>>>>> Stashed changes
+  <component name="ProjectRootManager" version="2" default="true" />
 </project>
