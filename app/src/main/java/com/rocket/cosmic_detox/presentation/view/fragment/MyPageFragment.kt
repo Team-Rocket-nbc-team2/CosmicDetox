@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
-
+//
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
