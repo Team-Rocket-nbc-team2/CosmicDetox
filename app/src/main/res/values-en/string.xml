@@ -7,6 +7,10 @@
     <string name="label_home">Home</string>
     <string name="label_my">My</string>
 
+    <!--  Timer  -->
+    <string name="timer_finish">Finish</string>
+    <string name="timer_rest">Take a rest</string>
+
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">Completion</string>
