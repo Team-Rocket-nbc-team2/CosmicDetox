@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "930470187125",
+    "project_id": "cosmicdetox-2784c",
+    "storage_bucket": "cosmicdetox-2784c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930470187125:android:6147b33f7aa4a7d47c283c",
+        "android_client_info": {
+          "package_name": "com.rocket.cosmic_detox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "930470187125-db5kct5lkr67877aegcsj0hth6j3kqo1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rocket.cosmic_detox",
+            "certificate_hash": "498a8582c8045fb2ae21b5726ea64894402aeeaf"
+          }
+        },
+        {
+          "client_id": "930470187125-78j2a64polrc3utb53evjs2o4islp35m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmZsqx-gvKngep5KUgUPOZK00DStDUfMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930470187125-78j2a64polrc3utb53evjs2o4islp35m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
