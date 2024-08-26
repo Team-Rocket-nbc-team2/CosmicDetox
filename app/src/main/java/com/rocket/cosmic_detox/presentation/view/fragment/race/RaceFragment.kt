@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment
+package com.rocket.cosmic_detox.presentation.view.fragment.race
 
 import android.os.Bundle
 import android.view.LayoutInflater
