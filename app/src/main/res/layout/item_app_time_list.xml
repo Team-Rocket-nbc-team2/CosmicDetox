@@ -8,8 +8,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="10dp"
-    android:paddingTop="10dp"
-    >
+    android:paddingTop="10dp">
 
     <ImageView
         android:id="@+id/appIcon"
@@ -23,18 +22,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
+            android:layout_marginRight="8dp"
             android:textColor="#ffffff"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/appUsageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0분"
+            android:textColor="#7b61ff"
+            android:textSize="12sp" />
     </LinearLayout>
-
-
 
 </LinearLayout>
