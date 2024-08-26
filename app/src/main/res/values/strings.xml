@@ -1,11 +1,24 @@
 <resources>
     <string name="app_name">CosmicDetox</string>
 
+    <!--  Common  -->
+
     <!--  Navigation Menu  -->
     <string name="label_race">레이스</string>
     <string name="label_home">홈</string>
     <string name="label_my">내정보</string>
 
+    <!--  Home  -->
+
+    <!--  Race  -->
+
+    <!--  My Page  -->
+
+    <!--  Timer  -->
+
+    <!--  Bottom Sheet  -->
+
+    <!--  Dialog  -->
     <string name="dialog_default">Dialog Default Text : Title</string>
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">취소</string>
