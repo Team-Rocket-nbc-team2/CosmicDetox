@@ -6,4 +6,11 @@
         <item name="android:textSize">@dimen/text_size_16sp</item>
     </style>
 
+    <!--Contact Detail Button-->
+    <style name="detail_btn" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/sel_confirm_button</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingVertical">18dp</item>
+    </style>
 </resources>
