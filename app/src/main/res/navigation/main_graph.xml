@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_timer"
+            app:destination="@id/navigation_timer" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_race"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.RaceFragment"
+        android:label="RaceFragment"
+        tools:layout="@layout/fragment_race" />
+    <fragment
+        android:id="@+id/navigation_my"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.MyPageFragment"
+        android:label="MyPageFragment"
+        tools:layout="@layout/fragment_my_page" />
+    <fragment
+        android:id="@+id/navigation_timer"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.TimerFragment"
+        android:label="TimerFragment"
+        tools:layout="@layout/fragment_timer" />
+</navigation>
