@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--  BottomNavigation  -->
+    <style name="BottomNavigationText" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+    </style>
+
     <!--Contact Detail Button-->
     <style name="detail_btn" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/sel_confirm_button</item>

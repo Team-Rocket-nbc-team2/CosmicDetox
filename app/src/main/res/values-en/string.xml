@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CosmicDetox</string>
+
+    <!--  Navigation Menu  -->
+    <string name="label_race">Race</string>
+    <string name="label_home">Home</string>
+    <string name="label_my">My</string>
+</resources>
