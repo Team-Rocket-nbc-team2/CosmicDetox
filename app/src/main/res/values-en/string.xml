@@ -22,6 +22,7 @@
     <string name="bottom_sheet_complete">Completion</string>
 
     <!--  Dialog  -->
+    <string name="dialog_common_focus">Focus on your travel!</string>
     <string name="dialog_default">Dialog Default Text : Title</string>
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">Cancel</string>
