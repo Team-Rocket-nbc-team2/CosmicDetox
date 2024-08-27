@@ -7,6 +7,10 @@
     <string name="label_home">Home</string>
     <string name="label_my">My</string>
 
+    <!-- My Page -->
+    <string name="search_edit_text_hint">Please input search text.</string>
+    <string name="allow_app_list">App list</string>
+
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">Completion</string>
