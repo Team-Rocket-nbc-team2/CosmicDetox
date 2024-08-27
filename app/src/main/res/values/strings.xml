@@ -13,7 +13,8 @@
     <string name="sign_social">소셜 계정으로 지금 바로 시작해보세요!</string>
 
     <!--  Home  -->
-
+    <string name="home_current_location">현재 위치</string>
+    <string name="home_hours">시간</string>
     <!--  Race  -->
 
     <!--  My Page  -->
@@ -26,16 +27,17 @@
     <string name="timer_finish">종료</string>
     <string name="timer_rest">잠깐 쉬기</string>
     <string name="timer_dialog_finish">정말로 여행을 종료 하시겠어요?</string>
+    <string name="timer_bottom_sheet_title">사용할 어플 선택</string>
+    <string name="allowed_app_is_empty">사용할 어플 리스트가 없습니다.\n내정보 화면에서 미리 선택 해보세요!</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">완료</string>
 
     <!--  Dialog  -->
+    <string name="dialog_common_focus">여행에 집중하세요!</string>
     <string name="dialog_default">Dialog Default Text : Title</string>
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">취소</string>
     <string name="dialog_confirm">확인</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
