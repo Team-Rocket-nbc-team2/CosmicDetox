@@ -10,6 +10,7 @@
     <!--  Timer  -->
     <string name="timer_finish">Finish</string>
     <string name="timer_rest">Take a rest</string>
+    <string name="timer_dialog_finish">Are you sure to finish?</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
