@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
+import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingTopListBinding
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 
@@ -35,20 +37,23 @@ class RankingListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is RankingTopViewHolder -> {
-                // 첫 번째 뷰홀더에서 리스트의 첫 두 개의 아이템을 전달
+                // 첫 번째와 두 번째 아이템 처리
                 val topItems = currentList.take(2)
                 holder.bind(topItems)
             }
             is RankingBottomViewHolder -> {
-                // 나머지 아이템을 전달
-                holder.bind(getItem(position + 1))  // 인덱스 보정
+                // 세 번째 아이템부터 나머지 아이템을 전달
+                if (position >= 2) {
+                    val rankingItem = currentList[position]
+                    holder.bind(rankingItem, position + 1)  // 올바른 순위를 전달
+                }
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
-            0 -> RankingType.RANKING_TOP.type
+            0, 1 -> RankingType.RANKING_TOP.type
             else -> RankingType.RANKING_LIST.type
         }
     }
@@ -87,29 +92,26 @@ class RankingListAdapter(
     }
 
     class RankingBottomViewHolder(
-        private val binding: ItemRankingBottomListBinding,
+        private val binding: ItemRankingListBinding,
         private val onClick: (RankingInfo) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val rankingBottomListAdapter = RankingBottomListAdapter {
-            onClick(it)
-        }
-
-        init {
-            binding.rvRankingBottom.apply {
-                adapter = rankingBottomListAdapter
-                itemAnimator = null
+        fun bind(ranking: RankingInfo, rank: Int) {
+            itemView.setOnClickListener {
+                onClick(ranking)
             }
-        }
-
-        fun bind(ranking: RankingInfo) {
-            rankingBottomListAdapter.submitList(listOf(ranking))
+            with(binding) {
+                tvRankingListRank.text = rank.toString()
+                ivRankingListUserProfile.setImageResource(R.drawable.saturn)
+                tvRankingListUserName.text = ranking.name
+                tvRankingListStats.text = "${ranking.time}시간 ${ranking.point}점"
+            }
         }
 
         companion object {
             fun from(parent: ViewGroup, onClick: (RankingInfo) -> Unit, ): RankingBottomViewHolder {
                 return RankingBottomViewHolder(
-                    ItemRankingBottomListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                    ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
                     onClick
                 )
             }
