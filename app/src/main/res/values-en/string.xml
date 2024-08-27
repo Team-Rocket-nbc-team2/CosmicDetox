@@ -7,6 +7,9 @@
     <string name="label_home">Home</string>
     <string name="label_my">My</string>
 
+    <!-- Home -->
+    <string name="home_current_location">Current Location</string>
+    <string name="home_hours">hours</string>
 
     <!--  Timer  -->
     <string name="timer_finish">Finish</string>
