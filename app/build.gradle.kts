@@ -55,6 +55,7 @@ dependencies {
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
+    implementation(libs.androidx.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
