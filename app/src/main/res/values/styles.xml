@@ -8,9 +8,34 @@
 
     <!--Contact Detail Button-->
     <style name="detail_btn" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/sel_confirm_button</item>
+        <item name="android:background">@drawable/sel_primary_button</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">16sp</item>
         <item name="android:paddingVertical">18dp</item>
     </style>
+
+    <!-- Timer Primary Button -->
+    <style name="timer_primary_btn" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/sel_primary_button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingVertical">12dp</item>
+    </style>
+
+    <!-- Timer Secondary Button -->
+    <style name="timer_secondary_btn" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/sel_secondary_button</item>
+        <item name="android:textColor">@color/blue_grey</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingVertical">12dp</item>
+    </style>
+
+    <!-- Dialog -->
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
 </resources>
