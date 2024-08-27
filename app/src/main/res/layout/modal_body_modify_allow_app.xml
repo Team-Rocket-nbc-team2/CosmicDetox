@@ -40,6 +40,15 @@
         android:layout_marginHorizontal="16dp"
         android:textColor="@color/white20"/>
 
+    <TextView
+        android:id="@+id/tv_search_result_is_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/search_allow_app_is_empty"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_allow_apps_list"
         android:layout_width="match_parent"
