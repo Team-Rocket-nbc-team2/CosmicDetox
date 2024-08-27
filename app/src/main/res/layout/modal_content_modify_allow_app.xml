@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/search_allow_app_is_empty"
+        android:textSize="@dimen/text_size_14sp"
         android:textAlignment="center"
         android:gravity="center"
         android:visibility="gone"/>
