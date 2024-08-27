@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
@@ -37,6 +38,10 @@ class TimerFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        /**
+         *  TODO : 현재 디톡스를 계속 유지 해야 되는지 state를 추가하여 state가 true일 때만 해당 showTwoButtonDialog() 작동 하도록 구현 필요
+         *  현재는 종료버튼을 눌러도 아래 집중하세요! Dialog 계속 노출 되는 중
+         *  */
         showTwoButtonDialog()
     }
 
@@ -51,6 +56,8 @@ class TimerFragment : Fragment() {
                 getString(R.string.timer_dialog_finish)
             ) {
                 // timer 종료하기
+
+                findNavController().popBackStack()
             }
             // 알림창이 띄워져있는 동안 배경 클릭 막기
             dialog.isCancelable = false
