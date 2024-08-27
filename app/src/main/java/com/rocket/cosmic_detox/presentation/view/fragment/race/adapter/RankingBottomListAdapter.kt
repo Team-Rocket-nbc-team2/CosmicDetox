@@ -13,8 +13,7 @@ class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : Lis
     RankingDiffCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingBottomViewHolder {
-        val binding = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RankingBottomViewHolder(binding, onClick)
+        return RankingBottomViewHolder.from(parent, onClick)
     }
 
     override fun onBindViewHolder(holder: RankingBottomViewHolder, position: Int) {
@@ -40,15 +39,12 @@ class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : Lis
                 }
             }
         }
-    }
-}
 
-private class RankingTopDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
-    override fun areItemsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
-        return oldItem == newItem
+        companion object {
+            fun from(parent: ViewGroup, onClick: (RankingInfo) -> Unit): RankingBottomViewHolder {
+                val binding = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return RankingBottomViewHolder(binding, onClick)
+            }
+        }
     }
 }

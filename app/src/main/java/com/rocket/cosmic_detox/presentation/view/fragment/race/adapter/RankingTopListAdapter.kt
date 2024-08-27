@@ -13,8 +13,7 @@ class RankingTopListAdapter(private val onClick: (RankingInfo) -> Unit) : ListAd
     RankingDiffCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingTopViewHolder {
-        val binding = ItemRankingTopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RankingTopViewHolder(binding, onClick)
+        return RankingTopViewHolder.from(parent, onClick)
     }
 
     override fun onBindViewHolder(holder: RankingTopViewHolder, position: Int) {
@@ -38,6 +37,13 @@ class RankingTopListAdapter(private val onClick: (RankingInfo) -> Unit) : ListAd
                 tvRankingTopTime.text = ranking.time.toString()
                 tvRankingTopPoint.text = ranking.point.toString()
                 //}
+            }
+        }
+
+        companion object {
+            fun from(parent: ViewGroup, onClick: (RankingInfo) -> Unit): RankingTopViewHolder {
+                val binding = ItemRankingTopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return RankingTopViewHolder(binding, onClick)
             }
         }
     }
