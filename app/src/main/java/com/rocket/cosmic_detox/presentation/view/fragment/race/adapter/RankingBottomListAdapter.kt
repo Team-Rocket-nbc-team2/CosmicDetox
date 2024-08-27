@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment.race
+package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,13 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
-import com.rocket.cosmic_detox.databinding.ItemRankingTopBinding
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 
 class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : ListAdapter<RankingInfo, RankingBottomListAdapter.RankingBottomViewHolder>(
-    RankingTopDiffCallback()
+    RankingDiffCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingBottomViewHolder {
         val binding = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)

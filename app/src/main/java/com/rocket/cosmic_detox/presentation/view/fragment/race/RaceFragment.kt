@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.presentation.model.RankingManager
+import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RankingListAdapter
 
 class RaceFragment : Fragment() {
 
@@ -37,9 +40,11 @@ class RaceFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+        val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
+        val dividerColor = ContextCompat.getColor(requireContext(), R.color.stroke_dark)
         rvRankingList.apply {
             adapter = rankingListAdapter
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            addItemDecoration(RankingDividerItemDecoration(dividerHeight, dividerColor))
         }
     }
 

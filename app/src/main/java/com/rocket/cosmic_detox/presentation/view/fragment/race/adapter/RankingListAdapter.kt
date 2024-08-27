@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment.race
+package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
-import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingTopListBinding
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 
@@ -20,7 +18,7 @@ enum class RankingType(val type: Int) {
 
 class RankingListAdapter(
     private val onClick: (RankingInfo) -> Unit
-) : ListAdapter<RankingInfo, RecyclerView.ViewHolder>(RankingListDiffCallback()) {
+) : ListAdapter<RankingInfo, RecyclerView.ViewHolder>(RankingDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holderType = RankingType.entries.find {
@@ -29,7 +27,7 @@ class RankingListAdapter(
         Log.d("ViewHolder 체크", "리스트 : $currentList")
         return when (holderType) {
             RankingType.RANKING_TOP -> RankingTopViewHolder.from(parent, onClick)
-            RankingType.RANKING_LIST -> RankingViewHolder.from(parent, onClick)
+            RankingType.RANKING_LIST -> RankingBottomViewHolder.from(parent, onClick)
             RankingType.EMPTY -> TODO()
         }
     }
@@ -41,7 +39,7 @@ class RankingListAdapter(
                 val topItems = currentList.take(2)
                 holder.bind(topItems)
             }
-            is RankingViewHolder -> {
+            is RankingBottomViewHolder -> {
                 // 나머지 아이템을 전달
                 holder.bind(getItem(position + 1))  // 인덱스 보정
             }
@@ -88,7 +86,7 @@ class RankingListAdapter(
         }
     }
 
-    class RankingViewHolder(
+    class RankingBottomViewHolder(
         private val binding: ItemRankingBottomListBinding,
         private val onClick: (RankingInfo) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -109,8 +107,8 @@ class RankingListAdapter(
         }
 
         companion object {
-            fun from(parent: ViewGroup, onClick: (RankingInfo) -> Unit, ): RankingViewHolder {
-                return RankingViewHolder(
+            fun from(parent: ViewGroup, onClick: (RankingInfo) -> Unit, ): RankingBottomViewHolder {
+                return RankingBottomViewHolder(
                     ItemRankingBottomListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
                     onClick
                 )
@@ -119,7 +117,7 @@ class RankingListAdapter(
     }
 }
 
-private class RankingListDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
+class RankingDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
     override fun areItemsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
         return oldItem.id == newItem.id
     }

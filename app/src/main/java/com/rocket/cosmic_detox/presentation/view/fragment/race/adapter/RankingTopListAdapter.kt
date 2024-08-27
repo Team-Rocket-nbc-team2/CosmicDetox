@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment.race
+package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -40,15 +40,5 @@ class RankingTopListAdapter(private val onClick: (RankingInfo) -> Unit) : ListAd
                 //}
             }
         }
-    }
-}
-
-private class RankingDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
-    override fun areItemsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
-        return oldItem == newItem
     }
 }
