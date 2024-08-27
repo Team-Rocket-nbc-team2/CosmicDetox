@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp"
+    android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/appIcon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_app"
+        android:background="#dcdcdc"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="앱 이름"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/appUsageTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0분"
+        android:textColor="#cccccc"
+        android:textSize="14sp" />
+</LinearLayout>
