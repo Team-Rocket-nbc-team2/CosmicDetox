@@ -20,6 +20,8 @@
     <!-- My Page -->
     <string name="search_edit_text_hint">Please input search text.</string>
     <string name="allow_app_list">App list</string>
+    <string name="search_allow_app_is_empty">There are no search results.</string>
+    <string name="limit_app_is_empty">There are no apps allowed for use while traveling in space.</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>

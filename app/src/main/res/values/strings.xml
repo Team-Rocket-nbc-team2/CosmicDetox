@@ -19,6 +19,8 @@
     <!--  My Page  -->
     <string name="search_edit_text_hint">검색어를 입력하세요.</string>
     <string name="allow_app_list">어플리스트</string>
+    <string name="search_allow_app_is_empty">검색 결과가 없습니다.</string>
+    <string name="limit_app_is_empty">우주 여행중 사용을 허용한 어플이 존재하지 않습니다.</string>
 
     <!--  Timer  -->
     <string name="timer_finish">종료</string>
