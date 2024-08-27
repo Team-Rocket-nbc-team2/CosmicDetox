@@ -38,16 +38,6 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         return modalBottomSheetBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        (dialog as BottomSheetDialog).behavior.apply {
-            isFitToContents = false
-            expandedOffset = 0
-            state = BottomSheetBehavior.STATE_EXPANDED
-        }
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
