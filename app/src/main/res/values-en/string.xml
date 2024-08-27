@@ -10,9 +10,21 @@
     <string name="label_home">Home</string>
     <string name="label_my">My</string>
 
+
+    <!--  Timer  -->
+    <string name="timer_finish">Finish</string>
+    <string name="timer_rest">Take a rest</string>
+    <string name="timer_dialog_finish">Are you sure to finish?</string>
+
     <!-- SignIn -->
     <string name="sign_rules">It can be used using a social account without signing up, \n and is considered to have agreed to the personal information \n processing policy and terms of use at the first login.</string>
     <string name="sign_social">Start right now with your social account!</string>
+
+    <!-- My Page -->
+    <string name="search_edit_text_hint">Please input search text.</string>
+    <string name="allow_app_list">App list</string>
+    <string name="search_allow_app_is_empty">There are no search results.</string>
+    <string name="limit_app_is_empty">There are no apps allowed for use while traveling in space.</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>

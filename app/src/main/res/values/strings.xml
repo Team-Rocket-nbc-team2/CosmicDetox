@@ -18,8 +18,15 @@
     <string name="description_profile_image">유저 프로필 썸네일 이미지</string>
 
     <!--  My Page  -->
+    <string name="search_edit_text_hint">검색어를 입력하세요.</string>
+    <string name="allow_app_list">어플리스트</string>
+    <string name="search_allow_app_is_empty">검색 결과가 없습니다.</string>
+    <string name="limit_app_is_empty">우주 여행중 사용을 허용한 어플이 존재하지 않습니다.</string>
 
     <!--  Timer  -->
+    <string name="timer_finish">종료</string>
+    <string name="timer_rest">잠깐 쉬기</string>
+    <string name="timer_dialog_finish">정말로 여행을 종료 하시겠어요?</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
@@ -30,4 +37,6 @@
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">취소</string>
     <string name="dialog_confirm">확인</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
