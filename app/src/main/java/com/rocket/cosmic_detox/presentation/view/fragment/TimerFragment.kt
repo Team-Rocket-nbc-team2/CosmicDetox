@@ -43,11 +43,12 @@ class TimerFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         /**
-         *  TODO : 현재 디톡스를 계속 유지 해야 되는지 state를 추가하여 state가 true일 때만 해당 showTwoButtonDialog() 작동 하도록 구현 필요
-         *  현재는 종료버튼을 눌러도 아래 집중하세요! Dialog 계속 노출 되는 중
+         *  TODO : Home버튼 눌러서 바탕화면 나가면 Dialog와 충돌하여 앱이 종료되어버림. 해결방법 필요
          *  */
-        showTwoButtonDialog()
+//        showTwoButtonDialog()
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

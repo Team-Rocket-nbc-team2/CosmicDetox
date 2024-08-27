@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         setBottomNavigation()
     }
 
+
     private fun setBottomNavigation() = with(binding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment
