@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_race"
-        android:name="com.rocket.cosmic_detox.presentation.view.fragment.RaceFragment"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.race.RaceFragment"
         android:label="RaceFragment"
         tools:layout="@layout/fragment_race" />
     <fragment
