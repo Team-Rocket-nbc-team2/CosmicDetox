@@ -13,7 +13,8 @@
     <string name="sign_social">소셜 계정으로 지금 바로 시작해보세요!</string>
 
     <!--  Home  -->
-
+    <string name="home_current_location">현재 위치</string>
+    <string name="home_hours">시간</string>
     <!--  Race  -->
 
     <!--  My Page  -->
