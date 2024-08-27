@@ -2,7 +2,6 @@ package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
@@ -30,13 +29,11 @@ class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : Lis
                 onClick(ranking)
             }
             with(binding) {
-                with(binding) {
-                    // 3등부터 순위 표시
-                    tvRankingListRank.text = 3.toString()
-                    ivRankingListUserProfile.setImageResource(R.drawable.saturn)
-                    tvRankingListUserName.text = ranking.name
-                    tvRankingListStats.text = "${ranking.time}시간 ${ranking.point}점"
-                }
+                // 3등부터 순위 표시
+                tvRankingListRank.text = 3.toString()
+                ivRankingListUserProfile.setImageResource(R.drawable.saturn)
+                tvRankingListUserName.text = ranking.name
+                tvRankingListStats.text = "${ranking.time}시간 ${ranking.point}점"
             }
         }
 

@@ -2,7 +2,6 @@ package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
@@ -30,13 +29,10 @@ class RankingTopListAdapter(private val onClick: (RankingInfo) -> Unit) : ListAd
                 onClick(ranking)
             }
             with(binding) {
-                //val layout = if (position == 0) layoutRankingFirst else layoutRankingSecond
-                //layout.apply {
                 ivRankingTopUserProfile.setImageResource(R.drawable.mars)
                 tvRankingTopUserName.text = ranking.name
                 tvRankingTopTime.text = ranking.time.toString()
                 tvRankingTopPoint.text = ranking.point.toString()
-                //}
             }
         }
 
