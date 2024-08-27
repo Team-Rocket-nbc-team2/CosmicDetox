@@ -14,21 +14,21 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.databinding.ModalBodySetLimitAppBinding
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
+import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
 
 class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
-    private lateinit var modalBodySetLimitAppBinding: ModalBodySetLimitAppBinding
+    private lateinit var modalContentSetLimitAppBinding: ModalContentSetLimitAppBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        modalBottomSheetBinding.bottomSheetBody.layoutResource = R.layout.modal_body_set_limit_app
+        modalBottomSheetBinding.bottomSheetBody.layoutResource = R.layout.modal_content_set_limit_app
         val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
-        modalBodySetLimitAppBinding = ModalBodySetLimitAppBinding.bind(viewStub)
+        modalContentSetLimitAppBinding = ModalContentSetLimitAppBinding.bind(viewStub)
 
         modalBottomSheetBinding.tvBottomSheetTitle.text = "앱 사용시간 제한"
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {

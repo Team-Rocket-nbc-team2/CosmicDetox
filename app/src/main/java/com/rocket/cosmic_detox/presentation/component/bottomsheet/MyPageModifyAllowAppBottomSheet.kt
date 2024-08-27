@@ -14,21 +14,21 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.databinding.ModalBodyModifyAllowAppBinding
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
+import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 
 class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
-    private lateinit var modalBodyModifyAllowAppBinding: ModalBodyModifyAllowAppBinding
+    private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        modalBottomSheetBinding.bottomSheetBody.layoutResource = R.layout.modal_body_modify_allow_app
+        modalBottomSheetBinding.bottomSheetBody.layoutResource = R.layout.modal_content_modify_allow_app
         val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
-        modalBodyModifyAllowAppBinding = ModalBodyModifyAllowAppBinding.bind(viewStub)
+        modalContentModifyAllowAppBinding = ModalContentModifyAllowAppBinding.bind(viewStub)
 
         modalBottomSheetBinding.tvBottomSheetTitle.text = "허용할 어플 편집"
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
