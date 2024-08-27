@@ -7,6 +7,10 @@
     <string name="label_home">Home</string>
     <string name="label_my">My</string>
 
+    <!-- SignIn -->
+    <string name="sign_rules">It can be used using a social account without signing up, \n and is considered to have agreed to the personal information \n processing policy and terms of use at the first login.</string>
+    <string name="sign_social">Start right now with your social account!</string>
+
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">Completion</string>
