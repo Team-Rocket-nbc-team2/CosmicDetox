@@ -15,27 +15,28 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
+import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
+import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 
 class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
-    private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
-    private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
+    private val modalBottomSheetIconBinding by lazy { ModalBottomsheetIconBinding.inflate(layoutInflater) }
+    private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        modalBottomSheetBinding.bottomSheetBody.layoutResource = R.layout.modal_content_modify_allow_app
-        val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
-        modalContentModifyAllowAppBinding = ModalContentModifyAllowAppBinding.bind(viewStub)
+        modalBottomSheetIconBinding.bottomSheetBody.layoutResource = R.layout.modal_content_allowed_app
+        val viewStub = modalBottomSheetIconBinding.bottomSheetBody.inflate()
+        modalContentAllowedAppBinding = ModalContentAllowedAppBinding.bind(viewStub)
 
-        modalBottomSheetBinding.tvBottomSheetTitle.text = "허용할 어플 편집"
-        modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
+        modalBottomSheetIconBinding.tvBottomSheetTitle.text = getString(R.string.timer_bottom_sheet_title)
+        modalBottomSheetIconBinding.ivBottomSheetClose.setOnClickListener {
             dismiss()
         }
-
-        return modalBottomSheetBinding.root
+        return modalBottomSheetIconBinding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

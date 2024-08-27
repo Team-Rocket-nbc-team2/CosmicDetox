@@ -26,6 +26,8 @@
     <string name="timer_finish">종료</string>
     <string name="timer_rest">잠깐 쉬기</string>
     <string name="timer_dialog_finish">정말로 여행을 종료 하시겠어요?</string>
+    <string name="timer_bottom_sheet_title">사용할 어플 선택</string>
+    <string name="allowed_app_is_empty">사용할 어플 리스트가 없습니다.\n내정보 화면에서 미리 선택 해보세요!</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
@@ -37,6 +39,4 @@
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">취소</string>
     <string name="dialog_confirm">확인</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

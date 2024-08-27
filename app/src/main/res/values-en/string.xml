@@ -12,6 +12,8 @@
     <string name="timer_finish">Finish</string>
     <string name="timer_rest">Take a rest</string>
     <string name="timer_dialog_finish">Are you sure to finish?</string>
+    <string name="timer_bottom_sheet_title">Select the app to use</string>
+    <string name="allowed_app_is_empty">There is no list of applications to use.\nTry selecting in advance from the My screen!</string>
 
     <!-- SignIn -->
     <string name="sign_rules">It can be used using a social account without signing up, \n and is considered to have agreed to the personal information \n processing policy and terms of use at the first login.</string>

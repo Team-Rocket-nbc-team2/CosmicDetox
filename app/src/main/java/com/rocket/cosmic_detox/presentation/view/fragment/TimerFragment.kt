@@ -8,8 +8,12 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 
@@ -62,6 +66,11 @@ class TimerFragment : Fragment() {
             // 알림창이 띄워져있는 동안 배경 클릭 막기
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
+        }
+
+        btnTimerRest.setOnClickListener {
+            val bottomSheet = TimerAllowedAppBottomSheet()
+            bottomSheet.show(getParentFragmentManager(), "BottomSheet")
         }
     }
 
