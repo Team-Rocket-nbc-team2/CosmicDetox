@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
+import com.rocket.cosmic_detox.presentation.extensions.loadRankingImage
+import com.rocket.cosmic_detox.presentation.extensions.setStats
 import com.rocket.cosmic_detox.presentation.model.RankingBottom
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
@@ -38,6 +40,14 @@ class RaceFragment : Fragment(), RankingItemClickListener {
 
     private fun initView() = with(binding) {
         rvRace.adapter = raceAdapter
+        val myRanking = RankingManager.getMyRanking()
+        layoutMyRanking.apply {
+            root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
+            ivRankingBottomUserProfile.loadRankingImage(myRanking.cumulativeTime)
+            tvRankingBottomRank.text = 3.toString()
+            tvRankingBottomUserName.text = myRanking.name
+            tvRankingBottomStats.setStats(myRanking.cumulativeTime, myRanking.points)
+        }
     }
 
     private fun setDummyData() {

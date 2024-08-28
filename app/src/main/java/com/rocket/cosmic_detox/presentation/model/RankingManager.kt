@@ -134,4 +134,8 @@ object RankingManager {
     fun getRankingList(): List<RankingInfo> {
         return rankingList.sortedByDescending { it.cumulativeTime }
     }
+
+    fun getMyRanking(): RankingInfo {
+        return rankingList.first()
+    }
 }
