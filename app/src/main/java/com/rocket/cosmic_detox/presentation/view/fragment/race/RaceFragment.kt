@@ -16,7 +16,9 @@ import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
 import com.rocket.cosmic_detox.presentation.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RaceFragment : Fragment(), RankingItemClickListener {
 
     private var _binding: FragmentRaceBinding? = null

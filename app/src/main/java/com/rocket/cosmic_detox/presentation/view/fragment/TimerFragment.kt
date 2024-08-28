@@ -16,7 +16,9 @@ import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimit
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TimerFragment : Fragment() {
     private var _binding: FragmentTimerBinding? = null
     private val binding get() = _binding!!

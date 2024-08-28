@@ -14,8 +14,9 @@ import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTroph
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
