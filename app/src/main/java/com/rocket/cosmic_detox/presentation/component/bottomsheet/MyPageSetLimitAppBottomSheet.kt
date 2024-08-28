@@ -30,6 +30,13 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
         modalContentSetLimitAppBinding = ModalContentSetLimitAppBinding.bind(viewStub)
 
+        // todo :: number picker bottom sheet 여는 코드 작성
+        //  recyclerView item 클릭 시 bottom Sheet를 열면 됨.
+        //  아래 코드 복붙.
+        // val bottomSheet = MyPageSetLimitUseTimeBottomSheet()
+        // bottomSheet.isCancelable = false
+        // bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.limit_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
