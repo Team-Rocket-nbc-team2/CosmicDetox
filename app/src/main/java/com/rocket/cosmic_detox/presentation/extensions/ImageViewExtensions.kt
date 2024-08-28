@@ -31,7 +31,7 @@ fun Int.dpToPx(context: Context): Int {
     return (this * density).toInt()
 }
 
-fun ImageView.loadRankingImage(cumulativeTime: BigDecimal) {
+fun ImageView.loadRankingPlanetImage(cumulativeTime: BigDecimal) {
     val imageRes = when {
         cumulativeTime < BigDecimal(6 * 3600) -> R.drawable.ic_race_mercury // 수성: 누적 6시간 (21600초)
         cumulativeTime < BigDecimal(12 * 3600) -> R.drawable.ic_race_mars // 화성: 누적 12시간 (43200초)

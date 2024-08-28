@@ -5,17 +5,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadHomePlanetImage
-import com.rocket.cosmic_detox.presentation.extensions.loadRankingImage
-import com.rocket.cosmic_detox.presentation.model.RankingManager
 import java.math.BigDecimal
 
 class HomeFragment : Fragment() {
