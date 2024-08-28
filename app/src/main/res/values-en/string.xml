@@ -27,14 +27,41 @@
     <string name="sign_social">Start right now with your social account!</string>
 
     <!-- My Page -->
-    <string name="search_edit_text_hint">Please input search text.</string>
-    <string name="allow_app_list">App list</string>
-    <string name="search_allow_app_is_empty">There are no search results.</string>
-    <string name="limit_app_is_empty">There are no apps allowed for use while traveling in space.</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">Completion</string>
+    <string name="allow_app_bottom_sheet_title">Edit app for traveling</string>
+    <string name="limit_app_bottom_sheet_title">Limit app usage time</string>
+    <string name="set_limit_use_time_bottom_sheet_title">time setting</string>
+    <string name="search_edit_text_hint">Please input search text.</string>
+    <string name="allow_app_list">App list</string>
+    <string name="search_allow_app_is_empty">There are no search results.</string>
+    <string name="limit_app_is_empty">There are no apps allowed for use while traveling in space.</string>
+    <string name="number_picker_unit_hour">hr</string>
+    <string name="number_picker_unit_minute">min</string>
+    <string-array name="number_picker_hour">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="number_picker_minute">
+        <item>05</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+    </string-array>
 
     <!--  Dialog  -->
     <string name="dialog_common_focus">Focus on your travel!</string>
