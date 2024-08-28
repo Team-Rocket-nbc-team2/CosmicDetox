@@ -10,10 +10,20 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/black_planet_background"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cl_home_explanation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/cl_home_explanation">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_home_my_planet"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/earth"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -21,100 +31,100 @@
         android:id="@+id/cl_home_explanation"
         android:layout_width="0dp"
         android:layout_height="220sp"
-        app:layout_constraintTop_toBottomOf="@+id/cl_home_illustration"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_home_illustration">
 
         <TextView
             android:id="@+id/tv_home_current_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             android:text="@string/home_current_location"
             android:textColor="@color/white20"
-            android:textSize="@dimen/text_size_16sp"/>
+            android:textSize="@dimen/text_size_16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/tv_home_current_location"
-            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="24dp"
             android:text="행성명"
+            android:textColor="@color/primary"
             android:textSize="@dimen/text_size_16sp"
-            android:textColor="@color/primary"/>
+            app:layout_constraintStart_toEndOf="@+id/tv_home_current_location"
+            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
             android:id="@+id/tv_home_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="@string/home_hours"
             android:textColor="@color/white20"
-            android:textSize="@dimen/text_size_16sp"/>
+            android:textSize="@dimen/text_size_16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
             android:id="@+id/tv_home_hours_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/tv_home_hours"
-            app:layout_constraintTop_toTopOf="@id/cl_home_explanation"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="2dp"
             android:text="ㅇㅇ"
+            android:textColor="@color/primary"
             android:textSize="@dimen/text_size_16sp"
-            android:textColor="@color/primary"/>
+            app:layout_constraintEnd_toStartOf="@id/tv_home_hours"
+            app:layout_constraintTop_toTopOf="@id/cl_home_explanation" />
 
         <TextView
             android:id="@+id/tv_home_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/tv_home_hours_count"
-            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="6dp"
             android:text="@string/home_total"
+            android:textColor="@color/white20"
             android:textSize="@dimen/text_size_16sp"
-            android:textColor="@color/white20"/>
+            app:layout_constraintEnd_toStartOf="@+id/tv_home_hours_count"
+            app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
             android:id="@+id/tv_home_traveling_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/btn_navigate_to_timer"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="You traveled for \n H hours, M minutes and S seconds."
-            android:textSize="@dimen/text_size_18sp"
-            android:textColor="@color/white20"
-            android:gravity="center"
             android:layout_marginStart="18dp"
             android:layout_marginEnd="18dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="You traveled for \n H hours, M minutes and S seconds."
+            android:textColor="@color/white20"
+            android:textSize="@dimen/text_size_18sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_navigate_to_timer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_navigate_to_timer"
+            style="@style/timer_primary_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/timer_primary_btn"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
-            android:text="@string/home_travel_btn_text"
             android:drawableStart="@drawable/clock"
+            android:gravity="center"
+            android:text="@string/home_travel_btn_text"
             android:textAlignment="center"
+            android:textAllCaps="false"
             app:icon="@drawable/clock"
             app:iconGravity="textStart"
-            android:gravity="center"
-            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="@+id/cl_home_explanation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
