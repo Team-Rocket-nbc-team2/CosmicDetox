@@ -41,7 +41,7 @@
 <!--        app:layout_constraintTop_toBottomOf="@id/layout_ranking_first" />-->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_ranking_list"
+        android:id="@+id/rv_race"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"

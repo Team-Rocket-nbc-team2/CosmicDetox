@@ -19,7 +19,7 @@ enum class RankingType(val type: Int) {
     EMPTY(-1)
 }
 
-class RankingListAdapter(
+class RaceAdapter(
     private val listener: RankingItemClickListener
 ) : ListAdapter<Ranking, RecyclerView.ViewHolder>(RankingListDiffCallback()) {
 

@@ -13,13 +13,13 @@ import com.rocket.cosmic_detox.presentation.model.RankingBottom
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
 import com.rocket.cosmic_detox.presentation.model.RankingTop
-import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RankingListAdapter
+import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 
 class RaceFragment : Fragment(), RankingItemClickListener {
 
     private var _binding: FragmentRaceBinding? = null
     private val binding get() = _binding!!
-    private val rankingListAdapter by lazy { RankingListAdapter(this) }
+    private val raceAdapter by lazy { RaceAdapter(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,8 +39,8 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     private fun initView() = with(binding) {
         val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
         val dividerColor = ContextCompat.getColor(requireContext(), R.color.stroke_dark)
-        rvRankingList.apply {
-            adapter = rankingListAdapter
+        rvRace.apply {
+            adapter = raceAdapter
             addItemDecoration(RankingDividerItemDecoration(dividerHeight, dividerColor))
         }
     }
@@ -54,7 +54,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
             RankingTop(topList),
             RankingBottom(bottomList)
         )
-        rankingListAdapter.submitList(rankingList)
+        raceAdapter.submitList(rankingList)
     }
 
     override fun onDestroyView() {
