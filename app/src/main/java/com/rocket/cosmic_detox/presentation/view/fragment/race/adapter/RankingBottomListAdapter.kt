@@ -11,9 +11,9 @@ import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickL
 
 private const val RANK_START = 3
 
-class RankingBottomListAdapter(private val listener: RankingItemClickListener) : ListAdapter<RankingInfo, RankingBottomListAdapter.RankingBottomViewHolder>(
-    RankingDetailDiffCallback()
-) {
+class RankingBottomListAdapter(
+    private val listener: RankingItemClickListener
+) : ListAdapter<RankingInfo, RankingBottomListAdapter.RankingBottomViewHolder>(RankingItemDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingBottomViewHolder {
         return RankingBottomViewHolder.from(parent, listener)
     }

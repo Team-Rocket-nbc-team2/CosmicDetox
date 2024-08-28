@@ -21,7 +21,7 @@ enum class RankingType(val type: Int) {
 
 class RankingListAdapter(
     private val listener: RankingItemClickListener
-) : ListAdapter<Ranking, RecyclerView.ViewHolder>(RankingDiffCallback()) {
+) : ListAdapter<Ranking, RecyclerView.ViewHolder>(RankingListDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holderType = RankingType.entries.find {
@@ -48,7 +48,7 @@ class RankingListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
+        return when (currentList[position]) {
             is RankingTop -> RankingType.RANKING_TOP.type
             is RankingBottom -> RankingType.RANKING_LIST.type
             else -> RankingType.EMPTY.type
@@ -56,7 +56,7 @@ class RankingListAdapter(
     }
 
     class RankingTopViewHolder(
-        private val binding: ItemRankingTopListBinding,
+        binding: ItemRankingTopListBinding,
         listener: RankingItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -72,16 +72,14 @@ class RankingListAdapter(
 
         companion object {
             fun from(parent: ViewGroup, listener: RankingItemClickListener): RankingTopViewHolder {
-                return RankingTopViewHolder(
-                    ItemRankingTopListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-                    listener
-                )
+                val binding = ItemRankingTopListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return RankingTopViewHolder(binding, listener)
             }
         }
     }
 
     class RankingBottomViewHolder(
-        private val binding: ItemRankingBottomListBinding,
+        binding: ItemRankingBottomListBinding,
         listener: RankingItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -97,16 +95,14 @@ class RankingListAdapter(
 
         companion object {
             fun from(parent: ViewGroup, listener: RankingItemClickListener): RankingBottomViewHolder {
-                return RankingBottomViewHolder(
-                    ItemRankingBottomListBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-                    listener
-                )
+                val binding = ItemRankingBottomListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return RankingBottomViewHolder(binding, listener)
             }
         }
     }
 }
 
-class RankingDiffCallback : DiffUtil.ItemCallback<Ranking>() {
+class RankingListDiffCallback : DiffUtil.ItemCallback<Ranking>() {
     override fun areItemsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {
         return oldItem == newItem
     }
@@ -116,7 +112,7 @@ class RankingDiffCallback : DiffUtil.ItemCallback<Ranking>() {
     }
 }
 
-class RankingDetailDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
+class RankingItemDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
     override fun areItemsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
         return oldItem.id == newItem.id
     }
