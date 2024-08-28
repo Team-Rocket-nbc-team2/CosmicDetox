@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 
-data class AppUsage(val iconResId: Int, val appName: String, val usageTime: String)
+data class AppUsage(val iconResId: Int, val appName: String, val usageTime: String, val usagePercentage: Int)
 
 class AppUsageAdapter(private val appUsageList: List<AppUsage>) :
     RecyclerView.Adapter<AppUsageAdapter.AppUsageViewHolder>() {
@@ -17,6 +18,8 @@ class AppUsageAdapter(private val appUsageList: List<AppUsage>) :
         val appIcon: ImageView = itemView.findViewById(R.id.appIcon)
         val appName: TextView = itemView.findViewById(R.id.appName)
         val appUsageTime: TextView = itemView.findViewById(R.id.appUsageTime)
+        val usageProgressBar: ProgressBar = itemView.findViewById(R.id.usageProgressBar)
+        val itemContainer: View = itemView.findViewById(R.id.item_container)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppUsageViewHolder {
@@ -29,6 +32,14 @@ class AppUsageAdapter(private val appUsageList: List<AppUsage>) :
         holder.appIcon.setImageResource(appUsage.iconResId)
         holder.appName.text = appUsage.appName
         holder.appUsageTime.text = appUsage.usageTime
+        holder.usageProgressBar.progress = appUsage.usagePercentage
+
+        // 첫 번째와 마지막 아이템에 둥근 모서리 배경 설정
+        when (position) {
+            0 -> holder.itemContainer.setBackgroundResource(R.drawable.shape_rounded_top) // 첫 번째 꺼
+            itemCount - 1 -> holder.itemContainer.setBackgroundResource(R.drawable.shape_rounded_bottom) // 마지막
+            else -> holder.itemContainer.setBackgroundResource(R.color.background_light) // 일반
+        }
     }
 
     override fun getItemCount(): Int = appUsageList.size

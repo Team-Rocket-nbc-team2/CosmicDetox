@@ -30,11 +30,12 @@ class MyPageFragment : Fragment() {
         _binding = FragmentMyPageBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trophyRecyclerView = view.findViewById<RecyclerView>(R.id.trophyRecyclerView)
-        val usageRecyclerView = view.findViewById<RecyclerView>(R.id.usageRecyclerView)
+        val trophyRecyclerView = binding.trophyRecyclerView
+        val noTrophyMessage = binding.tvNoTrophyMessage
 
         val trophyList = listOf(
             Trophy(R.drawable.sample_trophy_image),
@@ -47,19 +48,31 @@ class MyPageFragment : Fragment() {
             Trophy(R.drawable.sample_trophy_image),
 
             )
-        val appUsageList = listOf(
-            AppUsage(R.drawable.ic_app, "인스타그램", "120분"),
-            AppUsage(R.drawable.ic_app, "유튜브", "70분"),
-            AppUsage(R.drawable.ic_app, "카카오톡", "40분"),
-            AppUsage(R.drawable.ic_app, "당근", "30분"),
-            AppUsage(R.drawable.ic_app, "슬랙", "3분")
-        )
 
-
-        trophyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        // 트로피 없는 경우 UI
+        if (trophyList.isEmpty()) {
+            trophyRecyclerView.visibility = View.GONE
+            noTrophyMessage.visibility = View.VISIBLE
+        } else {
+            trophyRecyclerView.visibility = View.VISIBLE
+            noTrophyMessage.visibility = View.GONE
+        }
+        trophyRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         trophyRecyclerView.adapter = MyTrophyAdapter(trophyList)
 
-        usageRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+        val usageRecyclerView = binding.usageRecyclerView
+        val appUsageList = listOf(
+            AppUsage(R.drawable.ic_app, "인스타그램", "200분", 100),
+            AppUsage(R.drawable.ic_app, "유튜브", "140분", 70),
+            AppUsage(R.drawable.ic_app, "카카오톡", "100분", 50),
+            AppUsage(R.drawable.ic_app, "당근마켓", "70분", 35),
+            AppUsage(R.drawable.ic_app, "슬랙", "40분", 20),
+
+            )
+
+        usageRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         usageRecyclerView.adapter = AppUsageAdapter(appUsageList)
 
         binding.btnSetLimitAppUseTime.setOnClickListener {
@@ -72,6 +85,7 @@ class MyPageFragment : Fragment() {
             modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

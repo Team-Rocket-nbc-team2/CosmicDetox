@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="black_a25">#40000000</color>
     <color name="black_a50">#80000000</color>
+    <color name="black_planet_background">#080808</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white20">#FFF5F5F5</color>
     <color name="transparent">#00FFFFFF</color>

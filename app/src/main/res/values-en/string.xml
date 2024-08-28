@@ -17,6 +17,8 @@
     <string name="home_current_location">Current Location</string>
     <string name="home_hours">hours</string>
     <string name="home_total">Total</string>
+    <string name="home_travel_btn_text">Turn off the phone and travel into space.</string>
+    <string name="home_travel_start">Would you like to travel into space?</string>
 
     <!--  Timer  -->
     <string name="timer_finish">Finish</string>
