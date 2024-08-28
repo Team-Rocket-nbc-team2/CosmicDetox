@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomBinding
-import com.rocket.cosmic_detox.presentation.extensions.loadRankingImage
+import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setStats
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
@@ -37,7 +36,7 @@ class RankingBottomListAdapter(
             }
             with(binding) {
                 tvRankingBottomRank.text = rank.toString()
-                ivRankingBottomUserProfile.loadRankingImage(ranking.cumulativeTime)
+                ivRankingBottomUserProfile.loadRankingPlanetImage(ranking.cumulativeTime)
                 tvRankingBottomUserName.text = ranking.name
                 tvRankingBottomStats.setStats(ranking.cumulativeTime, ranking.points)
             }
