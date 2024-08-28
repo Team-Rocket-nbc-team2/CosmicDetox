@@ -3,7 +3,10 @@
     <string name="app_name">CosmicDetox</string>
 
     <!--  Race  -->
-    <string name="description_profile_image">User Profile Thumbnail Image</string>
+    <string name="race_description_profile_image">User Profile Thumbnail Image</string>
+    <string name="race_format_cumulative_time">%1$d hours %2$d minutes</string>
+    <string name="race_format_points">%s points</string>
+    <string name="race_format_stats">%1$d hours %2$d minutes · %3$s points</string>
 
     <!--  Navigation Menu  -->
     <string name="label_race">Race</string>

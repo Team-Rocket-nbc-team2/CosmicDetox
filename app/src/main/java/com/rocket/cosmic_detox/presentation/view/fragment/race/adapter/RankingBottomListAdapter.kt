@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
+import com.rocket.cosmic_detox.presentation.extensions.setStats
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 
@@ -37,7 +38,7 @@ class RankingBottomListAdapter(
                 tvRankingListRank.text = rank.toString()
                 ivRankingListUserProfile.setImageResource(R.drawable.saturn)
                 tvRankingListUserName.text = ranking.name
-                tvRankingListStats.text = "${ranking.time}시간 ${ranking.point}점"
+                tvRankingListStats.setStats(ranking.cumulativeTime, ranking.points)
             }
         }
 
