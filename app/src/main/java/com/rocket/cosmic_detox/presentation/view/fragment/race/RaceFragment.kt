@@ -1,14 +1,12 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.race
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.presentation.model.RankingBottom
@@ -52,12 +50,11 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         // 0, 1번째 인덱스는 Top, 나머지는 Bottom
         val topList = list.take(2)
         val bottomList = list.drop(2)
-        val newList = (listOf(
+        val rankingList = listOf(
             RankingTop(topList),
             RankingBottom(bottomList)
-        ))
-        rankingListAdapter.submitList(newList)
-        Log.d("RankingList", "List : ${RankingManager.getRankingList()}")
+        )
+        rankingListAdapter.submitList(rankingList)
     }
 
     override fun onDestroyView() {

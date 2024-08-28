@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -9,6 +8,8 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
+
+private const val RANK_START = 3
 
 class RankingBottomListAdapter(private val listener: RankingItemClickListener) : ListAdapter<RankingInfo, RankingBottomListAdapter.RankingBottomViewHolder>(
     RankingDetailDiffCallback()
@@ -19,7 +20,7 @@ class RankingBottomListAdapter(private val listener: RankingItemClickListener) :
 
     override fun onBindViewHolder(holder: RankingBottomViewHolder, position: Int) {
         // 3부터 시작하는 순위를 계산하여 전달
-        val rank = position + 3
+        val rank = position + RANK_START
         holder.bind(getItem(position), rank)
     }
 
@@ -33,8 +34,6 @@ class RankingBottomListAdapter(private val listener: RankingItemClickListener) :
                 listener.onRankingItemClick(ranking)
             }
             with(binding) {
-                // 순위 표시
-                Log.d("RankingBottomViewHolder", "rank : $rank")
                 tvRankingListRank.text = rank.toString()
                 ivRankingListUserProfile.setImageResource(R.drawable.saturn)
                 tvRankingListUserName.text = ranking.name

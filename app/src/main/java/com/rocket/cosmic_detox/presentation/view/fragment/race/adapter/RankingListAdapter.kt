@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -28,7 +27,6 @@ class RankingListAdapter(
         val holderType = RankingType.entries.find {
             it.type == viewType
         } ?: RankingType.EMPTY
-        Log.d("ViewHolder 체크", "리스트 : $currentList")
         return when (holderType) {
             RankingType.RANKING_TOP -> RankingTopViewHolder.from(parent, listener)
             RankingType.RANKING_LIST -> RankingBottomViewHolder.from(parent, listener)
@@ -38,18 +36,6 @@ class RankingListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-//            is RankingTopViewHolder -> {
-//                // 첫 번째와 두 번째 아이템 처리
-//                val topItems = currentList.take(2)
-//                holder.bind(topItems)
-//            }
-//            is RankingBottomViewHolder -> {
-//                // 세 번째 아이템부터 나머지 아이템을 전달
-//                if (position >= 2) {
-//                    val rankingItem = currentList[position]
-//                    holder.bind(rankingItem, position + 1)  // 올바른 순위를 전달
-//                }
-//            }
             is RankingTopViewHolder -> {
                 val item = currentList[position] as RankingTop
                 holder.bind(item)
@@ -63,18 +49,11 @@ class RankingListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-//            currentList.first() -> RankingType.RANKING_TOP.type
-//            else -> RankingType.RANKING_LIST.type
             is RankingTop -> RankingType.RANKING_TOP.type
             is RankingBottom -> RankingType.RANKING_LIST.type
             else -> RankingType.EMPTY.type
         }
     }
-
-//    override fun getItemCount(): Int {
-//        // 첫 두 개 아이템은 RankingTopViewHolder에서 처리되므로 전체 아이템 수에서 1을 뺀다
-//        return if (currentList.size > 2) currentList.size - 1 else currentList.size
-//    }
 
     class RankingTopViewHolder(
         private val binding: ItemRankingTopListBinding,
@@ -88,7 +67,6 @@ class RankingListAdapter(
         }
 
         fun bind(rankingTop: RankingTop) {
-            Log.d("RankingTopViewHolder", "rankingTop.topItems: $rankingTop.topItems")
             rankingTopListAdapter.submitList(rankingTop.topItems)
         }
 
