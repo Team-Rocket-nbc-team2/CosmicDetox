@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
+import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 
-class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : ListAdapter<RankingInfo, RankingBottomListAdapter.RankingBottomViewHolder>(
-    RankingDiffCallback()
+class RankingBottomListAdapter(private val listener: RankingItemClickListener) : ListAdapter<RankingInfo, RankingBottomListAdapter.RankingBottomViewHolder>(
+    RankingDetailDiffCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingBottomViewHolder {
-        return RankingBottomViewHolder.from(parent, onClick)
+        return RankingBottomViewHolder.from(parent, listener)
     }
 
     override fun onBindViewHolder(holder: RankingBottomViewHolder, position: Int) {
@@ -24,12 +25,12 @@ class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : Lis
 
     class RankingBottomViewHolder(
         private val binding: ItemRankingListBinding,
-        private val onClick: (RankingInfo) -> Unit
+        private val listener: RankingItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(ranking: RankingInfo, rank: Int) {
             itemView.setOnClickListener {
-                onClick(ranking)
+                listener.onRankingItemClick(ranking)
             }
             with(binding) {
                 // 순위 표시
@@ -42,9 +43,9 @@ class RankingBottomListAdapter(private val onClick: (RankingInfo) -> Unit) : Lis
         }
 
         companion object {
-            fun from(parent: ViewGroup, onClick: (RankingInfo) -> Unit): RankingBottomViewHolder {
+            fun from(parent: ViewGroup, listener: RankingItemClickListener): RankingBottomViewHolder {
                 val binding = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return RankingBottomViewHolder(binding, onClick)
+                return RankingBottomViewHolder(binding, listener)
             }
         }
     }

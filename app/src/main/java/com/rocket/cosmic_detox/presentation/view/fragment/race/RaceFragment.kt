@@ -11,18 +11,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
+import com.rocket.cosmic_detox.presentation.model.RankingBottom
+import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
+import com.rocket.cosmic_detox.presentation.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RankingListAdapter
 
-class RaceFragment : Fragment() {
+class RaceFragment : Fragment(), RankingItemClickListener {
 
     private var _binding: FragmentRaceBinding? = null
     private val binding get() = _binding!!
-    private val rankingListAdapter by lazy {
-        RankingListAdapter {
-            Toast.makeText(requireContext(), it.name, Toast.LENGTH_SHORT).show()
-        }
-    }
+    private val rankingListAdapter by lazy { RankingListAdapter(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,12 +48,24 @@ class RaceFragment : Fragment() {
     }
 
     private fun setDummyData() {
-        rankingListAdapter.submitList(RankingManager.getRankingList())
+        val list = RankingManager.getRankingList()
+        // 0, 1번째 인덱스는 Top, 나머지는 Bottom
+        val topList = list.take(2)
+        val bottomList = list.drop(2)
+        val newList = (listOf(
+            RankingTop(topList),
+            RankingBottom(bottomList)
+        ))
+        rankingListAdapter.submitList(newList)
         Log.d("RankingList", "List : ${RankingManager.getRankingList()}")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRankingItemClick(ranking: RankingInfo) {
+        Toast.makeText(requireContext(), "Ranking Item Clicked : ${ranking.name}", Toast.LENGTH_SHORT).show()
     }
 }
