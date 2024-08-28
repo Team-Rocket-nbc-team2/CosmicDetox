@@ -40,14 +40,16 @@ class TimerFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
     }
 
-    override fun onStop() {
-        super.onStop()
-        /**
-         *  TODO : Home버튼 눌러서 바탕화면 나가면 Dialog와 충돌하여 앱이 종료되어버림. 해결방법 필요
-         *  */
-//        showTwoButtonDialog()
+
+    /**
+     *  TODO : onPause에서 실행하여 Dialog는 뜨나 홈키, 메뉴키를 막는 방법 필요
+     *  */
+    override fun onPause() {
+        super.onPause()
+        showTwoButtonDialog()
     }
 
+    // onUserLeaveHint
 
 
     override fun onDestroyView() {
