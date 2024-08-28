@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_race" />
     <fragment
         android:id="@+id/navigation_my"
-        android:name="com.rocket.cosmic_detox.presentation.view.fragment.MyPageFragment"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageFragment"
         android:label="MyPageFragment"
         tools:layout="@layout/fragment_my_page" />
     <fragment

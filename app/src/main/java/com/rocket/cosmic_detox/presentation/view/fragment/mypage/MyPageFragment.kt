@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment
+package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
-import com.rocket.cosmic_detox.presentation.adapter.AppUsage
-import com.rocket.cosmic_detox.presentation.adapter.AppUsageAdapter
-import com.rocket.cosmic_detox.presentation.adapter.MyTrophyAdapter
-import com.rocket.cosmic_detox.presentation.adapter.Trophy
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.AppUsage
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.AppUsageAdapter
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null

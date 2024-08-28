@@ -11,8 +11,10 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadHomePlanetImage
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null

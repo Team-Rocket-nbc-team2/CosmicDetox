@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.adapter
+package com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter
 
 import android.view.LayoutInflater
 import android.view.View
