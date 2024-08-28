@@ -3,7 +3,6 @@ package com.rocket.cosmic_detox.presentation.extensions
 import android.icu.text.DecimalFormat
 import android.widget.TextView
 import com.rocket.cosmic_detox.R
-import org.w3c.dom.Text
 import java.math.BigDecimal
 
 fun TextView.setCumulativeTime(time: BigDecimal) {

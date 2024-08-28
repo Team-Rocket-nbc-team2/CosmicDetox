@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingTopBinding
+import com.rocket.cosmic_detox.presentation.extensions.loadRankingImage
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.extensions.setPoints
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
@@ -32,7 +33,7 @@ class RankingTopListAdapter(
                 listener.onRankingItemClick(ranking)
             }
             with(binding) {
-                ivRankingTopUserProfile.setImageResource(R.drawable.mars)
+                ivRankingTopUserProfile.loadRankingImage(ranking.cumulativeTime)
                 tvRankingTopUserName.text = ranking.name
                 tvRankingTopTime.setCumulativeTime(ranking.cumulativeTime)
                 tvRankingTopPoint.setPoints(ranking.points)
