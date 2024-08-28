@@ -30,7 +30,7 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
         modalContentSetLimitAppBinding = ModalContentSetLimitAppBinding.bind(viewStub)
 
-        modalBottomSheetBinding.tvBottomSheetTitle.text = "앱 사용시간 제한"
+        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.limit_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
         }
