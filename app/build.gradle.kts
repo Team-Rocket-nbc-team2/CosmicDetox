@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.google.services)
+    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -56,6 +58,10 @@ dependencies {
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
     implementation(libs.androidx.core)
+
+    // hilt
+    implementation (libs.hilt.android)
+    ksp (libs.hilt.android.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
