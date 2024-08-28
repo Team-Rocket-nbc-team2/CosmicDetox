@@ -13,6 +13,8 @@ import com.rocket.cosmic_detox.presentation.adapter.AppUsage
 import com.rocket.cosmic_detox.presentation.adapter.AppUsageAdapter
 import com.rocket.cosmic_detox.presentation.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.adapter.Trophy
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
 
 
 class MyPageFragment : Fragment() {
@@ -60,7 +62,15 @@ class MyPageFragment : Fragment() {
         usageRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
         usageRecyclerView.adapter = AppUsageAdapter(appUsageList)
 
+        binding.btnSetLimitAppUseTime.setOnClickListener {
+            val setLimitAppBottomSheet = MyPageSetLimitAppBottomSheet()
+            setLimitAppBottomSheet.show(parentFragmentManager, setLimitAppBottomSheet.tag)
+        }
 
+        binding.btnAllowAppSetting.setOnClickListener {
+            val modifyAllowAppBottomSheet = MyPageModifyAllowAppBottomSheet()
+            modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
