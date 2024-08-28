@@ -101,6 +101,7 @@
             android:nestedScrollingEnabled="false" />
 
         <Button
+            android:id="@+id/btn_allow_app_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -109,6 +110,7 @@
             android:textColor="@color/white" />
 
         <Button
+            android:id="@+id/btn_set_limit_app_use_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"

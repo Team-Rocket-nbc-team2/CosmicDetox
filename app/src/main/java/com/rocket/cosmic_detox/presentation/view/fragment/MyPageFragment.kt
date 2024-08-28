@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
 import com.rocket.cosmic_detox.presentation.adapter.AppUsage
 import com.rocket.cosmic_detox.presentation.adapter.AppUsageAdapter
 import com.rocket.cosmic_detox.presentation.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.adapter.Trophy
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
+
 
 class MyPageFragment : Fragment() {
 
@@ -40,16 +44,18 @@ class MyPageFragment : Fragment() {
             Trophy(R.drawable.sample_trophy_image),
             Trophy(R.drawable.sample_trophy_image),
             Trophy(R.drawable.sample_trophy_image),
+            Trophy(R.drawable.sample_trophy_image),
+            Trophy(R.drawable.sample_trophy_image),
 
             )
-        // 트로피 없는 경우 UI
-        if (trophyList.isEmpty()) {
-            trophyRecyclerView.visibility = View.GONE
-            noTrophyMessage.visibility = View.VISIBLE
-        } else {
-            trophyRecyclerView.visibility = View.VISIBLE
-            noTrophyMessage.visibility = View.GONE
-        }
+        val appUsageList = listOf(
+            AppUsage(R.drawable.ic_app, "인스타그램", "120분"),
+            AppUsage(R.drawable.ic_app, "유튜브", "70분"),
+            AppUsage(R.drawable.ic_app, "카카오톡", "40분"),
+            AppUsage(R.drawable.ic_app, "당근", "30분"),
+            AppUsage(R.drawable.ic_app, "슬랙", "3분")
+        )
+
 
         trophyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         trophyRecyclerView.adapter = MyTrophyAdapter(trophyList)
@@ -66,8 +72,17 @@ class MyPageFragment : Fragment() {
 
         usageRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         usageRecyclerView.adapter = AppUsageAdapter(appUsageList)
-    }
 
+        binding.btnSetLimitAppUseTime.setOnClickListener {
+            val setLimitAppBottomSheet = MyPageSetLimitAppBottomSheet()
+            setLimitAppBottomSheet.show(parentFragmentManager, setLimitAppBottomSheet.tag)
+        }
+
+        binding.btnAllowAppSetting.setOnClickListener {
+            val modifyAllowAppBottomSheet = MyPageModifyAllowAppBottomSheet()
+            modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
