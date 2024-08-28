@@ -104,7 +104,8 @@ class RankingListAdapter(
 
 class RankingListDiffCallback : DiffUtil.ItemCallback<Ranking>() {
     override fun areItemsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {
-        return oldItem == newItem
+        return (oldItem as? RankingTop)?.topItems == (newItem as? RankingTop)?.topItems &&
+                (oldItem as? RankingBottom)?.bottomItems == (newItem as? RankingBottom)?.bottomItems
     }
 
     override fun areContentsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {
