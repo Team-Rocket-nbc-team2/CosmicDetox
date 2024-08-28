@@ -20,7 +20,10 @@
     <string name="home_travel_start">여행을 시작하시겠어요?</string>
 
     <!--  Race  -->
-    <string name="description_profile_image">유저 프로필 썸네일 이미지</string>
+    <string name="race_description_profile_image">유저 프로필 썸네일 이미지</string>
+    <string name="race_format_cumulative_time">%1$d시간 %2$d분</string>
+    <string name="race_format_points">%s 포인트</string>
+    <string name="race_format_stats">%1$d시간 %2$d분 · %3$s 포인트</string>
 
     <!--  My Page  -->
 
