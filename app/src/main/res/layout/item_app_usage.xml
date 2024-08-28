@@ -1,35 +1,61 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:padding="8dp"
-    android:background="@android:color/transparent">
+    android:background="@color/background_light">
 
     <ImageView
         android:id="@+id/appIcon"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_app"
         android:background="#dcdcdc"
         android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/appName"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="앱 이름"
-        android:textColor="#ffffff"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:paddingEnd="8dp">
 
-    <TextView
-        android:id="@+id/appUsageTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0분"
-        android:textColor="#cccccc"
-        android:textSize="14sp" />
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="앱 이름"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <ProgressBar
+                android:id="@+id/usageProgressBar"
+                android:layout_width="240dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="4dp"
+                android:progressDrawable="@drawable/custom_progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="100" />
+
+            <TextView
+                android:id="@+id/appUsageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0분"
+                android:textColor="@color/blue_grey"
+                android:textSize="14sp"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>

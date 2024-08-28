@@ -12,7 +12,7 @@
         android:id="@+id/iv_ranking_top_user_profile"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:contentDescription="@string/description_profile_image"
+        android:contentDescription="@string/race_description_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

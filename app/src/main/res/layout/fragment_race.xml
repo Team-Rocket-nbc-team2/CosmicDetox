@@ -41,16 +41,25 @@
 <!--        app:layout_constraintTop_toBottomOf="@id/layout_ranking_first" />-->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_ranking_list"
+        android:id="@+id/rv_race"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layout_my_ranking"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="10"
-        tools:listitem="@layout/item_ranking_list" />
+        tools:listitem="@layout/item_ranking_bottom" />
+
+    <include
+        android:id="@+id/layout_my_ranking"
+        layout="@layout/item_ranking_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

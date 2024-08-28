@@ -24,9 +24,10 @@ class RankingDividerItemDecoration(private val dividerHeight: Int, private val d
             val top = child.bottom + params.bottomMargin
             val bottom = top + dividerHeight
 
-            if (i != parent.childCount - 1) {  // 마지막 아이템에는 구분선을 그리지 않음
-                c.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
-            }
+//            if (i != parent.childCount - 1) {  // 마지막 아이템에는 구분선을 그리지 않음
+//                c.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
+//            }
+            c.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
         }
     }
 }
