@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#20233e"
-    android:padding="16dp">
+    android:background="@color/background"
+    android:paddingVertical="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
             <ImageView
                 android:id="@+id/profileImage"
@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="16dp"
+            android:paddingHorizontal="16dp"
             android:text="내 트로피 보기"
             android:textColor="@color/white"
             android:textSize="14sp" />
@@ -62,32 +63,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
+            android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_no_trophy_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="49dp"
+            android:text="아직 획득한 트로피가 없습니다. \n     더 열심히 여행 해봅시다!"
+            android:textColor="@color/blue_grey"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:paddingHorizontal="16dp"
             android:text="내 사용량 보기"
             android:textColor="@color/white"
             android:textSize="14sp" />
 
-        <!-- RecyclerView 사용 -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/usageRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
-            android:background="#2b2b3a"
+            android:background="@color/background"
             android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:padding="8dp" />
+            android:nestedScrollingEnabled="false" />
 
-        <!-- 설정 버튼 -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:background="@drawable/btn_primary"
             android:text="허용 앱 설정"
             android:textColor="@color/white" />
@@ -95,6 +111,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/btn_secondary"
             android:text="앱 사용시간 제한"
@@ -109,14 +126,36 @@
             android:textColor="@color/blue_grey"
             android:textSize="16sp" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:gravity="center"
-            android:text="회원탈퇴 | 로그아웃"
-            android:textColor="@color/blue_grey"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="회원탈퇴"
+                android:textColor="@color/blue_grey"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:text="|"
+                android:textColor="@color/blue_grey"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="로그아웃"
+                android:textColor="@color/blue_grey"
+                android:textSize="14sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
