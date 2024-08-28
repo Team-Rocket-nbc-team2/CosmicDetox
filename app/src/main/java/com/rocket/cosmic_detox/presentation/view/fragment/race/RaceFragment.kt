@@ -37,12 +37,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     }
 
     private fun initView() = with(binding) {
-        val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
-        val dividerColor = ContextCompat.getColor(requireContext(), R.color.stroke_dark)
-        rvRace.apply {
-            adapter = raceAdapter
-            addItemDecoration(RankingDividerItemDecoration(dividerHeight, dividerColor))
-        }
+        rvRace.adapter = raceAdapter
     }
 
     private fun setDummyData() {

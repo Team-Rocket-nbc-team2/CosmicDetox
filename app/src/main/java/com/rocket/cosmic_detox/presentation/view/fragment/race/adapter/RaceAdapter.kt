@@ -2,15 +2,18 @@ package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingTopListBinding
 import com.rocket.cosmic_detox.presentation.model.Ranking
 import com.rocket.cosmic_detox.presentation.model.RankingBottom
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingTop
+import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingDividerItemDecoration
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 
 enum class RankingType(val type: Int) {
@@ -87,6 +90,11 @@ class RaceAdapter(
 
         init {
             binding.rvRankingBottom.adapter = rankingBottomListAdapter
+
+            val context = binding.root.context
+            val dividerHeight = context.resources.getDimensionPixelSize(R.dimen.divider_height)
+            val dividerColor = ContextCompat.getColor(context, R.color.stroke_dark)
+            binding.rvRankingBottom.addItemDecoration(RankingDividerItemDecoration(dividerHeight, dividerColor))
         }
 
         fun bind(rankingBottom: RankingBottom) {
