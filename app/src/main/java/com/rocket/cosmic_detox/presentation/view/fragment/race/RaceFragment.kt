@@ -57,12 +57,12 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         raceAdapter.submitList(rankingList)
     }
 
+    override fun onRankingItemClick(ranking: RankingInfo) {
+        Toast.makeText(requireContext(), ranking.name, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onRankingItemClick(ranking: RankingInfo) {
-        Toast.makeText(requireContext(), "Ranking Item Clicked : ${ranking.name}", Toast.LENGTH_SHORT).show()
     }
 }

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.databinding.ItemRankingListBinding
+import com.rocket.cosmic_detox.databinding.ItemRankingBottomBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingImage
 import com.rocket.cosmic_detox.presentation.extensions.setStats
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
@@ -27,7 +27,7 @@ class RankingBottomListAdapter(
     }
 
     class RankingBottomViewHolder(
-        private val binding: ItemRankingListBinding,
+        private val binding: ItemRankingBottomBinding,
         private val listener: RankingItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -36,16 +36,16 @@ class RankingBottomListAdapter(
                 listener.onRankingItemClick(ranking)
             }
             with(binding) {
-                tvRankingListRank.text = rank.toString()
-                ivRankingListUserProfile.loadRankingImage(ranking.cumulativeTime)
-                tvRankingListUserName.text = ranking.name
-                tvRankingListStats.setStats(ranking.cumulativeTime, ranking.points)
+                tvRankingBottomRank.text = rank.toString()
+                ivRankingBottomUserProfile.loadRankingImage(ranking.cumulativeTime)
+                tvRankingBottomUserName.text = ranking.name
+                tvRankingBottomStats.setStats(ranking.cumulativeTime, ranking.points)
             }
         }
 
         companion object {
             fun from(parent: ViewGroup, listener: RankingItemClickListener): RankingBottomViewHolder {
-                val binding = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding = ItemRankingBottomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return RankingBottomViewHolder(binding, listener)
             }
         }
