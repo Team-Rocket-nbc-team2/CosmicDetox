@@ -24,10 +24,6 @@
     <string name="race_format_stats">%1$d시간 %2$d분 · %3$s 포인트</string>
 
     <!--  My Page  -->
-    <string name="search_edit_text_hint">검색어를 입력하세요.</string>
-    <string name="allow_app_list">어플리스트</string>
-    <string name="search_allow_app_is_empty">검색 결과가 없습니다.</string>
-    <string name="limit_app_is_empty">우주 여행중 사용을 허용한 어플이 존재하지 않습니다.</string>
 
     <!--  Timer  -->
     <string name="timer_finish">종료</string>
@@ -39,6 +35,37 @@
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">완료</string>
+    <string name="allow_app_bottom_sheet_title">허용할 어플 편집</string>
+    <string name="limit_app_bottom_sheet_title">앱 사용시간 제한</string>
+    <string name="set_limit_use_time_bottom_sheet_title">사용 설정하기</string>
+    <string name="search_edit_text_hint">검색어를 입력하세요.</string>
+    <string name="allow_app_list">어플리스트</string>
+    <string name="search_allow_app_is_empty">검색 결과가 없습니다.</string>
+    <string name="limit_app_is_empty">우주 여행중 사용을 허용한 어플이 존재하지 않습니다.</string>
+    <string name="number_picker_unit_hour">시간</string>
+    <string name="number_picker_unit_minute">분</string>
+    <string-array name="number_picker_hour">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="number_picker_minute">
+        <item>05</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+    </string-array>
 
     <!--  Dialog  -->
     <string name="dialog_common_focus">여행에 집중하세요!</string>

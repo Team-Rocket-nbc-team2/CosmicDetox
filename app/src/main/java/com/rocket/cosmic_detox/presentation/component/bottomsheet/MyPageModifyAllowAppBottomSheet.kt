@@ -30,7 +30,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
         modalContentModifyAllowAppBinding = ModalContentModifyAllowAppBinding.bind(viewStub)
 
-        modalBottomSheetBinding.tvBottomSheetTitle.text = "허용할 어플 편집"
+        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
         }
