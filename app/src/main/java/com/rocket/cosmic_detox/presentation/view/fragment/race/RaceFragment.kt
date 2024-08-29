@@ -11,10 +11,8 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setStats
-import com.rocket.cosmic_detox.presentation.model.RankingBottom
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
-import com.rocket.cosmic_detox.presentation.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,11 +55,11 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         // 0, 1번째 인덱스는 Top, 나머지는 Bottom
         val topList = list.take(2)
         val bottomList = list.drop(2)
-        val rankingList = listOf(
-            RankingTop(topList),
-            RankingBottom(bottomList)
-        )
-        raceAdapter.submitList(rankingList)
+//        val rankingList = listOf(
+//            RankingTop(topList),
+//            RankingBottom(bottomList)
+//        )
+        raceAdapter.submitRankingList(topList, bottomList)
     }
 
     override fun onRankingItemClick(ranking: RankingInfo) {

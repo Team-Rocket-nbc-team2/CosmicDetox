@@ -29,7 +29,7 @@ object RankingManager {
             RankingInfo(
                 id = "4",
                 name = "David",
-                cumulativeTime = BigDecimal(50),
+                cumulativeTime = BigDecimal(80),
                 points = BigDecimal(70)
             ),
             RankingInfo(

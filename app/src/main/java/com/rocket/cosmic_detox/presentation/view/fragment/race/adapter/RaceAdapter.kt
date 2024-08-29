@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingTopListBinding
@@ -15,6 +14,7 @@ import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingDividerItemDecoration
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
+import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 enum class RankingType(val type: Int) {
     RANKING_TOP(0),
@@ -24,9 +24,9 @@ enum class RankingType(val type: Int) {
 
 class RaceAdapter(
     private val listener: RankingItemClickListener
-) : ListAdapter<Ranking, RecyclerView.ViewHolder>(RankingListDiffCallback()) {
+) : ListAdapter<Ranking, ViewHolder<Ranking>>(RankingListDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Ranking> {
         val holderType = RankingType.entries.find {
             it.type == viewType
         } ?: RankingType.EMPTY
@@ -37,17 +37,8 @@ class RaceAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is RankingTopViewHolder -> {
-                val item = currentList[position] as RankingTop
-                holder.bind(item)
-            }
-            is RankingBottomViewHolder -> {
-                val item = currentList[position] as RankingBottom
-                holder.bind(item)
-            }
-        }
+    override fun onBindViewHolder(holder: ViewHolder<Ranking>, position: Int) {
+        holder.onBind(currentList[position])
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -58,10 +49,18 @@ class RaceAdapter(
         }
     }
 
+    fun submitRankingList(topItems: List<RankingInfo>, bottomItems: List<RankingInfo>) {
+        val rankingList = listOf(
+            RankingTop(topItems),
+            RankingBottom(bottomItems)
+        )
+        submitList(rankingList)
+    }
+
     class RankingTopViewHolder(
         binding: ItemRankingTopListBinding,
         listener: RankingItemClickListener
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewHolder<Ranking>(binding.root) {
 
         private val rankingTopListAdapter = RankingTopListAdapter(listener)
 
@@ -69,8 +68,10 @@ class RaceAdapter(
             binding.rvRankingTop.adapter = rankingTopListAdapter
         }
 
-        fun bind(rankingTop: RankingTop) {
-            rankingTopListAdapter.submitList(rankingTop.topItems)
+        override fun onBind(item: Ranking) {
+            if (item is RankingTop) {
+                rankingTopListAdapter.submitList(item.topItems)
+            }
         }
 
         companion object {
@@ -84,7 +85,7 @@ class RaceAdapter(
     class RankingBottomViewHolder(
         binding: ItemRankingBottomListBinding,
         listener: RankingItemClickListener
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewHolder<Ranking>(binding.root) {
 
         private val rankingBottomListAdapter = RankingBottomListAdapter(listener)
 
@@ -97,8 +98,10 @@ class RaceAdapter(
             binding.rvRankingBottom.addItemDecoration(RankingDividerItemDecoration(dividerHeight, dividerColor))
         }
 
-        fun bind(rankingBottom: RankingBottom) {
-            rankingBottomListAdapter.submitList(rankingBottom.bottomItems)
+        override fun onBind(item: Ranking) {
+            if (item is RankingBottom) {
+                rankingBottomListAdapter.submitList(item.bottomItems)
+            }
         }
 
         companion object {
@@ -112,8 +115,9 @@ class RaceAdapter(
 
 class RankingListDiffCallback : DiffUtil.ItemCallback<Ranking>() {
     override fun areItemsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {
-        return (oldItem as? RankingTop)?.topItems == (newItem as? RankingTop)?.topItems &&
-                (oldItem as? RankingBottom)?.bottomItems == (newItem as? RankingBottom)?.bottomItems
+//        return (oldItem as? RankingTop)?.topItems == (newItem as? RankingTop)?.topItems &&
+//                (oldItem as? RankingBottom)?.bottomItems == (newItem as? RankingBottom)?.bottomItems
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {

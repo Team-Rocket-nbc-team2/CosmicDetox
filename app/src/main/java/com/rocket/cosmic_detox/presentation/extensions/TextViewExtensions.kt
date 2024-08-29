@@ -6,11 +6,18 @@ import com.rocket.cosmic_detox.R
 import java.math.BigDecimal
 
 fun TextView.setCumulativeTime(time: BigDecimal) {
-    text = context.getString(
-        R.string.race_format_cumulative_time,
-        time.toHours(),
-        time.toMinutes()
-    )
+    val hours = time.toHours()
+    val minutes = time.toMinutes()
+
+    context.run {
+        text = when {
+            hours > 1 && minutes > 0 -> getString(R.string.race_format_total_time, hours, minutes)
+            hours > 1 && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes, hours)
+            hours == 1L && minutes > 0 -> getString(R.string.race_format_total_time_one_hour, minutes)
+            hours == 1L && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes_one_hour)
+            else -> getString(R.string.race_format_total_time_no_hours, minutes)
+        }
+    }
 }
 
 fun BigDecimal.toHours(): Long {
@@ -19,6 +26,10 @@ fun BigDecimal.toHours(): Long {
 
 fun BigDecimal.toMinutes(): Long {
     return (this.toLong() % 3600) / 60
+}
+
+fun BigDecimal.toSeconds(): Long {
+    return this.toLong() % 60
 }
 
 fun TextView.setPoints(points: BigDecimal) {
@@ -31,10 +42,17 @@ fun BigDecimal.convertThreeDigitComma(): String {
 }
 
 fun TextView.setStats(time: BigDecimal, points: BigDecimal) {
-    text = context.getString(
-        R.string.race_format_stats,
-        time.toHours(),
-        time.toMinutes(),
-        points.convertThreeDigitComma()
-    )
+    val hours = time.toHours()
+    val minutes = time.toMinutes()
+    val formattedPoints = points.convertThreeDigitComma()
+
+    context.run {
+        text = when {
+            hours > 1 && minutes > 0 -> getString(R.string.race_format_stats, hours, minutes, formattedPoints)
+            hours > 1 && minutes == 0L -> getString(R.string.race_format_stats_time_no_minutes, hours, formattedPoints)
+            hours == 1L && minutes > 0 -> getString(R.string.race_format_stats_time_one_hour, minutes, formattedPoints)
+            hours == 1L && minutes == 0L -> getString(R.string.race_format_stats_time_no_minutes_one_hour, formattedPoints)
+            else -> getString(R.string.race_format_stats_time_no_hours, minutes, formattedPoints)
+        }
+    }
 }

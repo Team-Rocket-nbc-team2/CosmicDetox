@@ -1,11 +1,8 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.race
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.rocket.cosmic_detox.R
 
 class RankingDividerItemDecoration(private val dividerHeight: Int, private val dividerColor: Int) : RecyclerView.ItemDecoration() {
 
