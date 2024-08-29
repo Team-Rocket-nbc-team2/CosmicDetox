@@ -12,7 +12,7 @@ import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.AppUsag
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.AppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp.MyPageModifyAllowAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 
