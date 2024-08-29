@@ -49,6 +49,14 @@ class RaceAdapter(
         }
     }
 
+    fun submitRankingList(topItems: List<RankingInfo>, bottomItems: List<RankingInfo>) {
+        val rankingList = listOf(
+            RankingTop(topItems),
+            RankingBottom(bottomItems)
+        )
+        submitList(rankingList)
+    }
+
     class RankingTopViewHolder(
         binding: ItemRankingTopListBinding,
         listener: RankingItemClickListener
