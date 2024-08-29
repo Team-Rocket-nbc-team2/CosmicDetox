@@ -4,9 +4,17 @@
 
     <!--  Race  -->
     <string name="race_description_profile_image">User Profile Thumbnail Image</string>
-    <string name="race_format_cumulative_time">%1$d hours %2$d minutes</string>
+    <string name="race_format_total_time">%1$d hours %2$d minutes</string>
+    <string name="race_format_total_time_one_hour">1 hour %d minutes</string>
+    <string name="race_format_total_time_no_minutes">%d hours</string>
+    <string name="race_format_total_time_no_minutes_one_hour">1 hour</string>
+    <string name="race_format_total_time_no_hours">%d minutes</string>
     <string name="race_format_points">%s points</string>
     <string name="race_format_stats">%1$d hours %2$d minutes · %3$s points</string>
+    <string name="race_format_stats_time_one_hour">1 hour %1$d minutes · %2$s points</string>
+    <string name="race_format_stats_time_no_minutes">%1$d hours · %2$s points</string>
+    <string name="race_format_stats_time_no_minutes_one_hour">1 hour · %s points</string>
+    <string name="race_format_stats_time_no_hours">%1$d minutes · %2$s points</string>
 
     <!--  Navigation Menu  -->
     <string name="label_race">Race</string>

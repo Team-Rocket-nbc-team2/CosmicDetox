@@ -21,9 +21,17 @@
 
     <!--  Race  -->
     <string name="race_description_profile_image">유저 프로필 썸네일 이미지</string>
-    <string name="race_format_cumulative_time">%1$d시간 %2$d분</string>
+    <string name="race_format_total_time">%1$d시간 %2$d분</string>
+    <string name="race_format_total_time_one_hour">1시간 %d분</string>
+    <string name="race_format_total_time_no_hours">%d분</string>
+    <string name="race_format_total_time_no_minutes">%d시간</string>
+    <string name="race_format_total_time_no_minutes_one_hour">1시간</string>
     <string name="race_format_points">%s 포인트</string>
     <string name="race_format_stats">%1$d시간 %2$d분 · %3$s 포인트</string>
+    <string name="race_format_stats_time_one_hour">1 hour %1$d분 · %2$s 포인트</string>
+    <string name="race_format_stats_time_no_minutes">%1$d시간 · %2$s 포인트</string>
+    <string name="race_format_stats_time_no_minutes_one_hour">1시간 · %s 포인트</string>
+    <string name="race_format_stats_time_no_hours">%1$d분 · %2$s 포인트</string>
 
     <!--  My Page  -->
 
