@@ -14,7 +14,7 @@ import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingDividerItemDecoration
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
-import com.rocket.cosmic_detox.presentation.view.fragment.race.ViewHolder
+import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 enum class RankingType(val type: Int) {
     RANKING_TOP(0),

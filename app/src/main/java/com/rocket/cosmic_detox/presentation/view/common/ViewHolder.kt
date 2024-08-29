@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment.race
+package com.rocket.cosmic_detox.presentation.view.common
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

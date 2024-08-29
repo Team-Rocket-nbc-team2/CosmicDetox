@@ -11,10 +11,8 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setStats
-import com.rocket.cosmic_detox.presentation.model.RankingBottom
 import com.rocket.cosmic_detox.presentation.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
-import com.rocket.cosmic_detox.presentation.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
