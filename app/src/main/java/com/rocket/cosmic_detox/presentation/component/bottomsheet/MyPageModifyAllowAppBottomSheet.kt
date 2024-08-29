@@ -30,11 +30,6 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         val viewStub = modalBottomSheetBinding.bottomSheetBody.inflate()
         modalContentModifyAllowAppBinding = ModalContentModifyAllowAppBinding.bind(viewStub)
 
-        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
-        modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
-            dismiss()
-        }
-
         return modalBottomSheetBinding.root
     }
 
@@ -46,6 +41,15 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             setUpRatio(bottomSheetDialog)
         }
         return dialog
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
+        modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {
