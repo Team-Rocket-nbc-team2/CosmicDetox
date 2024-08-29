@@ -1,6 +1,6 @@
 package com.rocket.cosmic_detox.presentation.model
 
-import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.model.App
 
 object AppManager {
 

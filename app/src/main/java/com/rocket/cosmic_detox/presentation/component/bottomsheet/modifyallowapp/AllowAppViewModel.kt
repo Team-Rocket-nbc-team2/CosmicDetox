@@ -3,7 +3,7 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
-import com.rocket.cosmic_detox.presentation.model.App
+import com.rocket.cosmic_detox.data.model.App
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

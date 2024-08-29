@@ -3,7 +3,7 @@ package com.rocket.cosmic_detox.data.repository
 import android.content.pm.PackageManager
 import android.util.Log
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
-import com.rocket.cosmic_detox.presentation.model.App
+import com.rocket.cosmic_detox.data.model.App
 import javax.inject.Inject
 
 class AllowAppRepositoryImpl @Inject constructor(

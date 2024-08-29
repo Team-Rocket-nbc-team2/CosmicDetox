@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemAppCheckboxListBinding
-import com.rocket.cosmic_detox.presentation.model.App
+import com.rocket.cosmic_detox.data.model.App
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class AllowAppListAdapter(

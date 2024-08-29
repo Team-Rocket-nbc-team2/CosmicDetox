@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.model
+package com.rocket.cosmic_detox.data.model
 
 import android.graphics.drawable.Drawable
 
