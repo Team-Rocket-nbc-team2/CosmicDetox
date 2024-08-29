@@ -115,8 +115,9 @@ class RaceAdapter(
 
 class RankingListDiffCallback : DiffUtil.ItemCallback<Ranking>() {
     override fun areItemsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {
-        return (oldItem as? RankingTop)?.topItems == (newItem as? RankingTop)?.topItems &&
-                (oldItem as? RankingBottom)?.bottomItems == (newItem as? RankingBottom)?.bottomItems
+//        return (oldItem as? RankingTop)?.topItems == (newItem as? RankingTop)?.topItems &&
+//                (oldItem as? RankingBottom)?.bottomItems == (newItem as? RankingBottom)?.bottomItems
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Ranking, newItem: Ranking): Boolean {
