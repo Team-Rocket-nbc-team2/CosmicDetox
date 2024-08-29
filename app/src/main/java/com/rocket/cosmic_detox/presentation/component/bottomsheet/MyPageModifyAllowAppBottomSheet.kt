@@ -10,16 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowAppListAdapter
+import com.rocket.cosmic_detox.presentation.model.AppManager
 
 class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
+    private val allowAppListAdapter by lazy {
+        AllowAppListAdapter {
+            Toast.makeText(context, it.appName, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,10 +54,23 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initView()
+
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
         }
+
+        setDummyData()
+    }
+
+    private fun initView() = with(modalContentModifyAllowAppBinding) {
+        rvAllowAppsList.adapter = allowAppListAdapter
+    }
+
+    private fun setDummyData() {
+        val list = AppManager.getAppList()
+        allowAppListAdapter.submitList(list)
     }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {

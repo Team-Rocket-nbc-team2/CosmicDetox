@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -33,14 +35,6 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/allow_app_list"
-        android:textColor="@color/white20"
-        android:textSize="@dimen/text_size_16sp" />
-
-    <TextView
         android:id="@+id/tv_search_result_is_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,5 +48,9 @@
         android:id="@+id/rv_allow_apps_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp" />
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_app_checkbox_list" />
+
 </LinearLayout>
