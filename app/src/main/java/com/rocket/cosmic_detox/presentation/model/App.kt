@@ -5,6 +5,6 @@ import android.graphics.drawable.Drawable
 data class App(
     val packageId: String,
     val appName: String,
-    val appIcon: Int,
+    val appIcon: Drawable?,
     val limitedTime: Long
 )

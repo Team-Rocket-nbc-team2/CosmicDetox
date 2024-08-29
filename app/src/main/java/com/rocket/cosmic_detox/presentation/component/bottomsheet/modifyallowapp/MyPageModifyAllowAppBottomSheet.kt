@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.component.bottomsheet
+package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp
 
 import android.app.Dialog
 import android.content.Context
@@ -11,15 +11,19 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowAppListAdapter
 import com.rocket.cosmic_detox.presentation.model.AppManager
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
@@ -28,6 +32,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             Toast.makeText(context, it.appName, Toast.LENGTH_SHORT).show()
         }
     }
+    private val allowAppViewModel by viewModels<AllowAppViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +58,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        //modalBottomSheetBinding.lifecycleOwner = viewLifecycleOwner
         initView()
 
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
@@ -61,17 +66,23 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             dismiss()
         }
 
-        setDummyData()
+        //setDummyData()
     }
 
     private fun initView() = with(modalContentModifyAllowAppBinding) {
         rvAllowAppsList.adapter = allowAppListAdapter
+        allowAppViewModel.loadInstalledApps()
+        viewLifecycleOwner.lifecycleScope.launch {
+            allowAppViewModel.installedApps.collect {
+                allowAppListAdapter.submitList(it)
+            }
+        }
     }
 
-    private fun setDummyData() {
-        val list = AppManager.getAppList()
-        allowAppListAdapter.submitList(list)
-    }
+//    private fun setDummyData() {
+//        val list = AppManager.getAppList()
+//        allowAppListAdapter.submitList(list)
+//    }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View

@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter
+package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,9 +11,7 @@ import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class AllowAppListAdapter(
     private val onClick: (App) -> Unit
-) : ListAdapter<App, ViewHolder<App>>(
-    AppDiffCallback()
-) {
+) : ListAdapter<App, ViewHolder<App>>(AppDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<App> {
         return AllowAppViewHolder.from(parent, onClick)
@@ -33,8 +31,8 @@ class AllowAppListAdapter(
                 onClick(item)
             }
             with(binding) {
-                //ivAllowAppIcon.setImageDrawable(item.icon)
-                ivAllowAppIcon.setImageResource(R.drawable.ic_race_mercury)
+                ivAllowAppIcon.setImageDrawable(item.appIcon)
+                //ivAllowAppIcon.setImageResource(R.drawable.ic_race_mercury)
                 tvAllowAppName.text = item.appName
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
             }
