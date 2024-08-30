@@ -8,7 +8,7 @@ import com.rocket.cosmic_detox.databinding.ItemRankingTopBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.extensions.setPoints
-import com.rocket.cosmic_detox.presentation.model.RankingInfo
+import com.rocket.cosmic_detox.data.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 
 class RankingTopListAdapter(
