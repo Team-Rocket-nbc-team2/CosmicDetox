@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.UiState
+import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 import com.rocket.cosmic_detox.presentation.model.AppManager
@@ -35,7 +36,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
     private val allowAppListAdapter by lazy {
         AllowAppListAdapter(requireContext()) {
-            Toast.makeText(context, it.appName, Toast.LENGTH_SHORT).show()
+            updateAllowApp(it)
         }
     }
     private val allowAppViewModel by viewModels<AllowAppViewModel>()
@@ -102,10 +103,21 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     }
 
 
-//    private fun setDummyData() {
-//        val list = AppManager.getAppList()
-//        allowAppListAdapter.submitList(list)
-//    }
+    private fun updateAllowApp(updatedApp: AllowedApp) {
+        val updatedList = allowAppListAdapter.currentList.toMutableList()
+        val originalApp = updatedList.find { it.packageId == updatedApp.packageId }
+        originalApp?.let {
+            updatedList.remove(it)
+        }
+
+        if (updatedApp.isAllowed) {
+            updatedList.add(0, updatedApp) // 체크되면 상단에 추가
+        } else {
+            updatedList.add(updatedApp) // 체크 해제 시 원래 리스트에 다시 추가
+        }
+
+        allowAppListAdapter.submitList(updatedList.sortedBy { it.appName })
+    }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View

@@ -43,6 +43,16 @@ class AllowAppListAdapter(
                     .into(ivAllowAppIcon)
                 tvAllowAppName.text = item.appName
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
+
+                checkboxAllowApp.isChecked = item.isAllowed
+                checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
+                    val newItem = item.copy(isAllowed = isChecked)
+                    onClick(newItem)
+                }
+
+                itemView.setOnClickListener {
+                    onClick(item)
+                }
             }
         }
 
