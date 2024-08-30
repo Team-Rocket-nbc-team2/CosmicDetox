@@ -7,6 +7,7 @@ import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.data.model.App
+import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,19 +21,19 @@ class AllowAppViewModel @Inject constructor(
     private val repository: AllowAppRepository
 ) : ViewModel() {
 
-    private val _installedApps = MutableStateFlow<UiState<List<AllowedApp>>>(UiState.Loading)
-    val installedApps: StateFlow<UiState<List<AllowedApp>>> = _installedApps
+    private val _installedApps = MutableStateFlow<GetListUiState<List<AllowedApp>>>(GetListUiState.Init)
+    val installedApps: StateFlow<GetListUiState<List<AllowedApp>>> = _installedApps
 
     fun loadInstalledApps() {
         viewModelScope.launch {
-            _installedApps.value = UiState.Loading
+            _installedApps.value = GetListUiState.Loading
             repository.getInstalledApps()
                 .catch { exception ->
-                    _installedApps.value = UiState.Error(exception)
-                    Log.e("AllowAppViewModel", "Error loading installed apps", exception)
+                    _installedApps.value = GetListUiState.Error(exception.toString())
+                    Log.e("AllowAppViewModel", "알 수 없는 에러 발생", exception)
                 }
                 .collect { apps ->
-                    _installedApps.value = UiState.Success(apps)
+                    _installedApps.value = GetListUiState.Success(apps)
                     Log.d("AllowAppViewModel", "loadInstalledApps: ${_installedApps.value}")
                 }
         }

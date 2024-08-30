@@ -24,6 +24,7 @@ import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 import com.rocket.cosmic_detox.presentation.model.AppManager
+import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -82,33 +83,41 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
                     when (uiState) {
-                        is UiState.Loading -> {
+                        is GetListUiState.Loading -> {
                             modalContentModifyAllowAppBinding.apply {
                                 progressBar.isVisible = true
                                 rvAllowAppsList.isVisible = false
+                                tvSearchResultIsEmpty.isVisible = false
                             }
                             Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Loading")
                         }
-                        is UiState.Success -> {
+                        is GetListUiState.Success -> {
                             modalContentModifyAllowAppBinding.apply {
                                 progressBar.isVisible = false
                                 rvAllowAppsList.isVisible = true
+                                tvSearchResultIsEmpty.isVisible = false
                             }
                             allowAppListAdapter.submitList(uiState.data)
                             Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Success")
                         }
-                        is UiState.Error -> {
+                        is GetListUiState.Error -> {
                             modalContentModifyAllowAppBinding.apply {
                                 progressBar.isVisible = false
                                 rvAllowAppsList.isVisible = false
+                                tvSearchResultIsEmpty.isVisible = false
                             }
-                            Toast.makeText(
-                                requireContext(),
-                                "Error loading apps: ${uiState.exception.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Error: ${uiState.exception.message}")
+                            Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
+                            Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Error: ${uiState.message}")
                         }
+                        GetListUiState.Empty -> {
+                            modalContentModifyAllowAppBinding.apply {
+                                progressBar.isVisible = false
+                                rvAllowAppsList.isVisible = false
+                                tvSearchResultIsEmpty.isVisible = true
+                            }
+                        }
+                        is GetListUiState.Failure -> TODO()
+                        GetListUiState.Init -> TODO()
                     }
                 }
         }
