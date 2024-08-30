@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.presentation.model
 
+import com.rocket.cosmic_detox.data.model.RankingInfo
 import java.math.BigDecimal
 
 object RankingManager {
@@ -9,121 +10,121 @@ object RankingManager {
     private fun getDummyData(): List<RankingInfo> {
         return listOf(
             RankingInfo(
-                id = "1",
+                uid = "1",
                 name = "Alice",
                 cumulativeTime = BigDecimal(432500),
                 points = BigDecimal(100)
             ),
             RankingInfo(
-                id = "2",
+                uid = "2",
                 name = "Bob",
                 cumulativeTime = BigDecimal(90400),
                 points = BigDecimal(90)
             ),
             RankingInfo(
-                id = "3",
+                uid = "3",
                 name = "Charlie",
                 cumulativeTime = BigDecimal(15000),
                 points = BigDecimal(80)
             ),
             RankingInfo(
-                id = "4",
+                uid = "4",
                 name = "David",
                 cumulativeTime = BigDecimal(80),
                 points = BigDecimal(70)
             ),
             RankingInfo(
-                id = "5",
+                uid = "5",
                 name = "Eve",
                 cumulativeTime = BigDecimal(2000000),
                 points = BigDecimal(60)
             ),
             RankingInfo(
-                id = "6",
+                uid = "6",
                 name = "Frank",
                 cumulativeTime = BigDecimal(25000),
                 points = BigDecimal(50)
             ),
             RankingInfo(
-                id = "7",
+                uid = "7",
                 name = "Grace",
                 cumulativeTime = BigDecimal(230000),
                 points = BigDecimal(40)
             ),
             RankingInfo(
-                id = "8",
+                uid = "8",
                 name = "Hank",
                 cumulativeTime = BigDecimal(650000),
                 points = BigDecimal(30)
             ),
             RankingInfo(
-                id = "9",
+                uid = "9",
                 name = "Ivy",
                 cumulativeTime = BigDecimal(7000000),
                 points = BigDecimal(20)
             ),
             RankingInfo(
-                id = "10",
+                uid = "10",
                 name = "Jack",
                 cumulativeTime = BigDecimal(18100),
                 points = BigDecimal(10)
             ),
             RankingInfo(
-                id = "11",
+                uid = "11",
                 name = "Kate",
                 cumulativeTime = BigDecimal(140000),
                 points = BigDecimal(5)
             ),
             RankingInfo(
-                id = "12",
+                uid = "12",
                 name = "Leo",
                 cumulativeTime = BigDecimal(222222),
                 points = BigDecimal(3)
             ),
             RankingInfo(
-                id = "13",
+                uid = "13",
                 name = "Mia",
                 cumulativeTime = BigDecimal(555555),
                 points = BigDecimal(2)
             ),
             RankingInfo(
-                id = "14",
+                uid = "14",
                 name = "Nina",
                 cumulativeTime = BigDecimal(1750000),
                 points = BigDecimal(1)
             ),
             RankingInfo(
-                id = "15",
+                uid = "15",
                 name = "Owen",
                 cumulativeTime = BigDecimal(1283140),
                 points = BigDecimal(1)
             ),
             RankingInfo(
-                id = "16",
+                uid = "16",
                 name = "Pam",
                 cumulativeTime = BigDecimal(65000),
                 points = BigDecimal(1)
             ),
             RankingInfo(
-                id = "17",
+                uid = "17",
                 name = "Quinn",
                 cumulativeTime = BigDecimal(40),
                 points = BigDecimal(1)
             ),
             RankingInfo(
-                id = "18",
+                uid = "18",
                 name = "Rex",
                 cumulativeTime = BigDecimal(25600),
                 points = BigDecimal(1)
             ),
             RankingInfo(
-                id = "19",
+                uid = "19",
                 name = "Sue",
                 cumulativeTime = BigDecimal(66666),
                 points = BigDecimal(1)
             ),
             RankingInfo(
-                id = "20",
+                uid = "20",
                 name = "Tom",
                 cumulativeTime = BigDecimal(350000),
                 points = BigDecimal(1)

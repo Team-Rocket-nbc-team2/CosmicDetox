@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.model
+package com.rocket.cosmic_detox.data.model
 
 import java.math.BigDecimal
 
@@ -22,8 +22,8 @@ data class RankingBottom(
 }
 
 data class RankingInfo(
-    val id: String,
+    val uid: String,
     val name: String,
     val cumulativeTime: BigDecimal,
-    val points: BigDecimal,
+    val points: BigDecimal
 )
