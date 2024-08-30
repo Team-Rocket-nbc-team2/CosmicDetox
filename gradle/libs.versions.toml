@@ -16,6 +16,7 @@ firebaseBom = "33.2.0"
 core = "1.13.1"
 ksp = "1.9.0-1.0.13"
 hilt = "2.48"
+playServicesAuth = "21.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +37,7 @@ navigation-safeArgs-gradlePlugin = { module = "androidx.navigation:navigation-sa
 androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
