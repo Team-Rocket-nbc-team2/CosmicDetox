@@ -1,21 +1,17 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.race
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
-import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
-import com.rocket.cosmic_detox.presentation.extensions.setStats
 import com.rocket.cosmic_detox.data.model.RankingInfo
-import com.rocket.cosmic_detox.presentation.model.RankingManager
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel.RaceViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,17 +40,18 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         observeViewModel()
 
     }
-
+    // 내 데이터는 firebase에서 query로 받아오기
     private fun initView() = with(binding) {
         rvRace.adapter = raceAdapter
-        val myRanking = RankingManager.getMyRanking()
-        layoutMyRanking.apply {
-            root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
-            ivRankingBottomUserProfile.loadRankingPlanetImage(myRanking.cumulativeTime)
-            tvRankingBottomRank.text = 3.toString()
-            tvRankingBottomUserName.text = myRanking.name
-            tvRankingBottomStats.setStats(myRanking.cumulativeTime, myRanking.points)
-        }
+
+//        val myRanking = RankingManager.getMyRanking()
+//        layoutMyRanking.apply {
+//            root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
+//            ivRankingBottomUserProfile.loadRankingPlanetImage(myRanking.cumulativeTime)
+//            tvRankingBottomRank.text = 3.toString()
+//            tvRankingBottomUserName.text = myRanking.name
+//            tvRankingBottomStats.setStats(myRanking.cumulativeTime, myRanking.points)
+//        }
     }
 
     private fun observeViewModel() {
@@ -71,8 +68,9 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                     is UiState.Error -> {
                         Toast.makeText(requireContext(), "Error: ${uiState.exception}", Toast.LENGTH_SHORT).show()
                     }
+
                     else -> {
-                        TODO()
+                        Log.d("ggil", "uiState")
                     }
                 }
             }

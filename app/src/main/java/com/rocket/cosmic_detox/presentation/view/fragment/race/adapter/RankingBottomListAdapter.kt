@@ -35,12 +35,12 @@ class RankingBottomListAdapter(
             itemView.setOnClickListener {
                 listener.onRankingItemClick(ranking)
             }
-            with(binding) {
-                tvRankingBottomRank.text = rank.toString()
-                ivRankingBottomUserProfile.loadRankingPlanetImage(ranking.cumulativeTime)
-                tvRankingBottomUserName.text = ranking.name
-                tvRankingBottomStats.setStats(ranking.cumulativeTime, ranking.points)
-            }
+//            with(binding) {
+//                tvRankingBottomRank.text = rank.toString()
+//                ivRankingBottomUserProfile.loadRankingPlanetImage(ranking.cumulativeTime)
+//                tvRankingBottomUserName.text = ranking.name
+//                tvRankingBottomStats.setStats(ranking.cumulativeTime, ranking.points)
+//            }
         }
 
         companion object {
