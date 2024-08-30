@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +9,10 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.dagger.hilt.android)
 }
+
+val keyPropertiesFile = rootProject.file("./app/key.properties")
+val properties = Properties()
+properties.load(FileInputStream(keyPropertiesFile))
 
 android {
     namespace = "com.rocket.cosmic_detox"
@@ -21,13 +28,37 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = properties["storeFile"]?.toString()?.let { file(it) }
+            storePassword = properties["storePassword"]?.toString()
+            keyAlias = properties["keyAlias"]?.toString()
+            keyPassword = properties["keyPassword"]?.toString()
+        }
+        create("release") {
+            storeFile = properties["storeFile"]?.toString()?.let { file(it) }
+            storePassword = properties["storePassword"]?.toString()
+            keyAlias = properties["keyAlias"]?.toString()
+            keyPassword = properties["keyPassword"]?.toString()
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("debug") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -54,6 +85,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.play.services.auth)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
@@ -62,6 +94,9 @@ dependencies {
     // hilt
     implementation (libs.hilt.android)
     ksp (libs.hilt.android.compiler)
+
+    // glide
+    implementation(libs.glide)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

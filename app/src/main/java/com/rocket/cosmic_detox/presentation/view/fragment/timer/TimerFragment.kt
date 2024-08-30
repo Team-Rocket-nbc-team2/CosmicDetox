@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.fragment
+package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -8,23 +8,31 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageModifyAllowAppBottomSheet
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import android.os.Handler
+import android.os.Looper
+
+
 
 @AndroidEntryPoint
 class TimerFragment : Fragment() {
+
     private var _binding: FragmentTimerBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private var isFinishingTimer = false
+    private var time = 0 // 시간 경과를 저장할 변수
+    private val handler = Handler(Looper.getMainLooper()) // 메인 스레드에서 실행할 핸들러
+    private var isTimerRunning = false // 타이머가 실행 중인지 확인하는 변수
+    private val runnable = object : Runnable {
+        override fun run() {
+            updateTime()
+            handler.postDelayed(this, 1000) // 1초마다 다시 실행
+        }
     }
 
     override fun onCreateView(
@@ -40,23 +48,29 @@ class TimerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
+
+        startTimer()  // 뷰가 생성될 때 타이머 바로 시작
     }
 
-
-    /**
-     *  TODO : onPause에서 실행하여 Dialog는 뜨나 홈키, 메뉴키를 막는 방법 필요
-     *  */
     override fun onPause() {
         super.onPause()
-        showTwoButtonDialog()
+        if (!isFinishingTimer) {
+            showTwoButtonDialog()
+        }
+        stopTimer()  // 프래그먼트가 일시 정지될 때 타이머를 중지
     }
 
-    // onUserLeaveHint
-
+    override fun onResume() {
+        super.onResume()
+        if (!isFinishingTimer && !isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
+            startTimer()  // 프래그먼트가 다시 활성화되면 타이머를 재개
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        stopTimer()  // 뷰가 파괴될 때 타이머를 중지합니다.
     }
 
     private fun initView() = with(binding) {
@@ -64,18 +78,17 @@ class TimerFragment : Fragment() {
             val dialog = TwoButtonDialogFragment(
                 getString(R.string.timer_dialog_finish)
             ) {
-                // timer 종료하기
-
+                isFinishingTimer = true
+                stopTimer() // 타이머를 종료하는 버튼이 눌릴 때 타이머를 중지
                 findNavController().popBackStack()
             }
-            // 알림창이 띄워져있는 동안 배경 클릭 막기
             dialog.isCancelable = false
-            dialog.show(getParentFragmentManager(), "ConfirmDialog")
+            dialog.show(parentFragmentManager, "ConfirmDialog")
         }
 
         btnTimerRest.setOnClickListener {
             val bottomSheet = TimerAllowedAppBottomSheet()
-            bottomSheet.show(getParentFragmentManager(), "BottomSheet")
+            bottomSheet.show(parentFragmentManager, "BottomSheet")
         }
     }
 
@@ -86,14 +99,34 @@ class TimerFragment : Fragment() {
         }
     }
 
-    private fun showTwoButtonDialog(){
+    private fun showTwoButtonDialog() {
         val dialog = OneButtonDialogFragment(
             getString(R.string.dialog_common_focus)
-        ){
+        ) {
             // 화면 강제 유지하는 코드
         }
-        // 알림창이 띄워져있는 동안 배경 클릭 막기
         dialog.isCancelable = false
-        dialog.show(getParentFragmentManager(), "ConfirmDialog")
+        dialog.show(parentFragmentManager, "ConfirmDialog")
+    }
+
+
+    private fun startTimer() {
+        if (!isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
+            handler.post(runnable)
+            isTimerRunning = true  // 타이머 실행 상태를 true로 설정
+        }
+    }
+
+    private fun stopTimer() {
+        handler.removeCallbacks(runnable)
+        isTimerRunning = false  // 타이머 실행 상태를 false로 설정
+    }
+
+    private fun updateTime() {
+        time++ // 시간
+        val minutes = time / 60
+        val seconds = time % 60
+        binding.tvTimerTime.text = String.format("%02d:%02d", minutes, seconds) // TextView 업데이트
     }
 }
+

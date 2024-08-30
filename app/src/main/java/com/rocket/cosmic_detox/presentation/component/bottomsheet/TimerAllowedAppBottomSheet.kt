@@ -10,18 +10,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
-import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
+import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
+import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
+import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetIconBinding by lazy { ModalBottomsheetIconBinding.inflate(layoutInflater) }
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
+    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +46,28 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         modalBottomSheetIconBinding.ivBottomSheetClose.setOnClickListener {
             dismiss()
         }
+
+        allowedAppViewModel.getAllAllowedApps()
+        allowedAppListObserve()
         return modalBottomSheetIconBinding.root
+    }
+
+    private fun allowedAppListObserve() = with(modalContentAllowedAppBinding) {
+        lifecycleScope.launch {
+            allowedAppViewModel.allowedAppList.collectLatest {
+                tvAllowedAppIsEmpty.isVisible = it is GetListUiState.Empty
+                indicatorDataLoading.isVisible = it is GetListUiState.Loading
+                rvAllowedAppList.isVisible = it is GetListUiState.Success
+
+                if (it is GetListUiState.Success) {
+                    rvAllowedAppList.adapter = AllowedAppAdapter(it.data, requireContext()) { packageId ->
+                        val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
+                        context?.startActivity(intent)
+                    }
+                    rvAllowedAppList.layoutManager = LinearLayoutManager(context)
+                }
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
