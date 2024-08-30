@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.domain.usecase.RaceUseCase
-import com.rocket.cosmic_detox.presentation.model.RankingInfo
+import com.rocket.cosmic_detox.data.model.RankingInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
