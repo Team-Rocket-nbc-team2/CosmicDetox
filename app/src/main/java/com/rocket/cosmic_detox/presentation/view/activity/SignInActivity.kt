@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -13,15 +14,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.model.App
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
+import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
+    val firestoreDB = FirebaseFirestore.getInstance()
     private lateinit var googleSignInClient: GoogleSignInClient
     private val signInBinding by lazy { ActivitySignInBinding.inflate(layoutInflater) }
+    private val signInViewModel by viewModels<SignInViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +55,6 @@ class SignInActivity : AppCompatActivity() {
         }
 
         signInBinding.ivGoogle.setOnClickListener {
-            Log.d("working~?", "clicked!")
             googleLogin()
         }
     }
@@ -70,7 +76,6 @@ class SignInActivity : AppCompatActivity() {
                 Log.d("LOGIN--22", account.idToken!!)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                Log.d("LOGIN--", e.toString())
                 // Google 로그인 실패
                 Toast.makeText(this, "Google 로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
@@ -84,6 +89,31 @@ class SignInActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // 로그인 성공
                     val user = auth.currentUser
+                    val uId = user?.uid.toString()
+                    val name = user?.displayName.toString()
+                    val dailyTime = 0L
+                    val totalTime = 0L
+                    val totalDay = 0
+                    val isWithdrawn = false
+                    val trophies = listOf<Trophy>()
+                    val apps = listOf<App>()
+
+                    val userRef = firestoreDB.collection("users").document(uId)
+                    val userJson = hashMapOf(
+                        "uID" to uId,
+                        "name" to name,
+                        "dailyTime" to dailyTime,
+                        "totalTime" to totalTime,
+                        "totalDay" to totalDay,
+                        "isWithdrawn" to isWithdrawn,
+                        "trophies" to trophies,
+                        "apps" to apps,
+                    )
+
+                    userRef.set(userJson)
+                        .addOnSuccessListener { Log.d("User Data 전송 성공", "User data is successfully written!") }
+                        .addOnFailureListener { exception -> Log.w("User Data 전송 실패", "Error writing document", exception) }
+
                     Toast.makeText(this, "환영합니다, ${user?.displayName}!", Toast.LENGTH_SHORT).show()
                     // 여기서 로그인 후 화면 전환 등의 작업을 수행할 수 있습니다.
                     startActivity(Intent(this, MainActivity::class.java))
