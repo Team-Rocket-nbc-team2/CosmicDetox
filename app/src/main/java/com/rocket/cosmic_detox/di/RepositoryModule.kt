@@ -22,5 +22,5 @@ abstract class RepositoryModule {
     abstract fun bindRaceRepository(raceRepositoryImpl: RaceRepositoryImpl): RaceRepository
 
     @Binds
-    abstract fun allowAppRepository(allowAppRepositoryImpl: AllowAppRepositoryImpl): AllowAppRepository
+    abstract fun bindAllowAppRepository(allowAppRepositoryImpl: AllowAppRepositoryImpl): AllowAppRepository
 }
