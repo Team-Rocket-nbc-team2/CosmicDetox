@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.play.services.auth)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
@@ -93,6 +94,9 @@ dependencies {
     // hilt
     implementation (libs.hilt.android)
     ksp (libs.hilt.android.compiler)
+
+    // glide
+    implementation(libs.glide)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
