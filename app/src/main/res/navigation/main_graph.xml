@@ -26,7 +26,7 @@
         tools:layout="@layout/fragment_my_page" />
     <fragment
         android:id="@+id/navigation_timer"
-        android:name="com.rocket.cosmic_detox.presentation.view.fragment.TimerFragment"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.timer.TimerFragment"
         android:label="TimerFragment"
         tools:layout="@layout/fragment_timer" />
 </navigation>
