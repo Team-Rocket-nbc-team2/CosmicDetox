@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.ListAdapter
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingTopListBinding
-import com.rocket.cosmic_detox.presentation.model.Ranking
-import com.rocket.cosmic_detox.presentation.model.RankingBottom
-import com.rocket.cosmic_detox.presentation.model.RankingInfo
-import com.rocket.cosmic_detox.presentation.model.RankingTop
+import com.rocket.cosmic_detox.data.model.Ranking
+import com.rocket.cosmic_detox.data.model.RankingBottom
+import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.data.model.RankingTop
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingDividerItemDecoration
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
@@ -127,7 +127,7 @@ class RankingListDiffCallback : DiffUtil.ItemCallback<Ranking>() {
 
 class RankingItemDiffCallback : DiffUtil.ItemCallback<RankingInfo>() {
     override fun areItemsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.uid == newItem.uid
     }
 
     override fun areContentsTheSame(oldItem: RankingInfo, newItem: RankingInfo): Boolean {

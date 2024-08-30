@@ -2,7 +2,7 @@ package com.rocket.cosmic_detox.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.domain.repository.RaceRepository
-import com.rocket.cosmic_detox.presentation.model.RankingInfo
+import com.rocket.cosmic_detox.data.model.RankingInfo
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

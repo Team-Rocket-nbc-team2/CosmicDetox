@@ -14,12 +14,11 @@ import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setStats
-import com.rocket.cosmic_detox.presentation.model.RankingInfo
+import com.rocket.cosmic_detox.data.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.model.RankingManager
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel.RaceViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class RaceFragment : Fragment(), RankingItemClickListener {
