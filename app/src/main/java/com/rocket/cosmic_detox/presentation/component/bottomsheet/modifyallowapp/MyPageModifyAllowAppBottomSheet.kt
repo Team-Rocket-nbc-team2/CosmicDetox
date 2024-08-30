@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 import com.rocket.cosmic_detox.presentation.model.AppManager
@@ -28,7 +30,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
     private val allowAppListAdapter by lazy {
-        AllowAppListAdapter {
+        AllowAppListAdapter(requireContext()) {
             Toast.makeText(context, it.appName, Toast.LENGTH_SHORT).show()
         }
     }
@@ -72,9 +74,31 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private fun initView() = with(modalContentModifyAllowAppBinding) {
         rvAllowAppsList.adapter = allowAppListAdapter
         allowAppViewModel.loadInstalledApps()
+
         viewLifecycleOwner.lifecycleScope.launch {
-            allowAppViewModel.installedApps.collect {
-                allowAppListAdapter.submitList(it)
+            allowAppViewModel.installedApps.collect { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> {
+                        // 로딩 상태 처리 (예: ProgressBar 표시)
+                        progressBar.visibility = View.VISIBLE
+                        rvAllowAppsList.visibility = View.GONE
+                        Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Loading")
+                    }
+                    is UiState.Success -> {
+                        // 성공 상태 처리 (예: 데이터 리스트 표시)
+                        progressBar.visibility = View.GONE
+                        rvAllowAppsList.visibility = View.VISIBLE
+                        allowAppListAdapter.submitList(uiState.data)
+                        Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Success")
+                    }
+                    is UiState.Error -> {
+                        // 에러 상태 처리 (예: 에러 메시지 표시)
+                        progressBar.visibility = View.GONE
+                        rvAllowAppsList.visibility = View.GONE
+                        Toast.makeText(context, "Error loading apps: ${uiState.exception.message}", Toast.LENGTH_SHORT).show()
+                        Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Error: ${uiState.exception.message}")
+                    }
+                }
             }
         }
     }
