@@ -43,6 +43,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     // 내 데이터는 firebase에서 query로 받아오기
     private fun initView() = with(binding) {
         rvRace.adapter = raceAdapter
+        viewModel.getRanking()
 
 //        val myRanking = RankingManager.getMyRanking()
 //        layoutMyRanking.apply {
@@ -68,7 +69,6 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                     is UiState.Error -> {
                         Toast.makeText(requireContext(), "Error: ${uiState.exception}", Toast.LENGTH_SHORT).show()
                     }
-
                     else -> {
                         Log.d("ggil", "uiState")
                     }

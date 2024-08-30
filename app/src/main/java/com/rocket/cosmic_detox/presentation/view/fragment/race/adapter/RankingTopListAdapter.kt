@@ -32,12 +32,12 @@ class RankingTopListAdapter(
             itemView.setOnClickListener {
                 listener.onRankingItemClick(ranking)
             }
-//            with(binding) {
-//                ivRankingTopUserProfile.loadRankingPlanetImage(ranking.cumulativeTime)
-//                tvRankingTopUserName.text = ranking.name
-//                tvRankingTopTime.setCumulativeTime(ranking.cumulativeTime)
-//                tvRankingTopPoint.setPoints(ranking.points)
-//            }
+            with(binding) {
+                ivRankingTopUserProfile.loadRankingPlanetImage(ranking.totalTime.toBigDecimal())
+                tvRankingTopUserName.text = ranking.name
+                tvRankingTopTime.setCumulativeTime(ranking.totalTime.toBigDecimal())
+                tvRankingTopPoint.setPoints(ranking.point.toBigDecimal())
+            }
         }
 
         companion object {

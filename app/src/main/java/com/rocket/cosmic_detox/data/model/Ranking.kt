@@ -22,8 +22,8 @@ data class RankingBottom(
 }
 
 data class RankingInfo(
-    val name: String,
-    val point: String,
-    val totalTime: Int,
-    val uid: String
+    val name: String = "",
+    val point: String = "",
+    val totalTime: Int = 0,
+    val uid: String = ""
 )
