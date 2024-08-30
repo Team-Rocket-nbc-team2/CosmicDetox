@@ -70,6 +70,7 @@ class SignInActivity : AppCompatActivity() {
                 Log.d("LOGIN--22", account.idToken!!)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
+                Log.d("LOGIN--", e.toString())
                 // Google 로그인 실패
                 Toast.makeText(this, "Google 로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
