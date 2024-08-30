@@ -33,7 +33,11 @@ class AllowAppViewModel @Inject constructor(
                     Log.e("AllowAppViewModel", "알 수 없는 에러 발생", exception)
                 }
                 .collect { apps ->
-                    _installedApps.value = GetListUiState.Success(apps)
+                    _installedApps.value = if (apps.isEmpty()) {
+                        GetListUiState.Empty
+                    } else {
+                        GetListUiState.Success(apps)
+                    }
                     Log.d("AllowAppViewModel", "loadInstalledApps: ${_installedApps.value}")
                 }
         }

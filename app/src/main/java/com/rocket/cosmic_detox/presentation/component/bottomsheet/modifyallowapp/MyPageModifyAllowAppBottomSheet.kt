@@ -82,42 +82,20 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             installedApps
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
-                    when (uiState) {
-                        is GetListUiState.Loading -> {
-                            modalContentModifyAllowAppBinding.apply {
-                                progressBar.isVisible = true
-                                rvAllowAppsList.isVisible = false
-                                tvSearchResultIsEmpty.isVisible = false
+                    modalContentModifyAllowAppBinding.apply {
+                        progressBar.isVisible = uiState is GetListUiState.Loading
+                        rvAllowAppsList.isVisible = uiState is GetListUiState.Success
+                        tvSearchResultIsEmpty.isVisible = uiState is GetListUiState.Empty
+
+                        when (uiState) {
+                            is GetListUiState.Success -> {
+                                allowAppListAdapter.submitList(uiState.data)
                             }
-                            Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Loading")
-                        }
-                        is GetListUiState.Success -> {
-                            modalContentModifyAllowAppBinding.apply {
-                                progressBar.isVisible = false
-                                rvAllowAppsList.isVisible = true
-                                tvSearchResultIsEmpty.isVisible = false
+                            is GetListUiState.Error -> {
+                                Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
                             }
-                            allowAppListAdapter.submitList(uiState.data)
-                            Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Success")
+                            else -> Unit // Loading, Empty는 위에서 처리됨
                         }
-                        is GetListUiState.Error -> {
-                            modalContentModifyAllowAppBinding.apply {
-                                progressBar.isVisible = false
-                                rvAllowAppsList.isVisible = false
-                                tvSearchResultIsEmpty.isVisible = false
-                            }
-                            Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
-                            Log.d("MyPageModifyAllowAppBottomSheet", "UiState.Error: ${uiState.message}")
-                        }
-                        GetListUiState.Empty -> {
-                            modalContentModifyAllowAppBinding.apply {
-                                progressBar.isVisible = false
-                                rvAllowAppsList.isVisible = false
-                                tvSearchResultIsEmpty.isVisible = true
-                            }
-                        }
-                        is GetListUiState.Failure -> TODO()
-                        GetListUiState.Init -> TODO()
                     }
                 }
         }
