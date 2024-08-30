@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.data.model
 
-import java.math.BigDecimal
 
 private const val RANKING_TOP = "top"
 private const val RANKING_BOTTOM = "bottom"

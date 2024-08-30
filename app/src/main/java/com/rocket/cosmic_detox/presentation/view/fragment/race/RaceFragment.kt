@@ -40,11 +40,11 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         observeViewModel()
 
     }
-    // 내 데이터는 firebase에서 query로 받아오기
+
     private fun initView() = with(binding) {
         rvRace.adapter = raceAdapter
         viewModel.getRanking()
-
+//        아래 부분 내 데이터는 firebase에서 query로 받아오기
 //        val myRanking = RankingManager.getMyRanking()
 //        layoutMyRanking.apply {
 //            root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
@@ -65,6 +65,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                         val topRanking = ranking.take(2)
                         val myRanking = ranking.drop(2)
                         raceAdapter.submitRankingList(topRanking, myRanking)
+                        Log.d("Success", "${uiState.data}")
                     }
                     is UiState.Error -> {
                         Toast.makeText(requireContext(), "Error: ${uiState.exception}", Toast.LENGTH_SHORT).show()
