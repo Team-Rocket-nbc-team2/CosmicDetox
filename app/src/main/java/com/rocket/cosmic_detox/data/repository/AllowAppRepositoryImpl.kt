@@ -12,7 +12,7 @@ class AllowAppRepositoryImpl @Inject constructor(
 
     override fun getInstalledApps(): List<App> {
         val apps = mutableListOf<App>()
-        val packages = packageManager.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES)
+        val packages = packageManager.getInstalledPackages(0)
         Log.d("AllowAppRepositoryImpl", "packages: $packages")
         for (packageInfo in packages) {
             Log.d("AllowAppRepositoryImpl", "packageInfo: $packageInfo")
@@ -25,6 +25,6 @@ class AllowAppRepositoryImpl @Inject constructor(
             apps.add(app)
         }
         Log.d("AllowAppRepositoryImpl", "apps: ${apps.size}")
-        return apps
+        return apps.sortedBy { it.appName }
     }
 }
