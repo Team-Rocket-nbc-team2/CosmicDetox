@@ -17,15 +17,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.os.Handler
 import android.os.Looper
 
-
-
 @AndroidEntryPoint
 class TimerFragment : Fragment() {
 
     private var _binding: FragmentTimerBinding? = null
     private val binding get() = _binding!!
     private var isFinishingTimer = false
-    private var time = 0 // 시간 경과를 저장할 변수
+    private var time = 0 // 시간
     private val handler = Handler(Looper.getMainLooper()) // 메인 스레드에서 실행할 핸들러
     private var isTimerRunning = false // 타이머가 실행 중인지 확인하는 변수
     private val runnable = object : Runnable {
@@ -109,7 +107,6 @@ class TimerFragment : Fragment() {
         dialog.show(parentFragmentManager, "ConfirmDialog")
     }
 
-
     private fun startTimer() {
         if (!isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
             handler.post(runnable)
@@ -123,10 +120,10 @@ class TimerFragment : Fragment() {
     }
 
     private fun updateTime() {
-        time++ // 시간
-        val minutes = time / 60
+        time++
+        val hours = time / 3600
+        val minutes = (time % 3600) / 60
         val seconds = time % 60
-        binding.tvTimerTime.text = String.format("%02d:%02d", minutes, seconds) // TextView 업데이트
+        binding.tvTimerTime.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 }
-
