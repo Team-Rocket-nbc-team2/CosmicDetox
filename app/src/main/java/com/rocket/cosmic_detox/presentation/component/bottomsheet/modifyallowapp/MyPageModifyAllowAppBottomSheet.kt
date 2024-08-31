@@ -20,11 +20,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
-import com.rocket.cosmic_detox.presentation.model.AppManager
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -35,8 +33,8 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
     private val allowAppListAdapter by lazy {
-        AllowAppListAdapter(requireContext()) {
-            updateAllowApp(it)
+        AllowAppListAdapter(requireContext()) { app ->
+            updateCheckedApp(app)
         }
     }
     private val allowAppViewModel by viewModels<AllowAppViewModel>()
@@ -74,6 +72,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         allowAppViewModel.loadInstalledApps()
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
+            updateAllowApps()
             dismiss()
         }
     }
@@ -102,22 +101,36 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-
-    private fun updateAllowApp(updatedApp: AllowedApp) {
-        val updatedList = allowAppListAdapter.currentList.toMutableList()
-        val originalApp = updatedList.find { it.packageId == updatedApp.packageId }
-        originalApp?.let {
-            updatedList.remove(it)
-        }
-
-        if (updatedApp.isAllowed) {
-            updatedList.add(0, updatedApp) // 체크되면 상단에 추가
+    private fun updateAllowApps() {
+        val checkedApps = allowAppListAdapter.getCheckedItems()
+        Log.d("AllowAppBottomSheet", "checkedApps: $checkedApps")
+        if (checkedApps.isNotEmpty()) {
+            allowAppViewModel.updateAllowApps("test2", checkedApps) // TODO: uid current user로 수정해야함.
         } else {
-            updatedList.add(updatedApp) // 체크 해제 시 원래 리스트에 다시 추가
+            Toast.makeText(requireContext(), "선택된 앱이 없습니다.", Toast.LENGTH_SHORT).show()
         }
-
-        allowAppListAdapter.submitList(updatedList.sortedBy { it.appName })
     }
+
+    private fun updateCheckedApp(updatedApp: AllowedApp) {
+        Toast.makeText(requireContext(), updatedApp.packageId, Toast.LENGTH_SHORT).show()
+    }
+
+
+//    private fun updateAllowApp(updatedApp: AllowedApp) {
+//        val updatedList = allowAppListAdapter.currentList.toMutableList()
+//        val originalApp = updatedList.find { it.packageId == updatedApp.packageId }
+//        originalApp?.let {
+//            updatedList.remove(it)
+//        }
+//
+//        if (updatedApp.isAllowed) {
+//            updatedList.add(0, updatedApp) // 체크되면 상단에 추가
+//        } else {
+//            updatedList.add(updatedApp) // 체크 해제 시 원래 리스트에 다시 추가
+//        }
+//
+//        allowAppListAdapter.submitList(updatedList.sortedBy { it.appName })
+//    }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View

@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface AllowAppRepository {
 
     fun getInstalledApps(): Flow<List<AllowedApp>>
+
+    fun updateAllowApps(uid: String, apps: List<AllowedApp>): Flow<Boolean>
 }

@@ -3,15 +3,12 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
-import com.rocket.cosmic_detox.data.model.App
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,6 +36,20 @@ class AllowAppViewModel @Inject constructor(
                         GetListUiState.Success(apps)
                     }
                     Log.d("AllowAppViewModel", "loadInstalledApps: ${_installedApps.value}")
+                }
+        }
+    }
+
+    fun updateAllowApps(uid: String, apps: List<AllowedApp>) {
+        viewModelScope.launch {
+            repository.updateAllowApps(uid, apps)
+                .catch { exception ->
+                    Log.e("AllowAppViewModel", "Error updating allowed apps", exception)
+                }
+                .collect { result ->
+                    if (result) {
+                        Log.d("AllowAppViewModel", "Apps updated successfully")
+                    }
                 }
         }
     }

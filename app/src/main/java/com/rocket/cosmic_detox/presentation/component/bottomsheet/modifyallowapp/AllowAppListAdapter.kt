@@ -18,25 +18,40 @@ class AllowAppListAdapter(
     private val onClick: (AllowedApp) -> Unit
 ) : ListAdapter<AllowedApp, ViewHolder<AllowedApp>>(AppDiffCallback()) {
 
+    private val checkedItems = mutableSetOf<AllowedApp>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<AllowedApp> {
-        return AllowAppViewHolder.from(parent, onClick, context)
+        return AllowAppViewHolder.from(parent, onClick, context, checkedItems)
     }
 
     override fun onBindViewHolder(holder: ViewHolder<AllowedApp>, position: Int) {
         holder.onBind(currentList[position])
     }
 
+    fun getCheckedItems(): List<AllowedApp> {
+        return checkedItems.toList()
+    }
+
     class AllowAppViewHolder(
         private val binding: ItemAppCheckboxListBinding,
         private val onClick: (AllowedApp) -> Unit,
-        private val context: Context
+        private val context: Context,
+        private val checkedItems: MutableSet<AllowedApp>
     ) : ViewHolder<AllowedApp>(binding.root) {
 
         override fun onBind(item: AllowedApp) {
-            itemView.setOnClickListener {
-                onClick(item)
-            }
             with(binding) {
+                itemView.setOnClickListener {
+                    val isAllowed = !item.isAllowed
+                    checkboxAllowApp.isChecked = isAllowed
+                    if (isAllowed) {
+                        checkedItems.add(item)
+                    } else {
+                        checkedItems.remove(item)
+                    }
+                    onClick(item)
+                }
+
                 Glide.with(ivAllowAppIcon)
                     .load(context.packageManager.getApplicationIcon(item.packageId))
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
@@ -45,21 +60,16 @@ class AllowAppListAdapter(
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
 
                 checkboxAllowApp.isChecked = item.isAllowed
-                checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
-                    val newItem = item.copy(isAllowed = isChecked)
-                    onClick(newItem)
-                }
-
-                itemView.setOnClickListener {
-                    onClick(item)
-                }
+//                checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
+//                    val newItem = item.copy(isAllowed = isChecked)
+//                }
             }
         }
 
         companion object {
-            fun from(parent: ViewGroup, onClick: (AllowedApp) -> Unit, context: Context): AllowAppViewHolder {
+            fun from(parent: ViewGroup, onClick: (AllowedApp) -> Unit, context: Context, checkedItems: MutableSet<AllowedApp>): AllowAppViewHolder {
                 val binding = ItemAppCheckboxListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return AllowAppViewHolder(binding, onClick, context)
+                return AllowAppViewHolder(binding, onClick, context, checkedItems)
             }
         }
     }
