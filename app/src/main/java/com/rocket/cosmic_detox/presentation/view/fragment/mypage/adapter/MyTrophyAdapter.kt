@@ -27,6 +27,9 @@ class MyTrophyAdapter(
     ) : ViewHolder<Trophy>(binding.root) {
 
         override fun onBind(item: Trophy) {
+            itemView.setOnClickListener {
+                onClick(item)
+            }
             with(binding) {
                 Glide.with(ivTrophy)
                     .load(item.imageUrl)

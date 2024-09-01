@@ -12,13 +12,12 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
-import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.AppUsageAdapter
-import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophiesAdapter
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp.MyPageModifyAllowAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -30,6 +29,7 @@ class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private val myPageViewModel by viewModels<MyPageViewModel>()
+    private val myAppUsageAdapter by lazy { MyAppUsageAdapter() }
     private val myTrophyAdapter by lazy {
         MyTrophyAdapter { trophy ->
             Toast.makeText(requireContext(), trophy.name, Toast.LENGTH_SHORT).show()
@@ -100,12 +100,12 @@ class MyPageFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        rvMyAppUsage.adapter = appUsageAdapter
+        rvMyAppUsage.adapter = myAppUsageAdapter
         rvMyTrophies.adapter = myTrophyAdapter
     }
 
     private fun initViewModel() = with(myPageViewModel) {
-        //loadMyInfo()
+        loadMyInfo()
         loadMyAppUsage()
         viewLifecycleOwner.lifecycleScope.launch {
             myInfo
@@ -120,8 +120,7 @@ class MyPageFragment : Fragment() {
 
                             setMyInfo(uiState.data)
 
-                            myTrophiesAdapter = MyTrophiesAdapter(uiState.data.trophies)
-                            myTrophiesAdapter.notifyItemInserted(uiState.data.trophies.size)
+                            myTrophyAdapter.submitList(uiState.data.trophies)
                         }
                         is MyPageUiState.Error -> {
                             Log.d("MyPageFragment", "MyPageFragment - Error: ${uiState.message}")
@@ -141,8 +140,7 @@ class MyPageFragment : Fragment() {
                         is MyPageUiState.Success -> {
                             Log.d("MyPageFragment", "myAppUsageList - Success: ${uiState.data}")
 
-                            appUsageAdapter = AppUsageAdapter(uiState.data)
-                            appUsageAdapter.notifyDataSetChanged()
+                            myAppUsageAdapter.submitList(uiState.data)
                         }
                         is MyPageUiState.Error -> {
                             Log.d("MyPageFragment", "myAppUsageList - Error: ${uiState.message}")

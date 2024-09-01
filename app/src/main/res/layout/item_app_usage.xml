@@ -8,7 +8,7 @@
     android:background="@color/background_light">
 
     <ImageView
-        android:id="@+id/appIcon"
+        android:id="@+id/iv_app_usage_icon"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="16dp"
@@ -25,7 +25,7 @@
         android:paddingEnd="8dp">
 
         <TextView
-            android:id="@+id/appName"
+            android:id="@+id/tv_app_usage_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="앱 이름"
@@ -39,7 +39,7 @@
             android:layout_gravity="center_vertical">
 
             <ProgressBar
-                android:id="@+id/usageProgressBar"
+                android:id="@+id/progressbar_app_usage"
                 android:layout_width="240dp"
                 android:layout_height="8dp"
                 android:layout_marginTop="4dp"
@@ -48,7 +48,7 @@
                 android:max="100" />
 
             <TextView
-                android:id="@+id/appUsageTime"
+                android:id="@+id/tv_app_usage_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0분"
