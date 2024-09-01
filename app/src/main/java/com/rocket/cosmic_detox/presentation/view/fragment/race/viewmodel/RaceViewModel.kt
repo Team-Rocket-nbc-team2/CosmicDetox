@@ -22,7 +22,7 @@ class RaceViewModel @Inject constructor(private val raceUseCase: RaceUseCase) : 
         getRanking()
     }
 
-    private fun getRanking() {
+    fun getRanking() {
         viewModelScope.launch {
             raceUseCase.getRanking()
                 .catch { e -> _uiState.value = UiState.Error(e) }

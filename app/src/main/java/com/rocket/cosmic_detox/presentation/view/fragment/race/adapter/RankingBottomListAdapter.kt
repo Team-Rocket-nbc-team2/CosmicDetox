@@ -37,9 +37,9 @@ class RankingBottomListAdapter(
             }
             with(binding) {
                 tvRankingBottomRank.text = rank.toString()
-                ivRankingBottomUserProfile.loadRankingPlanetImage(ranking.cumulativeTime)
+                ivRankingBottomUserProfile.loadRankingPlanetImage(ranking.totalTime.toBigDecimal())
                 tvRankingBottomUserName.text = ranking.name
-                tvRankingBottomStats.setStats(ranking.cumulativeTime, ranking.points)
+                tvRankingBottomStats.setStats(ranking.totalTime.toBigDecimal(), ranking.point.toBigDecimal())
             }
         }
 

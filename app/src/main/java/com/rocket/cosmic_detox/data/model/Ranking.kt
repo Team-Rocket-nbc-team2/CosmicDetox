@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.data.model
 
-import java.math.BigDecimal
 
 private const val RANKING_TOP = "top"
 private const val RANKING_BOTTOM = "bottom"
@@ -22,8 +21,8 @@ data class RankingBottom(
 }
 
 data class RankingInfo(
-    val uid: String,
-    val name: String,
-    val cumulativeTime: BigDecimal,
-    val points: BigDecimal
+    val name: String = "",
+    val point: String = "",
+    val totalTime: Int = 0,
+    val uid: String = ""
 )
