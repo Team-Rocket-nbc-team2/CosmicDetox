@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,12 @@ class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
         val viewStub = modalBottomSheetIconBinding.bottomSheetBody.inflate()
         modalContentSetUseTimeBinding = ModalContentSetUseTimeBinding.bind(viewStub)
 
+        return modalBottomSheetIconBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         modalBottomSheetIconBinding.ivBottomSheetClose.setOnClickListener {
             dismiss()
         }
@@ -60,15 +67,12 @@ class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
                         dismiss()
                         myPageViewModel.resetUpdateResult() // 상태 초기화
                     } else {
-                        Toast.makeText(requireContext(), "업데이트 실패", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(requireContext(), "업데이트 실패", Toast.LENGTH_SHORT).show()
+                        Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패") // 버튼 누르자마자는 실패, 성공 후 리셋 후 또 실패 -> 걍 else 문 없앨까
                     }
                 }
             }
-
-            dismiss()
         }
-
-        return modalBottomSheetIconBinding.root
     }
 
     private fun setNumberPicker() {
