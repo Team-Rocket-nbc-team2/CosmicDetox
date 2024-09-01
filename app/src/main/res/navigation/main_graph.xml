@@ -43,7 +43,7 @@
         tools:layout="@layout/modal_content_modify_allow_app" />
     <dialog
         android:id="@+id/navigation_set_limit_app_dialog"
-        android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet"
+        android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.setlimitapp.MyPageSetLimitAppBottomSheet"
         android:label="MyPageSetLimitAppBottomSheet"
         tools:layout="@layout/modal_content_set_limit_app">
         <action
@@ -57,5 +57,9 @@
         android:id="@+id/navigation_set_limit_use_time_dialog"
         android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitUseTimeBottomSheet"
         android:label="MyPageSetLimitUseTimeBottomSheet"
-        tools:layout="@layout/modal_content_set_use_time" />
+        tools:layout="@layout/modal_content_set_use_time">
+        <argument
+            android:name="allowedApp"
+            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp" />
+    </dialog>
 </navigation>

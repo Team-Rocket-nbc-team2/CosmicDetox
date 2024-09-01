@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.component.bottomsheet
+package com.rocket.cosmic_detox.presentation.component.bottomsheet.setlimitapp
 
 import android.app.Dialog
 import android.content.Context
@@ -11,17 +11,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
 
 class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentSetLimitAppBinding: ModalContentSetLimitAppBinding
+    private val limitedAppAdapter by lazy {
+        LimitedAppAdapter(requireContext()) {
+            navigateToSetLimitUseTimeBottomSheet(it)
+        }
+    }
     private val args: MyPageSetLimitAppBottomSheetArgs by navArgs()
 
     override fun onCreateView(
@@ -55,14 +62,22 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        args.allowedApps.forEach {
-            Log.d("MyPageSetLimitAppBottomSheet", "allowedApp : $it")
-        }
+        initView()
 
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.limit_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun initView() = with(modalContentSetLimitAppBinding) {
+        rvSetLimitAppList.adapter = limitedAppAdapter
+        limitedAppAdapter.submitList(args.allowedApps.toList())
+    }
+
+    private fun navigateToSetLimitUseTimeBottomSheet(allowedApp: AllowedApp) {
+        val action = MyPageSetLimitAppBottomSheetDirections.actionSetLimitAppToSetLimitUseTime(allowedApp)
+        findNavController().navigate(action)
     }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {

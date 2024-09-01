@@ -76,6 +76,7 @@ class MyPageFragment : Fragment() {
         rvMyAppUsage.adapter = myAppUsageAdapter
         rvMyTrophies.adapter = myTrophyAdapter
         myPageViewModel.loadMyInfo()
+        allowedApps = emptyList()
         //loadMyAppUsage() // 권한 확인된 후 호출
         checkAndRequestUsageStatsPermission()
         btnAllowAppUsagePermission.setOnClickListener {
