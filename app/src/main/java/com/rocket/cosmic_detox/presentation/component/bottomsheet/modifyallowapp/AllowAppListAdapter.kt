@@ -42,10 +42,10 @@ class AllowAppListAdapter(
         override fun onBind(item: AllowedApp) {
             with(binding) {
                 // 체크박스 클릭 시 발생할 이벤트 처리
-                checkboxAllowApp.setOnCheckedChangeListener(null) // 리스너 해제
+                //checkboxAllowApp.setOnCheckedChangeListener(null) // 리스너 해제
 
                 // 체크박스 상태 초기화
-                checkboxAllowApp.isChecked = checkedItems.contains(item)
+                checkboxAllowApp.isChecked = checkedItems.contains(item) // TODO: 나중에 contains로 or isAllowed로 변경해야 하는지 확인
 
                 // 아이템 뷰 클릭 처리
                 itemView.setOnClickListener {
@@ -60,7 +60,7 @@ class AllowAppListAdapter(
                     } else {
                         checkedItems.remove(item)
                     }
-                    onClick(item.copy(isAllowed = isChecked))
+                    onClick(item)
                 }
 
                 // 나머지 바인딩 작업
@@ -71,7 +71,7 @@ class AllowAppListAdapter(
                 tvAllowAppName.text = item.appName
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
 
-                checkboxAllowApp.isChecked = item.isAllowed // TODO: 나중에 contains로 변경해야 하는지 확인
+                //checkboxAllowApp.isChecked = item.isAllowed // TODO: 나중에 contains로 변경해야 하는지 확인
             }
         }
 
