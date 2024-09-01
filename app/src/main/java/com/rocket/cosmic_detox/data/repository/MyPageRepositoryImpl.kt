@@ -100,4 +100,19 @@ class MyPageRepositoryImpl @Inject constructor(
             emit(appUsageList)
         }
     }.flowOn(Dispatchers.IO)
+
+    override fun updateAppUsageLimit(allowedApp: AllowedApp): Flow<Boolean> = flow {
+        try {
+            //val uid = firebaseAuth.currentUser?.uid ?: "test2" // TODO: 나중에 uid로 변경
+            val userDocRef = firestore.collection("users").document("test2") // TODO: 나중에 uid로 변경
+            val appDocRef = userDocRef.collection("apps").document(allowedApp.packageId)
+
+            // Firestore에서 해당 앱의 제한 시간을 업데이트
+            appDocRef.update("limitedTime", allowedApp.limitedTime).await()
+            emit(true)
+        } catch (e: Exception) {
+            Log.e("MyPageRepositoryImpl", "Error updating app usage limit", e)
+            emit(false)
+        }
+    }.flowOn(Dispatchers.IO)
 }

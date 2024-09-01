@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.data.model.MyInfo
 import com.rocket.cosmic_detox.data.model.User
@@ -26,6 +27,9 @@ class MyPageViewModel @Inject constructor(
 
     private val _myAppUsageList = MutableStateFlow<MyPageUiState<List<AppUsage>>>(MyPageUiState.Loading)
     val myAppUsageList: StateFlow<MyPageUiState<List<AppUsage>>> = _myAppUsageList
+
+    private val _updateResult = MutableStateFlow(false)
+    val updateResult: StateFlow<Boolean> = _updateResult
 
     fun loadMyInfo() {
         viewModelScope.launch {
@@ -53,5 +57,26 @@ class MyPageViewModel @Inject constructor(
                     Log.d("jade", "loadMyAppUsage: $it")
                 }
         }
+    }
+
+    // 시간 설정 데이터를 처리하고 Firestore에 저장하는 메서드
+    fun setAppUsageLimit(allowedApp: AllowedApp, hour: String, minute: String) {
+        viewModelScope.launch {
+            val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
+            // Firestore에 시간 제한 데이터를 저장
+            repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
+                .catch {
+                    Log.e("MyPageViewModel", "Failed to set app usage limit", it)
+                    _updateResult.value = false
+                }
+                .collect {
+                    _updateResult.value = true
+                    loadMyInfo()
+                }
+        }
+    }
+
+    fun resetUpdateResult() {
+        _updateResult.value = false
     }
 }

@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -20,6 +22,10 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
+import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
@@ -30,6 +36,7 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         }
     }
     private val args: MyPageSetLimitAppBottomSheetArgs by navArgs()
+    private val myPageViewModel by activityViewModels<MyPageViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,10 +75,26 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            myPageViewModel.myInfo.collectLatest { uiState ->
+                when (uiState) {
+                    is MyPageUiState.Success -> {
+                        limitedAppAdapter.submitList(uiState.data.apps)
+                    }
+                    else -> {
+                        Log.e("MyPageSetLimitAppBottomSheet", "업데이트 실패")
+                    }
+                }
+            }
+        }
     }
 
     private fun initView() = with(modalContentSetLimitAppBinding) {
-        rvSetLimitAppList.adapter = limitedAppAdapter
+        rvSetLimitAppList.apply {
+            adapter = limitedAppAdapter
+            itemAnimator = null
+        }
         limitedAppAdapter.submitList(args.allowedApps.toList())
     }
 
