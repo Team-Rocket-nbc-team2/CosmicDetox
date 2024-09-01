@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp
+package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp
 
 import android.app.Dialog
 import android.content.Context

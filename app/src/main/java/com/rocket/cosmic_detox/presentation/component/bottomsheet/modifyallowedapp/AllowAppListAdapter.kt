@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp
+package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,7 +10,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppCheckboxListBinding
-import com.rocket.cosmic_detox.data.model.App
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class AllowAppListAdapter(
