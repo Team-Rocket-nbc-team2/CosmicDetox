@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
-
-data class Trophy(val iconResId: Int)
+import com.rocket.cosmic_detox.data.model.Trophy
 
 class MyTrophyAdapter(private val trophyList: List<Trophy>) :
     RecyclerView.Adapter<MyTrophyAdapter.TrophyViewHolder>() {
@@ -23,7 +22,7 @@ class MyTrophyAdapter(private val trophyList: List<Trophy>) :
 
     override fun onBindViewHolder(holder: TrophyViewHolder, position: Int) {
         val trophy = trophyList[position]
-        holder.trophyIcon.setImageResource(trophy.iconResId)
+        holder.trophyIcon.setImageResource(R.drawable.ic_race_mercury)
     }
 
     override fun getItemCount(): Int = trophyList.size

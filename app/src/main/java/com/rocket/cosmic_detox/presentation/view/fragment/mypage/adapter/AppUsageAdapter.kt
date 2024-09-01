@@ -8,8 +8,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
-
-data class AppUsage(val iconResId: Int, val appName: String, val usageTime: String, val usagePercentage: Int)
+import com.rocket.cosmic_detox.data.model.AppUsage
+import com.rocket.cosmic_detox.presentation.extensions.toMinutes
 
 class AppUsageAdapter(private val appUsageList: List<AppUsage>) :
     RecyclerView.Adapter<AppUsageAdapter.AppUsageViewHolder>() {
@@ -29,10 +29,10 @@ class AppUsageAdapter(private val appUsageList: List<AppUsage>) :
 
     override fun onBindViewHolder(holder: AppUsageViewHolder, position: Int) {
         val appUsage = appUsageList[position]
-        holder.appIcon.setImageResource(appUsage.iconResId)
+        holder.appIcon.setImageDrawable(appUsage.appIcon)
         holder.appName.text = appUsage.appName
-        holder.appUsageTime.text = appUsage.usageTime
-        holder.usageProgressBar.progress = appUsage.usagePercentage
+        holder.appUsageTime.text = appUsage.usageTime.toBigDecimal().toMinutes().toString()
+        //holder.usageProgressBar.progress = appUsage.usagePercentage
 
         // 첫 번째와 마지막 아이템에 둥근 모서리 배경 설정
         when (position) {
