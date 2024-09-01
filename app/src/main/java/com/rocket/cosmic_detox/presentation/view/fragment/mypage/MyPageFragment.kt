@@ -12,13 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp.MyPageModifyAllowAppBottomSheet
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
@@ -33,13 +34,14 @@ class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
-    private val myPageViewModel by viewModels<MyPageViewModel>()
+    private val myPageViewModel by activityViewModels<MyPageViewModel>()
     private val myAppUsageAdapter by lazy { MyAppUsageAdapter() }
     private val myTrophyAdapter by lazy {
         MyTrophyAdapter { trophy ->
             Toast.makeText(requireContext(), trophy.name, Toast.LENGTH_SHORT).show()
         }
     }
+    private lateinit var allowedApps: List<AllowedApp>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,13 +58,17 @@ class MyPageFragment : Fragment() {
         initViewModel()
 
         binding.btnSetLimitAppUseTime.setOnClickListener {
-            val setLimitAppBottomSheet = MyPageSetLimitAppBottomSheet()
-            setLimitAppBottomSheet.show(parentFragmentManager, setLimitAppBottomSheet.tag)
+//            val setLimitAppBottomSheet = MyPageSetLimitAppBottomSheet()
+//            setLimitAppBottomSheet.show(parentFragmentManager, setLimitAppBottomSheet.tag)
+            val action = MyPageFragmentDirections.actionMyToSetLimitApp(allowedApps.toTypedArray())
+            findNavController().navigate(action)
         }
 
         binding.btnAllowAppSetting.setOnClickListener {
-            val modifyAllowAppBottomSheet = MyPageModifyAllowAppBottomSheet()
-            modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
+//            val modifyAllowAppBottomSheet = MyPageModifyAllowAppBottomSheet()
+//            modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
+            val action = MyPageFragmentDirections.actionMyToModifyAllowApp()
+            findNavController().navigate(action)
         }
     }
 
@@ -89,6 +95,7 @@ class MyPageFragment : Fragment() {
                         is MyPageUiState.Success -> {
                             setMyInfo(uiState.data)
                             myTrophyAdapter.submitList(uiState.data.trophies)
+                            allowedApps = uiState.data.apps
                         }
                         is MyPageUiState.Error -> {
                             Log.d("MyPageFragment", "MyPageFragment - Error: ${uiState.message}")

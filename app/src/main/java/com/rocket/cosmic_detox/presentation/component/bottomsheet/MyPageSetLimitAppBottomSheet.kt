@@ -5,11 +5,13 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,6 +22,7 @@ import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
 class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentSetLimitAppBinding: ModalContentSetLimitAppBinding
+    private val args: MyPageSetLimitAppBottomSheetArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,12 +39,6 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         // val bottomSheet = MyPageSetLimitUseTimeBottomSheet()
         // bottomSheet.isCancelable = false
         // bottomSheet.show(parentFragmentManager, bottomSheet.tag)
-
-        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.limit_app_bottom_sheet_title)
-        modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
-            dismiss()
-        }
-
         return modalBottomSheetBinding.root
     }
 
@@ -53,6 +50,19 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
             setUpRatio(bottomSheetDialog)
         }
         return dialog
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        args.allowedApps.forEach {
+            Log.d("MyPageSetLimitAppBottomSheet", "allowedApp : $it")
+        }
+
+        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.limit_app_bottom_sheet_title)
+        modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {
