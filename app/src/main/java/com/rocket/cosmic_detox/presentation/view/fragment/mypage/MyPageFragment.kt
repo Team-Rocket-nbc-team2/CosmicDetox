@@ -5,20 +5,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.AppUsageAdapter
-import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophiesAdapter
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp.MyPageModifyAllowAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,8 +30,11 @@ class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private val myPageViewModel by viewModels<MyPageViewModel>()
-    private lateinit var appUsageAdapter: AppUsageAdapter
-    private lateinit var myTrophyAdapter: MyTrophyAdapter
+    private val myTrophyAdapter by lazy {
+        MyTrophyAdapter { trophy ->
+            Toast.makeText(requireContext(), trophy.name, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,8 +100,6 @@ class MyPageFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        appUsageAdapter = AppUsageAdapter(emptyList())
-        myTrophyAdapter = MyTrophyAdapter(emptyList())
         rvMyAppUsage.adapter = appUsageAdapter
         rvMyTrophies.adapter = myTrophyAdapter
     }
@@ -118,8 +120,8 @@ class MyPageFragment : Fragment() {
 
                             setMyInfo(uiState.data)
 
-                            myTrophyAdapter = MyTrophyAdapter(uiState.data.trophies)
-                            myTrophyAdapter.notifyItemInserted(uiState.data.trophies.size)
+                            myTrophiesAdapter = MyTrophiesAdapter(uiState.data.trophies)
+                            myTrophiesAdapter.notifyItemInserted(uiState.data.trophies.size)
                         }
                         is MyPageUiState.Error -> {
                             Log.d("MyPageFragment", "MyPageFragment - Error: ${uiState.message}")
