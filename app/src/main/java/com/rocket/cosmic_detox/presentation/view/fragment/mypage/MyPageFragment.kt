@@ -1,10 +1,14 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
@@ -14,13 +18,17 @@ import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTroph
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowapp.MyPageModifyAllowAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitAppBottomSheet
+import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyPageFragment : Fragment() {
 
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
+    private val myPageViewModel by viewModels<MyPageViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +44,8 @@ class MyPageFragment : Fragment() {
 
         val trophyRecyclerView = binding.trophyRecyclerView
         val noTrophyMessage = binding.tvNoTrophyMessage
+
+        initViewModel()
 
         val trophyList = listOf(
             Trophy(R.drawable.sample_trophy_image),
@@ -83,6 +93,27 @@ class MyPageFragment : Fragment() {
         binding.btnAllowAppSetting.setOnClickListener {
             val modifyAllowAppBottomSheet = MyPageModifyAllowAppBottomSheet()
             modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
+        }
+    }
+
+    private fun initViewModel() = with(myPageViewModel) {
+        loadMyInfo()
+        viewLifecycleOwner.lifecycleScope.launch {
+            myInfo
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { uiState ->
+                    when (uiState) {
+                        MyPageUiState.Loading -> {
+                            Log.d("MyPageFragment", "MyPageFragment - Loading")
+                        }
+                        is MyPageUiState.Success -> {
+                            Log.d("MyPageFragment", "MyPageFragment - Success: ${uiState.data}")
+                        }
+                        is MyPageUiState.Error -> {
+                            Log.d("MyPageFragment", "MyPageFragment - Error: ${uiState.message}")
+                        }
+                    }
+                }
         }
     }
 

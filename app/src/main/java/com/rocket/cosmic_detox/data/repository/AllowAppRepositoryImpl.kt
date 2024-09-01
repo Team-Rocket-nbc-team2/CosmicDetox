@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class AllowAppRepositoryImpl @Inject constructor(
     private val packageManager: PackageManager,
-    private val fireStore: FirebaseFirestore
+    private val firestore: FirebaseFirestore
 ) : AllowAppRepository {
 
     override fun getInstalledApps(): Flow<List<AllowedApp>> = flow {
@@ -36,8 +36,8 @@ class AllowAppRepositoryImpl @Inject constructor(
 
     override fun updateAllowApps(uid: String, apps: List<AllowedApp>): Flow<Boolean> = flow {
         try {
-            val userDocRef = fireStore.collection("users").document(uid)
-            val batch = fireStore.batch()
+            val userDocRef = firestore.collection("users").document(uid)
+            val batch = firestore.batch()
 
             apps.forEach { app ->
                 val appDocRef = userDocRef.collection("apps").document(app.packageId)
