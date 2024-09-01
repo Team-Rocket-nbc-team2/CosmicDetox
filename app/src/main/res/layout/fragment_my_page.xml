@@ -109,7 +109,32 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="5"
-            tools:listitem="@layout/item_app_usage" />
+            tools:listitem="@layout/item_app_usage"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_no_app_usage_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:text="앱 사용기록을 확인하려면\n권한을 허용해주세요."
+            android:textColor="@color/blue_grey"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_allow_app_usage_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="54dp"
+            android:background="@drawable/btn_primary"
+            android:text="권한 허용하기"
+            android:textColor="@color/white"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btn_allow_app_setting"

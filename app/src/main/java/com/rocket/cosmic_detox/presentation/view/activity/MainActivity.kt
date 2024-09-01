@@ -31,10 +31,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         setBottomNavigation()
-        if (!hasUsageStatsPermission(this)) {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-            startActivity(intent)
-        }
+//        if (!hasUsageStatsPermission(this)) {
+//            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+//            startActivity(intent)
+//        }
     }
 
 
