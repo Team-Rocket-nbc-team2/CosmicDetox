@@ -20,6 +20,7 @@ import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.os.Handler
 import android.os.Looper
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -120,12 +121,13 @@ class TimerFragment : Fragment() {
     private fun initView() = with(binding) {
         btnTimerFinish.setOnClickListener {
             val dialog = TwoButtonDialogFragment(
-                getString(R.string.timer_dialog_finish)
-            ) {
-                isFinishingTimer = true
-                stopTimer() // 타이머를 종료하는 버튼이 눌릴 때 타이머를 중지
-                findNavController().popBackStack()
-            }
+                title = getString(R.string.timer_dialog_finish),
+                onClickConfirm = {
+                    isFinishingTimer = true
+                    stopTimer() // 타이머를 종료하는 버튼이 눌릴 때 타이머를 중지
+                    findNavController().popBackStack() },
+                onClickCancel = { false }
+            )
             dialog.isCancelable = false
             dialog.show(parentFragmentManager, "ConfirmDialog")
         }

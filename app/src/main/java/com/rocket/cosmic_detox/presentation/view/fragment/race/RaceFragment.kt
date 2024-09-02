@@ -12,11 +12,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.data.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setStats
+import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel.RaceViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +43,6 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-//        setDummyData()
         observeViewModel()
 
     }
@@ -85,7 +84,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
             viewModel.uiState.collect { uiState ->
                 when (uiState) {
 //                    is UiState.Loading -> {   ////  로딩 상태 처리
-                    is UiState.Success -> {
+                    is MyPageUiState.Success -> {
                         val ranking = uiState.data
                         val topRanking = ranking.take(2)
                         val myRanking = ranking.drop(2)
@@ -93,10 +92,10 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                         Log.d("Success", "${uiState.data}")
                     }
 
-                    is UiState.Error -> {
+                    is MyPageUiState.Error -> {
                         Toast.makeText(
                             requireContext(),
-                            "Error: ${uiState.exception}",
+                            "Error: ${uiState.message}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
