@@ -2,9 +2,10 @@ package com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.domain.usecase.RaceUseCase
 import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
+import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,18 +16,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RaceViewModel @Inject constructor(private val raceUseCase: RaceUseCase) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState<List<RankingInfo>>>(UiState.Loading)
-    val uiState: StateFlow<UiState<List<RankingInfo>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<MyPageUiState<List<RankingInfo>>>(MyPageUiState.Loading)
+    val uiState: StateFlow<MyPageUiState<List<RankingInfo>>> = _uiState.asStateFlow()
 
     init {
         getRanking()
     }
 
-    private fun getRanking() {
+    fun getRanking() {
         viewModelScope.launch {
             raceUseCase.getRanking()
-                .catch { e -> _uiState.value = UiState.Error(e) }
-                .collect { ranking -> _uiState.value = UiState.Success(ranking) }
+                .catch { e -> _uiState.value = MyPageUiState.Error(e.message.toString()) }
+                .collect { ranking -> _uiState.value = MyPageUiState.Success(ranking) }
         }
     }
 }

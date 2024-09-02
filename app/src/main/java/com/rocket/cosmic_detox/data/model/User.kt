@@ -1,14 +1,12 @@
 package com.rocket.cosmic_detox.data.model
 
-import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
-
 data class User(
-    val uld: String,
-    val name: String,
-    val dailyTime: Long,
-    val totalTime: Long,
-    val totalDay: Int,
-    val isWithdrawn: Boolean,
-    val trophies: List<Trophy>,
-    val apps: List<App>
+    val uid: String = "",
+    val name: String = "",
+    val dailyTime: Long = 0,
+    val totalTime: Long = 0,
+    val totalDay: Long = 0,
+    val isWithdrawn: Boolean = false,
+    val trophies: List<Trophy> = listOf(),
+    val apps: List<AllowedApp> = listOf()
 )

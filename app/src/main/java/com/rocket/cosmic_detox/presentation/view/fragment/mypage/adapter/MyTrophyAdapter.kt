@@ -1,30 +1,57 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
-import com.rocket.cosmic_detox.R
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import com.bumptech.glide.Glide
+import com.rocket.cosmic_detox.data.model.Trophy
+import com.rocket.cosmic_detox.databinding.ItemMyTrophyBinding
+import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
-data class Trophy(val iconResId: Int)
+class MyTrophyAdapter(
+    private val onClick: (Trophy) -> Unit
+) : ListAdapter<Trophy, ViewHolder<Trophy>>(TrophyDiffCallback()) {
 
-class MyTrophyAdapter(private val trophyList: List<Trophy>) :
-    RecyclerView.Adapter<MyTrophyAdapter.TrophyViewHolder>() {
-
-    class TrophyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val trophyIcon: ImageView = itemView.findViewById(R.id.ic_trophy)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Trophy> {
+        return MyTrophyViewHolder.from(parent, onClick)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrophyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_my_trophy, parent, false)
-        return TrophyViewHolder(view)
+    override fun onBindViewHolder(holder: ViewHolder<Trophy>, position: Int) {
+        holder.onBind(currentList[position])
     }
 
-    override fun onBindViewHolder(holder: TrophyViewHolder, position: Int) {
-        val trophy = trophyList[position]
-        holder.trophyIcon.setImageResource(trophy.iconResId)
+    class MyTrophyViewHolder(
+        private val binding: ItemMyTrophyBinding,
+        private val onClick: (Trophy) -> Unit
+    ) : ViewHolder<Trophy>(binding.root) {
+
+        override fun onBind(item: Trophy) {
+            itemView.setOnClickListener {
+                onClick(item)
+            }
+            with(binding) {
+                Glide.with(ivTrophy)
+                    .load(item.imageUrl)
+                    .into(ivTrophy)
+            }
+        }
+
+        companion object {
+            fun from(parent: ViewGroup, onClick: (Trophy) -> Unit): MyTrophyViewHolder {
+                val binding = ItemMyTrophyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return MyTrophyViewHolder(binding, onClick)
+            }
+        }
+    }
+}
+
+class TrophyDiffCallback : DiffUtil.ItemCallback<Trophy>() {
+    override fun areItemsTheSame(oldItem: Trophy, newItem: Trophy): Boolean {
+        return oldItem.trophyId == newItem.trophyId
     }
 
-    override fun getItemCount(): Int = trophyList.size
+    override fun areContentsTheSame(oldItem: Trophy, newItem: Trophy): Boolean {
+        return oldItem == newItem
+    }
 }

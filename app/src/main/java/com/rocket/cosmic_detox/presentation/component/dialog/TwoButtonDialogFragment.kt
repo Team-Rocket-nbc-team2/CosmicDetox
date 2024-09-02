@@ -14,7 +14,8 @@ import com.rocket.cosmic_detox.presentation.view.fragment.HomeFragmentDirections
 
 class TwoButtonDialogFragment(
     private val title: String,
-    private val onClickConfirm: () -> Unit
+    private val onClickConfirm: () -> Unit,
+    private val onClickCancel: () -> Unit
 ) : DialogFragment() {
     private var _binding: DialogTwobuttonBinding? = null
     val binding get() = _binding!!
@@ -36,6 +37,7 @@ class TwoButtonDialogFragment(
         tvDialogTitle.text = title
 
         btnDialogCancel.setOnClickListener {
+            onClickCancel()
             dismiss()
         }
 

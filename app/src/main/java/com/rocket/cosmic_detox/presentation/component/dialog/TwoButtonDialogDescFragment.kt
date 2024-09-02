@@ -14,7 +14,8 @@ import com.rocket.cosmic_detox.databinding.DialogTwobuttonDescBinding
 class TwoButtonDialogDescFragment(
     private val title: String,
     private val description: String,
-    private val onClickConfirm: () -> Unit
+    private val onClickConfirm: () -> Unit,
+    private val onClickCancel: () -> Unit
 ) : DialogFragment() {
     private var _binding: DialogTwobuttonDescBinding? = null
     val binding get() = _binding!!
@@ -37,6 +38,7 @@ class TwoButtonDialogDescFragment(
         tvDialogDesc.text = description
 
         btnDialogCancel.setOnClickListener {
+            onClickCancel()
             dismiss()
         }
 

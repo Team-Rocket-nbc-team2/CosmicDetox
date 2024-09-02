@@ -2,6 +2,8 @@
     <string name="app_name">CosmicDetox</string>
 
     <!--  Common  -->
+    <string name="terminate_app_alert">한 번 더 누르면 앱이 종료됩니다.</string>
+    <string name="terminate_app">정말로 떠나시겠어요?</string>
 
     <!--  Navigation Menu  -->
     <string name="label_race">레이스</string>
@@ -34,6 +36,16 @@
     <string name="race_format_stats_time_no_hours">%1$d분 · %2$s 포인트</string>
 
     <!--  My Page  -->
+    <string name="withdrawal">회원탈퇴</string>
+    <string name="sign_out">로그아웃</string>
+    <string name="allow_app_settings">허용 앱 설정</string>
+    <string name="limit_app_usage_time">앱 사용시간 제한</string>
+    <string name="personal_policy_terms">개인정보처리방침 및 이용약관</string>
+    <string name="trophy">내 트로피 보기</string>
+    <string name="my_app_usage">내 사용량 보기</string>
+    <string name="dialog_sign_out">정말로 로그아웃 하시겠어요?</string>
+    <string name="dialog_withdrawal">정말로 탈퇴하시겠어요?</string>
+    <string name="dialog_withdrawal_desc">회원탈퇴 후 유저 정보는 7일 동안 임시 보관되며, 이후 영구 삭제됩니다.</string>
 
     <!--  Timer  -->
     <string name="timer_finish">종료</string>
