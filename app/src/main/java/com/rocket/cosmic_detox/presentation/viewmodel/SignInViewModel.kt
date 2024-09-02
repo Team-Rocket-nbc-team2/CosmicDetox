@@ -1,44 +1,38 @@
 package com.rocket.cosmic_detox.presentation.viewmodel
 
-import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.domain.repository.SignInRepository
+import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    @ApplicationContext context: Context
+    private val repository: SignInRepository,
 ) : ViewModel() {
     private val _user = MutableStateFlow<FirebaseUser?>(null)
-    val user: StateFlow<FirebaseUser?> = _user
-
-    //auth 객체 초기화
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-    var googleSignInClient: GoogleSignInClient
 
+    private val _status =  MutableStateFlow<UiState<FirebaseUser>>(UiState.Init)
+    val status: StateFlow<UiState<FirebaseUser>> = _status.asStateFlow()
 
-    init{
-        //GoogleSignInClient 객체 초기화
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN) //기본 로그인 방식 사용
-            .requestIdToken(context.getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(context, gso)
+    fun googleLogin(googleSignInClient: GoogleSignInClient, launcher: ActivityResultLauncher<Intent>) {
+        val signInIntent = googleSignInClient.signInIntent
+        launcher.launch(signInIntent)
     }
 
     fun googleLauncherFunction(result: ActivityResult) {
@@ -48,25 +42,22 @@ class SignInViewModel @Inject constructor(
             val account = task.getResult(ApiException::class.java)!!
             firebaseAuthWithGoogle(account.idToken!!)
         } catch (e: ApiException) {
-            // Google 로그인 실패
-            // TODO: 여기서 Dialog 띄우기
-            Log.d("LOGIN--", e.toString())
+            _status.value = UiState.Failure(e)
+            Log.e("LOGIN-- FAILURE: googleLauncherFunction", e.toString())
         }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        Log.d("LOGIN--3", idToken)
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // 로그인 성공
                     _user.value = auth.currentUser
-//                    startActivity(Intent(this, MainActivity::class.java))
+                    repository.setDataToFireBase()
+                    _status.value = UiState.Success(_user.value!!)
                 } else {
-                    // 로그인 실패
-                    // TODO: 여기서 Dialog 띄우기2
-                    Log.d("LOGIN--", "Firebase 인증에 실패했습니다.")
+                    _status.value = UiState.Failure(task.exception)
+                    Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다.")
                 }
             }
     }
