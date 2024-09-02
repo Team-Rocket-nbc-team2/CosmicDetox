@@ -11,6 +11,7 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -22,42 +23,25 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class MyPageRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
+    private val userDataSource: UserDataSource,
     private val usageStatsManager: UsageStatsManager,
-    private val packageManager: PackageManager
+    private val packageManager: PackageManager,
+    private val firebaseAuth: FirebaseAuth // 유저 ID를 얻기 위해 사용
 ) : MyPageRepository {
 
     override fun getMyInfo(): Flow<User> = flow {
-        val uid = firebaseAuth.currentUser?.uid ?: "test2"
-        val userDocRef = firestore.collection("users").document("test2") // TODO: 나중에 uid로 변경
+        //val uid = firebaseAuth.currentUser?.uid ?: "test2" // TODO: 나중에 uid로 수정
+        val uid = "test2" // TODO: 나중에 uid로 수정
 
-        coroutineScope {
-            // 사용자 기본 정보 가져오기
-            val userDeferred = async(Dispatchers.IO) {
-                val userDoc = userDocRef.get().await()
-                userDoc.toObject<User>() ?: User()
-            }
+        val userResult = userDataSource.getUserInfo(uid)
+        val appsResult = userDataSource.getUserApps(uid)
+        val trophiesResult = userDataSource.getUserTrophies(uid)
 
-            // Apps 서브 컬렉션 가져오기
-            val appsDeferred = async(Dispatchers.IO) {
-                val appsSnapshot = userDocRef.collection("apps").get().await()
-                appsSnapshot.toObjects<AllowedApp>()
-            }
+        val user = userResult.getOrElse { User() }
+        val apps = appsResult.getOrElse { emptyList() }
+        val trophies = trophiesResult.getOrElse { emptyList() }
 
-            // Trophies 서브 컬렉션 가져오기
-            val trophiesDeferred = async(Dispatchers.IO) {
-                val trophiesSnapshot = userDocRef.collection("trophies").get().await()
-                trophiesSnapshot.toObjects<Trophy>()
-            }
-
-            // 결과 수집 및 MyInfo 객체 생성
-            val user = userDeferred.await()
-            val apps = appsDeferred.await()
-            val trophies = trophiesDeferred.await()
-
-            emit(user.copy(apps = apps, trophies = trophies))
-        }
+        emit(user.copy(apps = apps, trophies = trophies))
     }.flowOn(Dispatchers.IO)
 
     override fun getMyAppUsage(): Flow<List<AppUsage>> = flow {
@@ -71,7 +55,6 @@ class MyPageRepositoryImpl @Inject constructor(
         )
 
         if (usageStats.isNullOrEmpty()) {
-            Log.d("jade", "getMyAppUsage: empty")
             emit(emptyList<AppUsage>())
         } else {
             val sortedUsageStats = usageStats
@@ -95,24 +78,12 @@ class MyPageRepositoryImpl @Inject constructor(
                 )
             }
 
-            Log.d("jade", "getMyAppUsage: $appUsageList")
-
             emit(appUsageList)
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun updateAppUsageLimit(allowedApp: AllowedApp): Flow<Boolean> = flow {
-        try {
-            //val uid = firebaseAuth.currentUser?.uid ?: "test2" // TODO: 나중에 uid로 변경
-            val userDocRef = firestore.collection("users").document("test2") // TODO: 나중에 uid로 변경
-            val appDocRef = userDocRef.collection("apps").document(allowedApp.packageId)
-
-            // Firestore에서 해당 앱의 제한 시간을 업데이트
-            appDocRef.update("limitedTime", allowedApp.limitedTime).await()
-            emit(true)
-        } catch (e: Exception) {
-            Log.e("MyPageRepositoryImpl", "Error updating app usage limit", e)
-            emit(false)
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun updateAppUsageLimit(allowedApp: AllowedApp): Result<Boolean> {
+        val uid = firebaseAuth.currentUser?.uid ?: "test2"
+        return userDataSource.updateAppUsageLimit(uid, allowedApp)
+    }
 }

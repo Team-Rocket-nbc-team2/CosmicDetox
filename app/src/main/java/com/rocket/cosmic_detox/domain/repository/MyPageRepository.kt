@@ -11,5 +11,5 @@ interface MyPageRepository {
 
     fun getMyAppUsage(): Flow<List<AppUsage>>
 
-    fun updateAppUsageLimit(allowedApp: AllowedApp): Flow<Boolean>
+    suspend fun updateAppUsageLimit(allowedApp: AllowedApp): Result<Boolean>
 }

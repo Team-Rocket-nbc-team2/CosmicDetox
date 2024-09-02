@@ -19,6 +19,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @Singleton
     @Provides
     fun providePackageManager(@ApplicationContext context: Context): PackageManager {
         return context.packageManager
@@ -34,7 +35,7 @@ object AppModule {
     }
 
 
-
+    @Singleton
     @Provides
     fun provideUsageStatsManager(@ApplicationContext context: Context): UsageStatsManager {
         return context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager

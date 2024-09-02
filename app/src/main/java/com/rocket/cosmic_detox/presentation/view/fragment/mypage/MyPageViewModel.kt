@@ -35,12 +35,12 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getMyInfo()
                 .catch {
-                    Log.e("jade", "loadMyInfo: $it")
+                    Log.e("MyPageViewModel", "loadMyInfo: $it")
                     _myInfo.value = MyPageUiState.Error(it.toString())
                 }
-                .collect{
+                .collect {
+                    Log.d("MyPageViewModel", "User: $it")
                     _myInfo.value = MyPageUiState.Success(it)
-                    Log.d("jade", "loadMyInfo: $it")
                 }
         }
     }
@@ -50,28 +50,28 @@ class MyPageViewModel @Inject constructor(
             repository.getMyAppUsage()
                 .catch {
                     _myAppUsageList.value = MyPageUiState.Error(it.toString())
-                    Log.e("jade", "loadMyAppUsage: $it")
+                    Log.e("MyPageViewModel", "loadMyAppUsage: $it")
                 }
                 .collect {
                     _myAppUsageList.value = MyPageUiState.Success(it)
-                    Log.d("jade", "loadMyAppUsage: $it")
                 }
         }
     }
 
-    // 시간 설정 데이터를 처리하고 Firestore에 저장하는 메서드
     fun setAppUsageLimit(allowedApp: AllowedApp, hour: String, minute: String) {
         viewModelScope.launch {
             val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
-            // Firestore에 시간 제한 데이터를 저장
+//            val success = repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
+//            _updateResult.value = success
+//            if (success) {
+//                loadMyInfo()
+//            }
             repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
-                .catch {
-                    Log.e("MyPageViewModel", "Failed to set app usage limit", it)
-                    _updateResult.value = false
-                }
-                .collect {
-                    _updateResult.value = true
+                .onSuccess {
+                    _updateResult.value = it
                     loadMyInfo()
+                }.onFailure {
+                    Log.e("MyPageViewModel", "업데이트 실패: $it")
                 }
         }
     }
