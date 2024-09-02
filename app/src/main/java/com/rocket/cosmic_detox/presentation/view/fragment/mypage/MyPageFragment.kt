@@ -16,12 +16,19 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
+import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
+import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
+import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +52,7 @@ class MyPageFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMyPageBinding.inflate(inflater, container, false)
         return binding.root
@@ -64,6 +71,45 @@ class MyPageFragment : Fragment() {
         binding.btnAllowAppSetting.setOnClickListener {
             val action = MyPageFragmentDirections.actionMyToModifyAllowApp()
             findNavController().navigate(action)
+        }
+
+        // 회원 탈퇴 기능 구현
+        binding.tvWithdrawal.setOnClickListener {
+            val dialog = TwoButtonDialogDescFragment(
+                title = getString(R.string.dialog_withdrawal),
+                description = getString(R.string.dialog_withdrawal_desc),
+                onClickConfirm = {
+                    val user = Firebase.auth.currentUser!!
+                    Log.d("withdrawal2", user.email.toString())
+                    user.delete()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val intent = Intent(requireContext(), SignInActivity::class.java)
+                                startActivity(intent)
+                                Log.d("withdrawal", "User account deleted.")
+                            }
+                        }
+                    Log.d("intent", "Intent Successfully")
+                },
+                onClickCancel = { false }
+            )
+            dialog.isCancelable = false
+            dialog.show(getParentFragmentManager(), "ConfirmDialog")
+        }
+
+        // 로그아웃 기능 구현
+        binding.tvSignOut.setOnClickListener {
+            val dialog = TwoButtonDialogFragment(
+                title = getString(R.string.dialog_sign_out),
+                onClickConfirm = {
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(requireContext(), SignInActivity::class.java)
+                    startActivity(intent)
+                },
+                onClickCancel = { false }
+            )
+            dialog.isCancelable = false
+            dialog.show(getParentFragmentManager(), "ConfirmDialog")
         }
     }
 
@@ -88,13 +134,18 @@ class MyPageFragment : Fragment() {
                         MyPageUiState.Loading -> {
                             Log.d("MyPageFragment", "MyPageFragment - Loading")
                         }
+
                         is MyPageUiState.Success -> {
                             setMyInfo(uiState.data)
                             myTrophyAdapter.submitList(uiState.data.trophies)
                             allowedApps = uiState.data.apps
                         }
+
                         is MyPageUiState.Error -> {
-                            Log.d("MyPageFragment", "MyPageFragment - Error: ${uiState.message}")
+                            Log.d(
+                                "MyPageFragment",
+                                "MyPageFragment - Error: ${uiState.message}"
+                            )
                         }
                     }
                 }
@@ -108,21 +159,28 @@ class MyPageFragment : Fragment() {
                         MyPageUiState.Loading -> {
                             Log.d("MyPageFragment", "myAppUsageList - Loading")
                         }
+
                         is MyPageUiState.Success -> {
                             myAppUsageAdapter.submitList(uiState.data)
                         }
+
                         is MyPageUiState.Error -> {
-                            Log.d("MyPageFragment", "myAppUsageList - Error: ${uiState.message}")
+                            Log.d(
+                                "MyPageFragment",
+                                "myAppUsageList - Error: ${uiState.message}"
+                            )
                         }
                     }
                 }
         }
     }
 
-    private fun setMyInfo(user: User) = with(binding){
+    private fun setMyInfo(user: User) = with(binding) {
         ivMyProfileImage.loadRankingPlanetImage(user.totalTime.toBigDecimal())
         tvMyName.text = user.name
-        tvMyDescription.text = "지난 ${user.totalDay}일 동안 ${user.totalTime.toBigDecimal().toHours()}시간 여행하였습니다." // TODO: 리소스로 변경
+        tvMyDescription.text = "지난 ${user.totalDay}일 동안 ${
+            user.totalTime.toBigDecimal().toHours()
+        }시간 여행하였습니다." // TODO: 리소스로 변경
     }
 
     private fun checkAndRequestUsageStatsPermission() {
