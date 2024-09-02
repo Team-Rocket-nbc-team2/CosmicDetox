@@ -46,7 +46,8 @@ class MyPageRepositoryImpl @Inject constructor(
 
     override fun getMyAppUsage(): Flow<List<AppUsage>> = flow {
         val endTime = System.currentTimeMillis()
-        val startTime = endTime - (1000 * 60 * 60 * 24 * 7) // 일주일 동안의 데이터 -> TODO: 나중에 당일로 수정
+        //val startTime = endTime - (1000 * 60 * 60 * 24 * 7) // 일주일 동안의 데이터
+        val startTime = endTime - (1000 * 60 * 60 * 24) // 하루(24시간) 동안의 데이터
 
         val usageStats = usageStatsManager.queryUsageStats(
             UsageStatsManager.INTERVAL_DAILY,
@@ -58,17 +59,23 @@ class MyPageRepositoryImpl @Inject constructor(
             emit(emptyList())
         } else {
             val sortedUsageStats = usageStats
-                .filter { it.totalTimeInForeground > 0 }
-                .sortedByDescending { it.totalTimeInForeground }
+                .filter {
+                    it.totalTimeInForeground > 0 &&
+                            packageManager.getLaunchIntentForPackage(it.packageName) != null // 실행 가능한 앱만 필터링
+                }
+                .groupBy { it.packageName }
+                .mapValues { entry ->
+                    entry.value.sumOf { it.totalTimeInForeground } // 동일한 앱의 사용 시간을 합산
+                }
+                .toList()
+                .sortedByDescending { it.second } // 합산된 사용 시간을 기준으로 정렬
                 .take(5) // 많이 사용한 앱 5개만 가져옴
 
-            val appUsageList = sortedUsageStats.map { usageStat ->
-                val packageId = usageStat.packageName
+            val appUsageList = sortedUsageStats.map { (packageId, usageTime) ->
                 val appName = packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(packageId, 0)
                 ).toString()
                 val appIcon = packageManager.getApplicationIcon(packageId)
-                val usageTime = usageStat.totalTimeInForeground
 
                 AppUsage(
                     packageId = packageId,
@@ -77,6 +84,8 @@ class MyPageRepositoryImpl @Inject constructor(
                     usageTime = usageTime
                 )
             }
+
+            Log.d("MyPageRepositoryImpl", "appUsageList: $appUsageList")
 
             emit(appUsageList)
         }
