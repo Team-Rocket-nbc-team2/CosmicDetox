@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class AllowAppRepositoryImpl @Inject constructor(
     private val packageManager: PackageManager,
-    private val firestore: FirebaseFirestore
+    private val userDataSource: UserDataSource
 ) : AllowAppRepository {
 
     override fun getInstalledApps(): Flow<List<AllowedApp>> = flow {
@@ -34,21 +35,7 @@ class AllowAppRepositoryImpl @Inject constructor(
         emit(apps.sortedBy { it.appName })
     }.flowOn(Dispatchers.IO) // Background thread에서 작업 실행
 
-    override fun updateAllowApps(uid: String, apps: List<AllowedApp>): Flow<Boolean> = flow {
-        try {
-            val userDocRef = firestore.collection("users").document(uid)
-            val batch = firestore.batch()
-
-            apps.forEach { app ->
-                val appDocRef = userDocRef.collection("apps").document(app.packageId)
-                batch.set(appDocRef, app)
-            }
-
-            batch.commit().await()
-            emit(true)
-        } catch (e: Exception) {
-            Log.e("AllowAppRepositoryImpl", "Error updating allowed apps", e)
-            emit(false)
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean> {
+        return userDataSource.updateAllowedApps(uid, apps)
+    }
 }

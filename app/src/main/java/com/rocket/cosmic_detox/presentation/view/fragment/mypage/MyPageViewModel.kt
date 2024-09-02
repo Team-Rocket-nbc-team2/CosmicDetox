@@ -68,6 +68,7 @@ class MyPageViewModel @Inject constructor(
 //            }
             repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
                 .onSuccess {
+                    // TODO: 나중에 UiState로 변경해보기
                     _updateResult.value = it
                     loadMyInfo()
                 }.onFailure {

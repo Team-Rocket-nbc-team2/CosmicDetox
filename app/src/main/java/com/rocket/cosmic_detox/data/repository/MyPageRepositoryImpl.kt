@@ -37,16 +37,16 @@ class MyPageRepositoryImpl @Inject constructor(
         val appsResult = userDataSource.getUserApps(uid)
         val trophiesResult = userDataSource.getUserTrophies(uid)
 
-        val user = userResult.getOrElse { User() }
-        val apps = appsResult.getOrElse { emptyList() }
-        val trophies = trophiesResult.getOrElse { emptyList() }
+        val user = userResult.getOrNull() ?: User()
+        val apps = appsResult.getOrNull() ?: emptyList()
+        val trophies = trophiesResult.getOrNull() ?: emptyList()
 
         emit(user.copy(apps = apps, trophies = trophies))
     }.flowOn(Dispatchers.IO)
 
     override fun getMyAppUsage(): Flow<List<AppUsage>> = flow {
         val endTime = System.currentTimeMillis()
-        val startTime = endTime - (1000 * 60 * 60 * 24 * 7) // 일주일 동안의 데이터
+        val startTime = endTime - (1000 * 60 * 60 * 24 * 7) // 일주일 동안의 데이터 -> TODO: 나중에 당일로 수정
 
         val usageStats = usageStatsManager.queryUsageStats(
             UsageStatsManager.INTERVAL_DAILY,
@@ -55,12 +55,12 @@ class MyPageRepositoryImpl @Inject constructor(
         )
 
         if (usageStats.isNullOrEmpty()) {
-            emit(emptyList<AppUsage>())
+            emit(emptyList())
         } else {
             val sortedUsageStats = usageStats
                 .filter { it.totalTimeInForeground > 0 }
                 .sortedByDescending { it.totalTimeInForeground }
-                .take(5) // 상위 5개의 앱
+                .take(5) // 많이 사용한 앱 5개만 가져옴
 
             val appUsageList = sortedUsageStats.map { usageStat ->
                 val packageId = usageStat.packageName
@@ -83,7 +83,8 @@ class MyPageRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun updateAppUsageLimit(allowedApp: AllowedApp): Result<Boolean> {
-        val uid = firebaseAuth.currentUser?.uid ?: "test2"
+        //val uid = firebaseAuth.currentUser?.uid ?: "test2" // TODO: 나중에 uid로 수정
+        val uid = "test2"
         return userDataSource.updateAppUsageLimit(uid, allowedApp)
     }
 }

@@ -12,4 +12,6 @@ interface UserDataSource {
     suspend fun getUserTrophies(uid: String): Result<List<Trophy>>
 
     suspend fun updateAppUsageLimit(uid: String, allowedApp: AllowedApp): Result<Boolean>
+
+    suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean>
 }

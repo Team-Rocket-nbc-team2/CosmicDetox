@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.data.remote.firebase.user
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -53,6 +54,23 @@ class UserDataSourceImpl @Inject constructor(
 
             appDocRef.update("limitedTime", allowedApp.limitedTime).await()
             true
+        }
+    }
+
+    override suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean> {
+        return runCatching {
+            val userDocRef = firestore.collection("users").document(uid)
+            val batch = firestore.batch()
+
+            apps.forEach { app ->
+                val appDocRef = userDocRef.collection("apps").document(app.packageId)
+                batch.set(appDocRef, app)
+            }
+
+            batch.commit().await()
+            true
+        }.onFailure {
+            Log.e("UserDataSourceImpl", "허용 앱 업로드 실패", it)
         }
     }
 }

@@ -21,6 +21,9 @@ class AllowAppViewModel @Inject constructor(
     private val _installedApps = MutableStateFlow<GetListUiState<List<AllowedApp>>>(GetListUiState.Init)
     val installedApps: StateFlow<GetListUiState<List<AllowedApp>>> = _installedApps
 
+    private val _updateResult = MutableStateFlow(false)
+    val updateResult: StateFlow<Boolean> = _updateResult
+
     fun loadInstalledApps() {
         viewModelScope.launch {
             _installedApps.value = GetListUiState.Loading
@@ -42,15 +45,26 @@ class AllowAppViewModel @Inject constructor(
 
     fun updateAllowApps(uid: String, apps: List<AllowedApp>) {
         viewModelScope.launch {
-            repository.updateAllowApps(uid, apps)
-                .catch { exception ->
-                    Log.e("AllowAppViewModel", "Error updating allowed apps", exception)
+            repository.updateAllowedApps(uid, apps)
+                .onSuccess { // TODO: 나중에 UiState로 변경해서 Toast 띄우던가 하기
+                    Log.d("AllowAppViewModel", "허용 앱 업로드 성공")
+                    _updateResult.value = true
                 }
-                .collect { result ->
-                    if (result) {
-                        Log.d("AllowAppViewModel", "Apps updated successfully")
-                    }
+                .onFailure {
+                    Log.e("AllowAppViewModel", "허용 앱 업로드 실패 $it")
                 }
+//                .catch { exception ->
+//                    Log.e("AllowAppViewModel", "허용 앱 업로드 실패 ${exception.message}")
+//                }
+//                .collect { result ->
+//                    if (result) {
+//                        Log.d("AllowAppViewModel", "허용 앱 업로드 성공")
+//                    }
+//                }
         }
+    }
+
+    fun resetUpdateResult() {
+        _updateResult.value = false
     }
 }

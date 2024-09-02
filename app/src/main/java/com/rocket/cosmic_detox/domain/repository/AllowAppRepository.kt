@@ -7,5 +7,5 @@ interface AllowAppRepository {
 
     fun getInstalledApps(): Flow<List<AllowedApp>>
 
-    fun updateAllowApps(uid: String, apps: List<AllowedApp>): Flow<Boolean>
+    suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean>
 }

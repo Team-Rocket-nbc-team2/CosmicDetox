@@ -13,6 +13,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
+import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,6 +40,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         }
     }
     private val allowAppViewModel by viewModels<AllowAppViewModel>()
+    private val myPageViewModel by activityViewModels<MyPageViewModel>() // TODO: 나중에 두 뷰모델을 myPageViewModel로 통합해야하나 고민해보기
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,7 +76,6 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             updateAllowApps()
-            dismiss()
         }
     }
 
@@ -106,6 +108,17 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         Log.d("AllowAppBottomSheet", "checkedApps: $checkedApps")
         if (checkedApps.isNotEmpty()) {
             allowAppViewModel.updateAllowApps("test2", checkedApps) // TODO: uid current user로 수정해야함.
+            viewLifecycleOwner.lifecycleScope.launch {
+                allowAppViewModel.updateResult.collectLatest { success ->
+                    if (success) {
+                        dismiss()
+                        myPageViewModel.loadMyInfo()
+                        allowAppViewModel.resetUpdateResult() // 상태 초기화
+                    } else {
+                        Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
+                    }
+                }
+            }
         } else {
             Toast.makeText(requireContext(), "선택된 앱이 없습니다.", Toast.LENGTH_SHORT).show()
         }
