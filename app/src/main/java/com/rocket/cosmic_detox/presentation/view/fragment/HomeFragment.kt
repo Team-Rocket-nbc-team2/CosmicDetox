@@ -1,17 +1,14 @@
 package com.rocket.cosmic_detox.presentation.view.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
-import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadHomePlanetImage
 import dagger.hilt.android.AndroidEntryPoint

@@ -15,7 +15,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
-import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.system.exitProcess
 
