@@ -13,11 +13,13 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetUseTimeBinding
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 // todo :: 앱 정보 데이터를 받아와야 함. 허용된 앱의 이름을 id와 함께 불러와야 함.
 //  앱 정보를 불러오면 title을 변경하기.
+@AndroidEntryPoint
 class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
     private val modalBottomSheetIconBinding by lazy { ModalBottomsheetIconBinding.inflate(layoutInflater) }
     private lateinit var modalContentSetUseTimeBinding: ModalContentSetUseTimeBinding

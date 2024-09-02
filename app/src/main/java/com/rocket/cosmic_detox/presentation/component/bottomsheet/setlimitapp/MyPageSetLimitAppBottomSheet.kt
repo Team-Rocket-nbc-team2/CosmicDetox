@@ -24,9 +24,11 @@ import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentSetLimitAppBinding: ModalContentSetLimitAppBinding
@@ -95,6 +97,7 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
             adapter = limitedAppAdapter
             itemAnimator = null
         }
+        Log.d("jade", "initView: ${args.allowedApps.toList()}")
         limitedAppAdapter.submitList(args.allowedApps.toList())
     }
 
