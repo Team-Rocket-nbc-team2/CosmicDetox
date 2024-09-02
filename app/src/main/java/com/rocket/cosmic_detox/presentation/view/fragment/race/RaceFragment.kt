@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.UiState
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
 import com.rocket.cosmic_detox.data.model.RankingInfo
@@ -23,6 +24,8 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     private val binding get() = _binding!!
     private val raceAdapter by lazy { RaceAdapter(this) }
     private val viewModel: RaceViewModel by viewModels()
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +47,25 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     private fun initView() = with(binding) {
         rvRace.adapter = raceAdapter
         viewModel.getRanking()
+
+//        val myRanking = db.collection("season")
+//            .document("season-2024-08")
+//            .collection("ranking")
+//            .document("test1")
+//
+//        myRanking.get()
+//            .addOnSuccessListener { document ->
+//                if (document != null) {
+//                    val name = document.getString("name")
+//                    val point = document.getString("point")
+//                    val totalTime = document.getLong("totalTime")
+//                    val uid = document.getString("uid")
+//
+//                    layoutMyRanking.apply {
+//                        tvRankingBottomRank.text
+//                    }
+//                }
+
 //        아래 부분 내 데이터는 firebase에서 query로 받아오기
 //        val myRanking = RankingManager.getMyRanking()
 //        layoutMyRanking.apply {
