@@ -79,8 +79,10 @@
 
     <!--  Dialog  -->
     <string name="dialog_common_focus">여행에 집중하세요!</string>
+    <string name="dialog_common_error">오류가 발생했습니다</string>
     <string name="dialog_default">Dialog Default Text : Title</string>
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">취소</string>
     <string name="dialog_confirm">확인</string>
+
 </resources>

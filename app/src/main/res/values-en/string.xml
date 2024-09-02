@@ -82,4 +82,6 @@
     <string name="dialog_default_desc">Dialog Default Text : description</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_common_error">An error has occurred</string>
+
 </resources>
