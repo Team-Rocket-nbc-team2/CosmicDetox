@@ -17,11 +17,12 @@ class SignInRepositoryImpl @Inject constructor(
         val uId = authUser?.uid.toString()
 
         val userRef = firestoreDB.collection("users").document(uId)
+        val rankingUserRef = firestoreDB.collection("season").document("season-2024-08")
 
         userRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 val userData = document.data
-                // 기존 로그인이면 파이어베이스의 User를 받아와서 다시 업데이트해야함.............!
+                // 재로그인
                 // TODO : 해당 코드 정상작동하는지 검토 필요 (데이터 직접 넣어보며 테스트 요망)
                 if (userData != null) {
                     userRef.set(userData)
@@ -29,7 +30,10 @@ class SignInRepositoryImpl @Inject constructor(
                         .addOnFailureListener { exception -> Log.w("User Data 업데이트 실패", "Error updating document", exception) }
                 }
             } else {
-                // 최초 로그인
+                // 최초 로그인 (회원가입)
+                val trophies = listOf<Trophy>()
+                val apps = listOf<AllowedApp>()
+
                 // TODO : User DataClass 생성 되면 DataClass 맞춰서 생성할 것
                 val firstUser = hashMapOf(
                     "uID" to uId,
@@ -39,13 +43,32 @@ class SignInRepositoryImpl @Inject constructor(
                     "totalDay" to 0,
                     "isWithdrawn" to false,
                     // TODO: 아래 collection에 정보 넣는 거 하기
-                    "trophies" to listOf<Trophy>(),
-                    "apps" to listOf<AllowedApp>(),
+                    "trophies" to trophies,
+                    "apps" to apps,
                 )
+
+                val firstRankingUser = hashMapOf(
+                    "uid" to uId,
+                    "name" to authUser?.displayName.toString(),
+                    "point" to 0,
+                    "totalTime" to 0,
+                )
+
+                rankingUserRef.collection("ranking").add(firstRankingUser)
+                    .addOnSuccessListener { Log.d("User Data의 Apps 전송 성공", "App document written!") }
+                    .addOnFailureListener { exception -> Log.w("Firestore", "Error adding app document", exception) }
 
                 userRef.set(firstUser)
                     .addOnSuccessListener { Log.d("User Data 전송 성공", "User data is successfully written!") }
                     .addOnFailureListener { exception -> Log.w("User Data 전송 실패", "Error writing document", exception) }
+
+                userRef.collection("trophies").add(trophies)
+                    .addOnSuccessListener { Log.d("User Data의 Trophies 전송 성공", "Trophy document written!") }
+                    .addOnFailureListener { exception -> Log.w("Firestore", "Error adding trophy document", exception) }
+
+                userRef.collection("apps").add(apps)
+                    .addOnSuccessListener { Log.d("User Data의 Apps 전송 성공", "App document written!") }
+                    .addOnFailureListener { exception -> Log.w("Firestore", "Error adding app document", exception) }
             }
         }
     }
