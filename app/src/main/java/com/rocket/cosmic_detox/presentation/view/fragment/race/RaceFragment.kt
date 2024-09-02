@@ -71,7 +71,12 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                         tvRankingBottomStats.setStats(point.toBigDecimal(), totalTime.toBigDecimal())
                         tvRankingBottomUserName.text = "$name"
                     }
+                } else {
+                    Log.d("db", "No Documents")
                 }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("db", "get failed with ", exception)
             }
     }
 
