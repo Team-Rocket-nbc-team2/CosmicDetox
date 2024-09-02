@@ -4,9 +4,9 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.auth.User
-import com.rocket.cosmic_detox.data.model.App
+import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
-import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.Trophy
 import javax.inject.Inject
 
 class SignInRepositoryImpl @Inject constructor(
@@ -22,7 +22,7 @@ class SignInRepositoryImpl @Inject constructor(
         userRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 // 기존 유저
-//                val userData = document.toObject(User::class.java)
+                val userData = document.toObject(User::class.java)
                 Log.d("기존 유저 정보 업데이트", "Loaded user data userData ${document}")
             } else {
                 // 최초 로그인
@@ -37,7 +37,7 @@ class SignInRepositoryImpl @Inject constructor(
                     "isWithdrawn" to false,
                     // TODO: 아래 collection에 정보 넣는 거 하기
                     "trophies" to listOf<Trophy>(),
-                    "apps" to listOf<App>(),
+                    "apps" to listOf<AllowedApp>(),
                 )
 
                 userRef.set(firstUser)

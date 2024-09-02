@@ -48,7 +48,7 @@ class SignInActivity : AppCompatActivity() {
             signInObserve(this)
         }
 
-    private fun signInObserve(context: Context) = with(signInBinding) {
+    private fun signInObserve(context: Context) {
         lifecycleScope.launch {
             signInViewModel.status.collectLatest {
                 when (it) {
