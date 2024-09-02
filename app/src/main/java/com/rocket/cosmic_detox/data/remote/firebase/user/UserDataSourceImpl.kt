@@ -12,11 +12,10 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : UserDataSource {
 
-    override suspend fun getUserInfo(uid: String): Result<User> {
+    override suspend fun getUserInfo(uid: String): Result<User> { // Result는 코루틴에서 예외처리를 위한 클래스 (Result.success(true), Result.failure(exception)) -> 성공, 실패 시 로그 출력
         return runCatching {
             val userDoc = firestore.collection("users").document(uid).get().await()
             userDoc.toObject<User>() ?: User()
@@ -60,11 +59,11 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean> {
         return runCatching {
             val userDocRef = firestore.collection("users").document(uid)
-            val batch = firestore.batch()
+            val batch = firestore.batch() //batch로 여러 개를 한번에 업로드, 부분 성공 or 부분 실패는 없음
 
             apps.forEach { app ->
                 val appDocRef = userDocRef.collection("apps").document(app.packageId)
-                batch.set(appDocRef, app)
+                batch.set(appDocRef, app) // set으로 하면 기존 데이터를 덮어씌운다
             }
 
             batch.commit().await()

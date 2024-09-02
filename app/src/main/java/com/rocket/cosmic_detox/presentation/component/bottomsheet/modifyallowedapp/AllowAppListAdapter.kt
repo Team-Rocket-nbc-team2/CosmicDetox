@@ -40,19 +40,10 @@ class AllowAppListAdapter(
 
         override fun onBind(item: AllowedApp) {
             with(binding) {
-                // 체크박스 클릭 시 발생할 이벤트 처리
-                //checkboxAllowApp.setOnCheckedChangeListener(null) // 리스너 해제
-
-                // 체크박스 상태 초기화
-                checkboxAllowApp.isChecked = checkedItems.contains(item) // TODO: 나중에 contains로 or isAllowed로 변경해야 하는지 확인
-
-                // 아이템 뷰 클릭 처리
+                checkboxAllowApp.isChecked = checkedItems.contains(item)
                 itemView.setOnClickListener {
-                    // 체크박스 상태 반전
                     checkboxAllowApp.isChecked = !checkboxAllowApp.isChecked
                 }
-
-                // 체크박스 클릭 처리
                 checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         checkedItems.add(item)
@@ -62,15 +53,12 @@ class AllowAppListAdapter(
                     onClick(item)
                 }
 
-                // 나머지 바인딩 작업
                 Glide.with(ivAllowAppIcon)
                     .load(context.packageManager.getApplicationIcon(item.packageId))
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
                     .into(ivAllowAppIcon)
                 tvAllowAppName.text = item.appName
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
-
-                //checkboxAllowApp.isChecked = item.isAllowed // TODO: 나중에 contains로 변경해야 하는지 확인
             }
         }
 

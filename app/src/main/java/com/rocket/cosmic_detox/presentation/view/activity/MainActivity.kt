@@ -2,9 +2,7 @@ package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.app.AppOpsManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity

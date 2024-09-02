@@ -10,7 +10,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp.AppDiffCallback
-import com.rocket.cosmic_detox.presentation.extensions.toMinutes
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class LimitedAppAdapter(

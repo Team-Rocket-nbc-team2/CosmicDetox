@@ -128,23 +128,6 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         Toast.makeText(requireContext(), updatedApp.packageId, Toast.LENGTH_SHORT).show()
     }
 
-
-//    private fun updateAllowApp(updatedApp: AllowedApp) {
-//        val updatedList = allowAppListAdapter.currentList.toMutableList()
-//        val originalApp = updatedList.find { it.packageId == updatedApp.packageId }
-//        originalApp?.let {
-//            updatedList.remove(it)
-//        }
-//
-//        if (updatedApp.isAllowed) {
-//            updatedList.add(0, updatedApp) // 체크되면 상단에 추가
-//        } else {
-//            updatedList.add(updatedApp) // 체크 해제 시 원래 리스트에 다시 추가
-//        }
-//
-//        allowAppListAdapter.submitList(updatedList.sortedBy { it.appName })
-//    }
-
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
         val behavior = BottomSheetBehavior.from(bottomSheet)

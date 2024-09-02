@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

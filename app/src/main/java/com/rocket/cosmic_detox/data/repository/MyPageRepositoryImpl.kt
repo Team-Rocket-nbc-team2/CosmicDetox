@@ -26,7 +26,7 @@ class MyPageRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource,
     private val usageStatsManager: UsageStatsManager,
     private val packageManager: PackageManager,
-    private val firebaseAuth: FirebaseAuth // 유저 ID를 얻기 위해 사용
+    private val firebaseAuth: FirebaseAuth
 ) : MyPageRepository {
 
     override fun getMyInfo(): Flow<User> = flow {

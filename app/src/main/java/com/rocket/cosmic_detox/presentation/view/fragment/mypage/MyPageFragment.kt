@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -58,15 +57,11 @@ class MyPageFragment : Fragment() {
         initViewModel()
 
         binding.btnSetLimitAppUseTime.setOnClickListener {
-//            val setLimitAppBottomSheet = MyPageSetLimitAppBottomSheet()
-//            setLimitAppBottomSheet.show(parentFragmentManager, setLimitAppBottomSheet.tag)
             val action = MyPageFragmentDirections.actionMyToSetLimitApp(allowedApps.toTypedArray())
             findNavController().navigate(action)
         }
 
         binding.btnAllowAppSetting.setOnClickListener {
-//            val modifyAllowAppBottomSheet = MyPageModifyAllowAppBottomSheet()
-//            modifyAllowAppBottomSheet.show(parentFragmentManager, modifyAllowAppBottomSheet.tag)
             val action = MyPageFragmentDirections.actionMyToModifyAllowApp()
             findNavController().navigate(action)
         }
@@ -127,7 +122,7 @@ class MyPageFragment : Fragment() {
     private fun setMyInfo(user: User) = with(binding){
         ivMyProfileImage.loadRankingPlanetImage(user.totalTime.toBigDecimal())
         tvMyName.text = user.name
-        tvMyDescription.text = "지난 ${user.totalDay}일 동안 ${user.totalTime.toBigDecimal().toHours()}시간 여행하였습니다."
+        tvMyDescription.text = "지난 ${user.totalDay}일 동안 ${user.totalTime.toBigDecimal().toHours()}시간 여행하였습니다." // TODO: 리소스로 변경
     }
 
     private fun checkAndRequestUsageStatsPermission() {
