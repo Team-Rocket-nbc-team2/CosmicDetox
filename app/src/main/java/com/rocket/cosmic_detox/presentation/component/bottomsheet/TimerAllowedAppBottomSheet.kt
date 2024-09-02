@@ -2,9 +2,12 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +36,9 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
+    private val sp by lazy { requireContext().getSharedPreferences("allowAppTimer", Context.MODE_PRIVATE) }
+    private var countDownTimer: CountDownTimer? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,6 +58,23 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         return modalBottomSheetIconBinding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (sp.getLong("allowUseStartTime", 0) != 0L) {
+            val startTime = sp.getLong("allowUseStartTime", 0)
+            val currentTime = System.currentTimeMillis() / 1000
+
+            val usedTime = currentTime - startTime
+            if (usedTime < 60 && countDownTimer != null) {
+                Log.d("TAG", "onResume 남은 제한 시간: ${60 - usedTime}")
+                countDownTimer?.cancel()
+            }
+
+            sp.edit().clear().apply()
+        }
+    }
+
     private fun allowedAppListObserve() = with(modalContentAllowedAppBinding) {
         lifecycleScope.launch {
             allowedAppViewModel.allowedAppList.collectLatest {
@@ -63,6 +86,12 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
                     rvAllowedAppList.adapter = AllowedAppAdapter(it.data, requireContext()) { packageId ->
                         val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
                         context?.startActivity(intent)
+
+                        val currentTime = System.currentTimeMillis() / 1000
+                        putSpLongData("allowUseStartTime", currentTime)
+
+                        // todo :: service를 이용해 allowUseStartTime을 이용해 endTime을 구하고, endTime에 도달하면 우리 앱으로 불러들이기.
+                        initCountDownTimer()
                     }
                     rvAllowedAppList.layoutManager = LinearLayoutManager(context)
                 }
@@ -104,5 +133,35 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
             wm.defaultDisplay.getMetrics(displayMetrics)
             return displayMetrics.heightPixels
         }
+    }
+
+    private fun initCountDownTimer() {
+        countDownTimer = object: CountDownTimer(60 * 1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Log.d("TAG", "onTick: ${millisUntilFinished / 1000}")
+            }
+
+            override fun onFinish() {
+                Log.d("TAG", "onFinish: finished")
+                val toFrontIntent = requireContext().packageManager?.getLaunchIntentForPackage(requireContext().packageName)
+                    ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                context?.startActivity(toFrontIntent)
+                putSpBooleanData("isTimerFinished", true)
+            }
+        }
+
+        countDownTimer?.start()
+    }
+
+    private fun putSpLongData(key: String, value: Long) {
+        sp.edit().apply {
+            putLong(key, value)
+        }.apply()
+    }
+
+    private fun putSpBooleanData(key: String, value: Boolean) {
+        sp.edit().apply {
+            putBoolean(key, value)
+        }.apply()
     }
 }
