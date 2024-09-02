@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
@@ -39,16 +40,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
     }
 
     private fun initView() = with(binding) {
         btnNavigateToTimer.setOnClickListener {
             val dialog = TwoButtonDialogFragment(
-                getString(R.string.home_travel_start)
-            ) {
-                val action = HomeFragmentDirections.actionHomeToTimer()
-                findNavController().navigate(action)
-            }
+                title = getString(R.string.home_travel_start),
+                onClickConfirm = {
+                    val action = HomeFragmentDirections.actionHomeToTimer()
+                    findNavController().navigate(action) },
+                onClickCancel = { false }
+            )
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
         }
