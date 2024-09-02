@@ -7,7 +7,7 @@
     android:layout_marginBottom="8dp">
 
     <ImageView
-        android:id="@+id/ic_trophy"
+        android:id="@+id/iv_trophy"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:src="@drawable/sample_trophy_image"

@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.di
 
+import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @Singleton
     @Provides
     fun providePackageManager(@ApplicationContext context: Context): PackageManager {
         return context.packageManager
@@ -33,4 +35,9 @@ object AppModule {
     }
 
 
+    @Singleton
+    @Provides
+    fun provideUsageStatsManager(@ApplicationContext context: Context): UsageStatsManager {
+        return context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+    }
 }
