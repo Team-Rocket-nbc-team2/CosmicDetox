@@ -1,9 +1,12 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
+import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,11 +16,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
+    private var lastBackPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         setBottomNavigation()
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallBack)
+
 //        if (!hasUsageStatsPermission(this)) {
 //            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
 //            startActivity(intent)
@@ -62,5 +70,20 @@ class MainActivity : AppCompatActivity() {
             context.packageName
         )
         return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+
+    private val backPressedCallBack = object : OnBackPressedCallback(true) {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun handleOnBackPressed() {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastBackPressedTime >= 2000) {
+                Toast.makeText(this@MainActivity, getString(R.string.terminate_app_alert), Toast.LENGTH_SHORT).show()
+                lastBackPressedTime = currentTime
+            } else {
+                finishAffinity()
+                exitProcess(0)
+            }
+        }
     }
 }

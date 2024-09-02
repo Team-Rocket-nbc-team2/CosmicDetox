@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">CosmicDetox</string>
 
+    <!--  Common  -->
+    <string name="terminate_app_alert">Press one more time to terminate the app.</string>
+    <string name="terminate_app">Are you sure to leave?</string>
+
     <!--  Race  -->
     <string name="race_description_profile_image">User Profile Thumbnail Image</string>
     <string name="race_format_total_time">%1$d hours %2$d minutes</string>
