@@ -25,7 +25,7 @@ class RaceRepositoryImpl @Inject constructor(private val db: FirebaseFirestore) 
                     it.toObject<RankingInfo>()
                 } ?: emptyList()
 
-                trySend(docs)
+                trySend(docs.sortedByDescending { it.totalTime })
             } else {
                 Log.e("ggil", "실패")
             }
