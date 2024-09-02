@@ -33,10 +33,10 @@ class RankingTopListAdapter(
                 listener.onRankingItemClick(ranking)
             }
             with(binding) {
-                ivRankingTopUserProfile.loadRankingPlanetImage(ranking.cumulativeTime)
+                ivRankingTopUserProfile.loadRankingPlanetImage(ranking.totalTime.toBigDecimal())
                 tvRankingTopUserName.text = ranking.name
-                tvRankingTopTime.setCumulativeTime(ranking.cumulativeTime)
-                tvRankingTopPoint.setPoints(ranking.points)
+                tvRankingTopTime.setCumulativeTime(ranking.totalTime.toBigDecimal())
+                tvRankingTopPoint.setPoints(ranking.point.toBigDecimal())
             }
         }
 
