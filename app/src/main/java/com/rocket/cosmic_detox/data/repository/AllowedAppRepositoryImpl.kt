@@ -27,4 +27,15 @@ class AllowedAppRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun updateLimitedTimeAllowApp(packageId: String, remainTime: Int, failCallback: (Throwable?) -> Unit) {
+        val fireStoreRef = fireStore.collection("users")
+            .document(firebaseAuth.currentUser?.uid ?: "test1")
+            .collection("apps")
+            .document(packageId)
+
+        fireStoreRef.update("limitedTime", remainTime).addOnCompleteListener { task ->
+            if (!task.isSuccessful) failCallback(task.exception?.cause)
+        }
+    }
 }
