@@ -54,11 +54,10 @@ class HomeFragment : Fragment() {
             userViewModel.userState.collectLatest { uiState ->
                 when (uiState) {
                     is UiState.Success -> {
-                        Log.d("HomeFragment get UserData", "${uiState.data}")
                         bindingUserData(uiState.data)
                     }
                     else -> {
-                        Log.e("HomeFragment get UserData", "실패했습니다.")
+                        Log.e("HomeFragment get UserData", "유저 정보 불러오기를 실패했습니다.")
                     }
                 }
             }
