@@ -13,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
+import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SignInActivity : AppCompatActivity() {
+class SignInActivity() : AppCompatActivity() {
     private val signInBinding by lazy { ActivitySignInBinding.inflate(layoutInflater) }
     private val signInViewModel by viewModels<SignInViewModel>()
     val googleSignInClient: GoogleSignInClient by lazy {
@@ -30,6 +31,20 @@ class SignInActivity : AppCompatActivity() {
             .build()
 
         GoogleSignIn.getClient(this, gso)
+    }
+
+    // 자동 로그인 로직
+    override fun onStart() {
+        super.onStart()
+
+        val user = signInViewModel.auth.currentUser
+
+        user?.getIdToken(true)?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,8 +71,13 @@ class SignInActivity : AppCompatActivity() {
                         val intent = Intent(context, MainActivity::class.java)
                         startActivity(intent)
                     }
+                    is UiState.Failure -> {
+                        val dialog = OneButtonDialogFragment(getString(R.string.sign_failure)){}
+                        dialog.isCancelable = false
+                        dialog.show(supportFragmentManager, "ConfirmDialog")
+                    }
                     else -> {
-                        // 로그인 실패 또는 로딩 중
+                        // 로딩 중
                     }
                 }
             }
