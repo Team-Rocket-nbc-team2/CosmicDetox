@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.databinding.DialogTwobuttonBinding
-import com.rocket.cosmic_detox.presentation.view.fragment.HomeFragmentDirections
 
 class TwoButtonDialogFragment(
     private val title: String,

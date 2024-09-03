@@ -31,7 +31,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_home_explanation"
         android:layout_width="0dp"
-        android:layout_height="220sp"
+        android:layout_height="220dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +50,7 @@
             app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
+            android:id="@+id/tv_home_planet_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -61,15 +62,15 @@
             app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
-            android:id="@+id/tv_home_hours"
+            android:id="@+id/tv_home_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/home_hours"
+            android:layout_marginEnd="6dp"
+            android:text="@string/home_total"
             android:textColor="@color/white20"
             android:textSize="@dimen/text_size_16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_home_hours_count"
             app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
@@ -85,15 +86,15 @@
             app:layout_constraintTop_toTopOf="@id/cl_home_explanation" />
 
         <TextView
-            android:id="@+id/tv_home_total"
+            android:id="@+id/tv_home_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="6dp"
-            android:text="@string/home_total"
+            android:layout_marginEnd="16dp"
+            android:text="@string/home_hours"
             android:textColor="@color/white20"
             android:textSize="@dimen/text_size_16sp"
-            app:layout_constraintEnd_toStartOf="@+id/tv_home_hours_count"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cl_home_explanation" />
 
         <TextView
@@ -119,12 +120,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
-            android:text="@string/home_travel_btn_text"
             android:drawableStart="@drawable/ic_clock"
-            android:textAlignment="center"
-            app:icon="@drawable/ic_clock"
             android:gravity="center"
+            android:text="@string/home_travel_btn_text"
+            android:textAlignment="center"
             android:textAllCaps="false"
+            app:icon="@drawable/ic_clock"
             app:iconGravity="textStart"
             app:layout_constraintBottom_toBottomOf="@+id/cl_home_explanation"
             app:layout_constraintEnd_toEndOf="parent"
