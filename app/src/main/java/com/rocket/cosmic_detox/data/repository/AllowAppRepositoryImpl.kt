@@ -109,7 +109,8 @@ class AllowAppRepositoryImpl @Inject constructor(
         emit(apps.sortedBy { it.appName })
     }.flowOn(Dispatchers.IO) // Background thread에서 작업 실행
 
-    override suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean> {
+    override suspend fun updateAllowedApps(apps: List<AllowedApp>): Result<Boolean> {
+        val uid = userDataSource.getUid()
         return userDataSource.updateAllowedApps(uid, apps)
     }
 }

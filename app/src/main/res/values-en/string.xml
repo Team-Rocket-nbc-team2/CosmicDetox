@@ -98,4 +98,7 @@
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_common_error">An error has occurred</string>
 
+    <!--  Error  -->
+    <string name="error_not_sign_in">User is not signed in</string>
+
 </resources>

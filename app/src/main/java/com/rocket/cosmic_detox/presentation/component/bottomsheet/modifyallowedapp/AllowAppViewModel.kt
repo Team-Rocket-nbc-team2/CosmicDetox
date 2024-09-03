@@ -43,9 +43,9 @@ class AllowAppViewModel @Inject constructor(
         }
     }
 
-    fun updateAllowApps(uid: String, apps: List<AllowedApp>) {
+    fun updateAllowApps(apps: List<AllowedApp>) {
         viewModelScope.launch {
-            repository.updateAllowedApps(uid, apps)
+            repository.updateAllowedApps(apps)
                 .onSuccess { // TODO: 나중에 UiState로 변경해서 Toast 띄우던가 하기
                     Log.d("AllowAppViewModel", "허용 앱 업로드 성공")
                     _updateResult.value = true

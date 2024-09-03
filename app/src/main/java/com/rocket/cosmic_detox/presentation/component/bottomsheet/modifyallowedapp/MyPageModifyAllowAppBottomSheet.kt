@@ -107,7 +107,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         val checkedApps = allowAppListAdapter.getCheckedItems()
         Log.d("AllowAppBottomSheet", "checkedApps: $checkedApps")
         if (checkedApps.isNotEmpty()) {
-            allowAppViewModel.updateAllowApps("test2", checkedApps) // TODO: uid current user로 수정해야함.
+            allowAppViewModel.updateAllowApps(checkedApps) // TODO: uid current user로 수정해야함.
             viewLifecycleOwner.lifecycleScope.launch {
                 allowAppViewModel.updateResult.collectLatest { success ->
                     if (success) {

@@ -15,6 +15,10 @@ class UserDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : UserDataSource {
 
+    override suspend fun getUid(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
     override suspend fun getUserInfo(uid: String): Result<User> { // Result는 코루틴에서 예외처리를 위한 클래스 (Result.success(true), Result.failure(exception)) -> 성공, 실패 시 로그 출력
         return runCatching {
             val userDoc = firestore.collection("users").document(uid).get().await()
