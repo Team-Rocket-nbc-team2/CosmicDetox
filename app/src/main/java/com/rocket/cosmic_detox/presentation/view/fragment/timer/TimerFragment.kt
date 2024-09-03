@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -29,10 +30,15 @@ import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
+import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
+import com.rocket.cosmic_detox.presentation.view.AppMonitorService
 import com.rocket.cosmic_detox.presentation.view.activity.DialogActivity
+import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState.isBottomSheetOpen
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -46,6 +52,7 @@ class TimerFragment : Fragment() {
     private var isTimerRunning = false
 
     private val userViewModel: UserViewModel by viewModels()
+    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
     private val runnable = object : Runnable {
         override fun run() {
@@ -69,6 +76,7 @@ class TimerFragment : Fragment() {
             Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
         }
     }
+    private var allowedAppList = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,12 +92,27 @@ class TimerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         checkAndRequestOverlayPermission()
         initView()
+        allowedAppViewModel.getAllAllowedApps()
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
 
         observeViewModel()
 
         userViewModel.fetchTotalTime()
         startTimer()
+    }
+
+    private fun startAppMonitorService() {
+        Log.d("AllowedAppList", "startAppMonitorService!!!!!!!!!1 : $allowedAppList")
+        val intent = Intent(requireContext(), AppMonitorService::class.java).apply {
+            putStringArrayListExtra("ALLOWED_APP_LIST", allowedAppList as ArrayList<String>)
+            putExtra("asdf", "asdf")
+        }
+        requireContext().startService(intent)
+    }
+
+    private fun stopAppMonitorService() {
+        val intent = Intent(requireContext(), AppMonitorService::class.java)
+        requireContext().stopService(intent)
     }
 
     private fun checkAndRequestOverlayPermission() {
@@ -122,7 +145,9 @@ class TimerFragment : Fragment() {
             )
             overlayPermissionLauncher.launch(intent)
         } else {
-            showOverlay()
+            if (!BottomSheetState.getIsBottomSheetOpen()) {
+                showOverlay()
+            }
         }
     }
 
@@ -137,7 +162,7 @@ class TimerFragment : Fragment() {
     }
 
     private fun showOverlay() {
-        if (Settings.canDrawOverlays(requireContext())) {
+        if (!isOverlayVisible && Settings.canDrawOverlays(requireContext())) {
             val overlayParams = WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -180,6 +205,7 @@ class TimerFragment : Fragment() {
         _binding = null
         stopTimer()
         removeOverlay()
+        stopAppMonitorService()
     }
 
     private fun initView() = with(binding) {
@@ -195,11 +221,13 @@ class TimerFragment : Fragment() {
             )
             dialog.isCancelable = false
             dialog.show(parentFragmentManager, "ConfirmDialog")
+            stopAppMonitorService()
         }
 
         btnTimerRest.setOnClickListener {
             val bottomSheet = TimerAllowedAppBottomSheet()
             bottomSheet.show(parentFragmentManager, "BottomSheet")
+            BottomSheetState.setIsBottomSheetOpen(true)
         }
     }
 
@@ -226,6 +254,22 @@ class TimerFragment : Fragment() {
                     is UiState.Init -> {
                         // 초기 상태 처리코드 추후 작성
                     }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            allowedAppViewModel.allowedAppList.collectLatest {
+                if (it is GetListUiState.Success) {
+                    allowedAppList.clear()
+                    it.data.forEach { allowedApp ->
+                        allowedAppList.add(allowedApp.packageId)
+                    }
+                    Log.d("AllowedAppList", "앱 리스트 가져오기 성공!!!!!!!!!1 : $allowedAppList")
+                    startAppMonitorService()
+                } else if (it is GetListUiState.Failure) {
+                    Log.e("AllowedAppList", "앱 리스트 가져오기 실패!!!!!!!!!1")
+                } else if (it is GetListUiState.Empty) {
+                    Log.d("AllowedAppList", "앱 리스트가 비어있습니다!!!!!!!!")
                 }
             }
         }
@@ -276,9 +320,17 @@ class TimerFragment : Fragment() {
         val seconds = time % 60
         binding.tvTimerTime.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
+}
 
-//    private fun launchDialogActivity() {
-//        val intent = Intent(requireContext(), DialogActivity::class.java)
-//        startActivity(intent)
-//    }
+object BottomSheetState {
+    private var isBottomSheetOpen = false
+
+    fun setIsBottomSheetOpen(value: Boolean) {
+        Log.d("BottomSheetState", "isBottomSheetOpen: $value")
+        isBottomSheetOpen = value
+    }
+
+    fun getIsBottomSheetOpen(): Boolean {
+        return isBottomSheetOpen
+    }
 }
