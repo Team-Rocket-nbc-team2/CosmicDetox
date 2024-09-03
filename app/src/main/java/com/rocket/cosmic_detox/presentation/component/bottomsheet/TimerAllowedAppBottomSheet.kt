@@ -146,7 +146,6 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
                 val toFrontIntent = requireContext().packageManager?.getLaunchIntentForPackage(requireContext().packageName)
                     ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 context?.startActivity(toFrontIntent)
-                putSpBooleanData("isTimerFinished", true)
             }
         }
 
@@ -156,12 +155,6 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
     private fun putSpLongData(key: String, value: Long) {
         sp.edit().apply {
             putLong(key, value)
-        }.apply()
-    }
-
-    private fun putSpBooleanData(key: String, value: Boolean) {
-        sp.edit().apply {
-            putBoolean(key, value)
         }.apply()
     }
 }
