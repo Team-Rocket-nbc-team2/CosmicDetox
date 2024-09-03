@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +35,15 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
+    private val adapter by lazy {
+        AllowedAppAdapter(requireContext()) { packageId, limitedTime ->
+            val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
+            context?.startActivity(intent)
+
+            initCountDownTimer(packageId, limitedTime.toLong())
+            allowedAppViewModel.setSelectedAllowedAppPackage(packageId)
+        }
+    }
     private var countDownTimer: CountDownTimer? = null
 
     override fun onCreateView(
@@ -52,6 +60,9 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
             dismiss()
         }
 
+        modalContentAllowedAppBinding.rvAllowedAppList.adapter = adapter
+        modalContentAllowedAppBinding.rvAllowedAppList.layoutManager = LinearLayoutManager(context)
+
         allowedAppViewModel.getAllAllowedApps()
         observeAllowAppList()
         return modalBottomSheetIconBinding.root
@@ -61,8 +72,15 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         super.onResume()
 
         val remainTime = allowedAppViewModel.countDownRemainTime.value
-        if (remainTime != null && countDownTimer != null) {
-            Log.d("TAG", "onResume 남은 시간: $remainTime")
+        val selectedPackageId = allowedAppViewModel.selectedAllowedAppPackage.value
+        if (remainTime != null && countDownTimer != null && selectedPackageId != null) {
+            allowedAppViewModel.updateLimitedTimeAllowApp(
+                packageId = selectedPackageId,
+                remainTime = remainTime,
+                failCallback = {}
+            )
+            allowedAppViewModel.getAllAllowedApps()
+
             countDownTimer?.cancel()
         }
     }
@@ -75,14 +93,7 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
                 rvAllowedAppList.isVisible = it is GetListUiState.Success
 
                 if (it is GetListUiState.Success) {
-                    rvAllowedAppList.adapter = AllowedAppAdapter(it.data, requireContext()) { packageId ->
-                        val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
-                        context?.startActivity(intent)
-
-                        // todo :: service를 이용해 allowUseStartTime을 이용해 endTime을 구하고, endTime에 도달하면 우리 앱으로 불러들이기.
-                        initCountDownTimer()
-                    }
-                    rvAllowedAppList.layoutManager = LinearLayoutManager(context)
+                    adapter.submitList(it.data)
                 }
             }
         }
@@ -124,18 +135,17 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun initCountDownTimer() {
-        countDownTimer = object: CountDownTimer(60 * 1000, 1000) {
+    private fun initCountDownTimer(packageId: String ,initTimer: Long) {
+        countDownTimer = object: CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                Log.d("TAG", "onTick: ${millisUntilFinished / 1000}")
-                allowedAppViewModel.updateRemainTime(millisUntilFinished / 1000)
+                allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
             }
 
             override fun onFinish() {
-                Log.d("TAG", "onFinish: finished")
-                val toFrontIntent = requireContext().packageManager?.getLaunchIntentForPackage(requireContext().packageName)
-                    ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                val toFrontIntent = context?.packageManager?.getLaunchIntentForPackage(requireContext().packageName)
+                    ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 context?.startActivity(toFrontIntent)
+                allowedAppViewModel.updateLimitedTimeAllowApp(packageId, 0, failCallback = {})
             }
         }
 
