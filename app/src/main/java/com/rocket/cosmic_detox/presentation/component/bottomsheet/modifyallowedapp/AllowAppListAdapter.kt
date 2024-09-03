@@ -1,10 +1,12 @@
 package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp
 
 import android.content.Context
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -16,29 +18,45 @@ import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 class AllowAppListAdapter(
     private val context: Context,
     private val onClick: (CheckedApp) -> Unit
-) : ListAdapter<CheckedApp, ViewHolder<CheckedApp>>(CheckedAppDiffCallback()) {
+) : ListAdapter<CheckedApp, AllowAppListAdapter.AllowAppViewHolder>(CheckedAppDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<CheckedApp> {
+    // SparseBooleanArray를 사용하여 체크 상태 관리
+    private val checkedStates = SparseBooleanArray()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllowAppViewHolder {
         return AllowAppViewHolder.from(parent, onClick, context)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<CheckedApp>, position: Int) {
-        holder.onBind(currentList[position])
+    override fun onBindViewHolder(holder: AllowAppViewHolder, position: Int) {
+        holder.onBind(currentList[position], position, checkedStates)
     }
 
     class AllowAppViewHolder(
         private val binding: ItemAppCheckboxListBinding,
         private val onClick: (CheckedApp) -> Unit,
         private val context: Context
-    ) : ViewHolder<CheckedApp>(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        override fun onBind(item: CheckedApp) {
+        fun onBind(item: CheckedApp, position: Int, checkedStates: SparseBooleanArray) {
             with(binding) {
-                checkboxAllowApp.isChecked = item.isChecked
-                itemView.setOnClickListener {
-                    checkboxAllowApp.isChecked = !checkboxAllowApp.isChecked
+                // 체크 상태를 SparseBooleanArray에서 복원
+                checkboxAllowApp.isChecked = checkedStates.get(position, item.isChecked)
+
+                // 체크박스 클릭 시 상태를 SparseBooleanArray에 저장
+//                checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
+//                    checkedStates.put(position, isChecked)
+//                    //onClick(item)
+//                }
+                checkboxAllowApp.setOnClickListener {
+                    val isChecked = !checkboxAllowApp.isChecked
+                    checkedStates.put(position, isChecked)
+                    onClick(item)
                 }
-                checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
+
+                itemView.setOnClickListener {
+                    val isChecked = !checkboxAllowApp.isChecked
+                    checkboxAllowApp.isChecked = isChecked
+                    checkedStates.put(position, isChecked)
                     onClick(item)
                 }
 

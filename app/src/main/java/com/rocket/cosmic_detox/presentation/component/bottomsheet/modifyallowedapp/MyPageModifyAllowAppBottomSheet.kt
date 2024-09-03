@@ -101,7 +101,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
                     modalContentModifyAllowAppBinding.apply {
-                        progressBar.isVisible = uiState is GetListUiState.Loading
+                        progressBarModifyAllowApp.isVisible = uiState is GetListUiState.Loading
                         rvAllowAppsList.isVisible = uiState is GetListUiState.Success
                         tvSearchResultIsEmpty.isVisible = uiState is GetListUiState.Empty
 
@@ -130,6 +130,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private fun updateAllowApps() {
         if (checkedApps.isNotEmpty()) {
             allowAppViewModel.updateAllowApps(args.allowedApps.toList(), checkedApps)
+            modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = true
             viewLifecycleOwner.lifecycleScope.launch {
                 allowAppViewModel.updateResult.collectLatest { success ->
                     if (success) {
@@ -139,6 +140,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                     } else {
                         Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
                     }
+                    modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = false
                 }
             }
         } else {
