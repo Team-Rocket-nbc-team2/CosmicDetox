@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.databinding.ItemAppUsageBinding
 import com.rocket.cosmic_detox.presentation.extensions.toMinutes
@@ -25,6 +27,7 @@ class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDi
             with(binding) {
                 Glide.with(ivAppUsageIcon)
                     .load(item.appIcon)
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
                     .into(ivAppUsageIcon)
                 tvAppUsageName.text = item.appName
                 tvAppUsageTime.text = item.usageTime.toBigDecimal().toMinutes().toString()

@@ -115,7 +115,11 @@ class MyPageFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        rvMyAppUsage.adapter = myAppUsageAdapter
+        val verticalSpaceHeight = resources.getDimensionPixelSize(R.dimen.item_app_usage_vertical_space)
+        rvMyAppUsage.apply {
+            adapter = myAppUsageAdapter
+            addItemDecoration(AppUsageItemDecoration(verticalSpaceHeight))
+        }
         rvMyTrophies.adapter = myTrophyAdapter
         myPageViewModel.loadMyInfo()
         allowedApps = emptyList()
