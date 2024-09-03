@@ -20,6 +20,8 @@ class SignInRepositoryImpl @Inject constructor(
         val rankingUserRef = firestoreDB.collection("season").document("season-2024-08")
 
         userRef.get().addOnSuccessListener { document ->
+            Log.d("User Data document>>", "${document}")
+
             if (document.exists()) {
                 val userData = document.data
                 // 재로그인
