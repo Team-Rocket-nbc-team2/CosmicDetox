@@ -7,4 +7,5 @@ data class AppUsage(
     val appName: String = "",
     val appIcon: Drawable? = null,
     val usageTime: Long = 0,
+    val usagePercentage: Int = 0
 )

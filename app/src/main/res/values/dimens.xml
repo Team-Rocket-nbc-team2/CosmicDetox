@@ -8,5 +8,6 @@
     <dimen name="text_size_20sp">20sp</dimen>
 
     <dimen name="divider_height">1dp</dimen>
+    <dimen name="item_app_usage_vertical_space">12dp</dimen>
 
 </resources>

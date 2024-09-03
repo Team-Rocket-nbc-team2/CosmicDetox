@@ -38,6 +38,15 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <!--  BottomSheet  -->
+    <style name="AppBottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheetModal</item>
+        <item name="background">@android:color/transparent</item>
+    </style>
+
+    <style name="AppBottomSheetModal" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
 
     <!--  Rounded Image  -->
     <style name="RoundedImage">
