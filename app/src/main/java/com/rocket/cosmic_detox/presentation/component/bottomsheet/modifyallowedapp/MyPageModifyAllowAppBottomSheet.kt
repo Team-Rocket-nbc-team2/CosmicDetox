@@ -27,6 +27,8 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
+import com.rocket.cosmic_detox.presentation.extensions.has
+import com.rocket.cosmic_detox.presentation.extensions.toAllowedApp
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -180,24 +182,4 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             return displayMetrics.heightPixels
         }
     }
-
-    private fun List<CheckedApp>.toAllowedApps(): List<AllowedApp> {
-        return map { app ->
-            AllowedApp(
-                packageId = app.packageId,
-                appName = app.appName,
-                limitedTime = app.limitedTime,
-            )
-        }
-    }
-
-    private fun CheckedApp.toAllowedApp(): AllowedApp {
-        return AllowedApp(
-            packageId = packageId,
-            appName = appName,
-            limitedTime = limitedTime,
-        )
-    }
-
-    private infix fun CheckedApp.has(app: AllowedApp) = packageId == app.packageId
 }
