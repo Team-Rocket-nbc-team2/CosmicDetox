@@ -26,7 +26,7 @@
                 android:layout_height="68dp"
                 android:layout_marginEnd="17dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/sample_profile_image" />
+                tools:src="@drawable/sample_profile_image" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -37,18 +37,18 @@
                     android:id="@+id/tv_my_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="이름"
                     android:textColor="@color/white"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="이름" />
 
                 <TextView
                     android:id="@+id/tv_my_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="지난 22일 동안 82시간 여행했습니다."
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="지난 22일 동안 82시간 여행했습니다." />
             </LinearLayout>
         </LinearLayout>
 
