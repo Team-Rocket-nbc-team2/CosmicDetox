@@ -36,7 +36,6 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
-    private val sp by lazy { requireContext().getSharedPreferences("allowAppTimer", Context.MODE_PRIVATE) }
     private var countDownTimer: CountDownTimer? = null
 
     override fun onCreateView(
@@ -54,28 +53,21 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         }
 
         allowedAppViewModel.getAllAllowedApps()
-        allowedAppListObserve()
+        observeAllowAppList()
         return modalBottomSheetIconBinding.root
     }
 
     override fun onResume() {
         super.onResume()
 
-        if (sp.getLong("allowUseStartTime", 0) != 0L) {
-            val startTime = sp.getLong("allowUseStartTime", 0)
-            val currentTime = System.currentTimeMillis() / 1000
-
-            val usedTime = currentTime - startTime
-            if (usedTime < 60 && countDownTimer != null) {
-                Log.d("TAG", "onResume 남은 제한 시간: ${60 - usedTime}")
-                countDownTimer?.cancel()
-            }
-
-            sp.edit().clear().apply()
+        val remainTime = allowedAppViewModel.countDownRemainTime.value
+        if (remainTime != null && countDownTimer != null) {
+            Log.d("TAG", "onResume 남은 시간: $remainTime")
+            countDownTimer?.cancel()
         }
     }
 
-    private fun allowedAppListObserve() = with(modalContentAllowedAppBinding) {
+    private fun observeAllowAppList() = with(modalContentAllowedAppBinding) {
         lifecycleScope.launch {
             allowedAppViewModel.allowedAppList.collectLatest {
                 tvAllowedAppIsEmpty.isVisible = it is GetListUiState.Empty
@@ -86,9 +78,6 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
                     rvAllowedAppList.adapter = AllowedAppAdapter(it.data, requireContext()) { packageId ->
                         val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
                         context?.startActivity(intent)
-
-                        val currentTime = System.currentTimeMillis() / 1000
-                        putSpLongData("allowUseStartTime", currentTime)
 
                         // todo :: service를 이용해 allowUseStartTime을 이용해 endTime을 구하고, endTime에 도달하면 우리 앱으로 불러들이기.
                         initCountDownTimer()
@@ -139,6 +128,7 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         countDownTimer = object: CountDownTimer(60 * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 Log.d("TAG", "onTick: ${millisUntilFinished / 1000}")
+                allowedAppViewModel.updateRemainTime(millisUntilFinished / 1000)
             }
 
             override fun onFinish() {
@@ -150,11 +140,5 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
         }
 
         countDownTimer?.start()
-    }
-
-    private fun putSpLongData(key: String, value: Long) {
-        sp.edit().apply {
-            putLong(key, value)
-        }.apply()
     }
 }
