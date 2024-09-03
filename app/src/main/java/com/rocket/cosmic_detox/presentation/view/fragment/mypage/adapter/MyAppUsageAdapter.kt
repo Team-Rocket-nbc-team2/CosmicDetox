@@ -9,7 +9,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.databinding.ItemAppUsageBinding
-import com.rocket.cosmic_detox.presentation.extensions.toMinutes
+import com.rocket.cosmic_detox.presentation.extensions.fromMillisecondsToSeconds
+import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDiffCallback()) {
@@ -30,8 +31,8 @@ class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDi
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
                     .into(ivAppUsageIcon)
                 tvAppUsageName.text = item.appName
-                tvAppUsageTime.text = item.usageTime.toBigDecimal().toMinutes().toString()
-                //progressbarAppUsage.setProgress(item.usagePercentage, true) // TODO: 퍼센트 설정해야 함.
+                tvAppUsageTime.setCumulativeTime(item.usageTime.toBigDecimal().fromMillisecondsToSeconds())
+                progressbarAppUsage.setProgress(item.usagePercentage, true) // TODO: 퍼센트 설정해야 함.
             }
         }
 
