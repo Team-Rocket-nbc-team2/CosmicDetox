@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +15,8 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -77,6 +81,20 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             updateAllowApps()
         }
+//        etSearchText.doAfterTextChanged {
+//            // TODO: 검색 기능 구현
+//            allowAppViewModel.searchApp(it.toString())
+//        }
+        etSearchText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // 검색어가 변경될 때마다 ViewModel의 searchApp 메서드 호출
+                allowAppViewModel.searchApp(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     private fun initViewModel() = with(allowAppViewModel) {
