@@ -5,7 +5,7 @@ import com.rocket.cosmic_detox.data.repository.AllowedAppRepositoryImpl
 import javax.inject.Inject
 
 class GetAllowedAppUseCase @Inject constructor(private val allowedAppRepositoryImpl: AllowedAppRepositoryImpl) {
-    operator fun invoke(callback: (List<AllowedApp>) -> Unit, failCallback: (Exception?) -> Unit) {
+    operator fun invoke(callback: (List<AllowedApp>) -> Unit, failCallback: (Throwable?) -> Unit) {
         allowedAppRepositoryImpl.getAllowedApps(callback, failCallback)
     }
 }
