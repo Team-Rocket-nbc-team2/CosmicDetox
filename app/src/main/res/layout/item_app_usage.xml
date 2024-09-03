@@ -3,18 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="8dp"
-    android:background="@color/background_light">
+    android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/iv_app_usage_icon"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_app"
-        android:background="#dcdcdc"
         android:scaleType="centerCrop" />
 
     <LinearLayout
@@ -40,12 +36,13 @@
 
             <ProgressBar
                 android:id="@+id/progressbar_app_usage"
-                android:layout_width="240dp"
+                android:layout_width="0dp"
                 android:layout_height="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
                 android:progressDrawable="@drawable/custom_progressbar"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:max="100" />
+                android:max="100"
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/tv_app_usage_time"
@@ -53,9 +50,12 @@
                 android:layout_height="wrap_content"
                 android:text="0분"
                 android:textColor="@color/blue_grey"
-                android:textSize="14sp"
-                android:layout_marginStart="8dp" />
+                android:textSize="12sp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center_vertical" />
         </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

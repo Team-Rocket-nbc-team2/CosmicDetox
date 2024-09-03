@@ -13,17 +13,22 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
+import com.rocket.cosmic_detox.presentation.extensions.has
+import com.rocket.cosmic_detox.presentation.extensions.toAllowedApp
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +46,8 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     }
     private val allowAppViewModel by viewModels<AllowAppViewModel>()
     private val myPageViewModel by activityViewModels<MyPageViewModel>() // TODO: 나중에 두 뷰모델을 myPageViewModel로 통합해야하나 고민해보기
+    private val args: MyPageModifyAllowAppBottomSheetArgs by navArgs()
+    private lateinit var checkedApps: MutableList<AllowedApp>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,9 +80,18 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private fun initView() = with(modalContentModifyAllowAppBinding) {
         rvAllowAppsList.adapter = allowAppListAdapter
         allowAppViewModel.loadInstalledApps()
+        checkedApps = if (args.allowedApps.isNotEmpty()) {
+            args.allowedApps.toMutableList()
+        } else {
+            mutableListOf()
+        }
+        Log.d("AllowAppBottomSheet", "args.allowedApps: ${args.allowedApps}")
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             updateAllowApps()
+        }
+        etSearchText.doAfterTextChanged {
+            allowAppViewModel.searchApp(it.toString())
         }
     }
 
@@ -85,12 +101,20 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
                     modalContentModifyAllowAppBinding.apply {
-                        progressBar.isVisible = uiState is GetListUiState.Loading
+                        progressBarModifyAllowApp.isVisible = uiState is GetListUiState.Loading
                         rvAllowAppsList.isVisible = uiState is GetListUiState.Success
                         tvSearchResultIsEmpty.isVisible = uiState is GetListUiState.Empty
 
                         when (uiState) {
                             is GetListUiState.Success -> {
+                                // args.allowApps에 포함된 앱은 체크된 상태로 보여줌
+                                // uiState.data에 args.allowedApps의 packageId가 포함되어 있으면 체크된 상태로 보여줌
+                                uiState.data.forEach { app ->
+                                    if (args.allowedApps.any { app has it }) {
+                                        app.isChecked = true
+                                    }
+                                }
+                                Log.d("AllowAppBottomSheet", "uiState.data: ${uiState.data}")
                                 allowAppListAdapter.submitList(uiState.data)
                             }
                             is GetListUiState.Error -> {
@@ -104,10 +128,9 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun updateAllowApps() {
-        val checkedApps = allowAppListAdapter.getCheckedItems()
-        Log.d("AllowAppBottomSheet", "checkedApps: $checkedApps")
         if (checkedApps.isNotEmpty()) {
-            allowAppViewModel.updateAllowApps("test2", checkedApps) // TODO: uid current user로 수정해야함.
+            allowAppViewModel.updateAllowApps(args.allowedApps.toList(), checkedApps)
+            modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = true
             viewLifecycleOwner.lifecycleScope.launch {
                 allowAppViewModel.updateResult.collectLatest { success ->
                     if (success) {
@@ -117,15 +140,23 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                     } else {
                         Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
                     }
+                    modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = false
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "선택된 앱이 없습니다.", Toast.LENGTH_SHORT).show()
+            dismiss()
+            Toast.makeText(requireContext(), "선택된 앱이 없습니다.", Toast.LENGTH_SHORT).show() // TODO: 나중에 삭제
         }
     }
 
-    private fun updateCheckedApp(updatedApp: AllowedApp) {
-        Toast.makeText(requireContext(), updatedApp.packageId, Toast.LENGTH_SHORT).show()
+    private fun updateCheckedApp(updatedApp: CheckedApp) { // TODO: 나중에 삭제
+        // 만약 체크된 앱이면 체크를 해제하고, 체크되지 않은 앱이면 체크를 함
+        val index = checkedApps.indexOfFirst { it.packageId == updatedApp.packageId }
+        if (index != -1) {
+            checkedApps.removeAt(index)
+        } else {
+            checkedApps.add(updatedApp.toAllowedApp())
+        }
     }
 
     private fun setUpRatio(bottomSheetDialog: BottomSheetDialog) {

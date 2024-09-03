@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationMain.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
-                R.id.navigation_home, R.id.navigation_race, R.id.navigation_my -> {
+                R.id.navigation_home, R.id.navigation_race, R.id.navigation_my, R.id.navigation_modify_allow_app_dialog, R.id.navigation_set_limit_app_dialog -> {
                     bottomNavigationMain.visibility = View.VISIBLE
                 }
                 else -> {

@@ -4,6 +4,7 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="android:colorBackground">@color/background</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialog</item>
     </style>
 
     <style name="Theme.CosmicDetox" parent="Base.Theme.CosmicDetox" />

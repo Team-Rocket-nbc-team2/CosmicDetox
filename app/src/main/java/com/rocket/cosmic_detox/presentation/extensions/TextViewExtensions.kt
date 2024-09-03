@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.presentation.extensions
 import android.icu.text.DecimalFormat
 import android.widget.TextView
 import com.rocket.cosmic_detox.R
+import org.w3c.dom.Text
 import java.math.BigDecimal
 
 fun TextView.setCurrentLocation(cumulativeTime: BigDecimal) {
@@ -55,6 +56,19 @@ fun BigDecimal.toSeconds(): Long {
     return this.toLong() % 60
 }
 
+fun Long.fromSecondsToMinutes(): Long {
+    return this / 60
+}
+
+fun Long.fromSecondsToHours(): Long {
+    return this / 3600
+}
+
+// ms -> s
+fun BigDecimal.fromMillisecondsToSeconds(): BigDecimal {
+    return this.divide(BigDecimal(1000))
+}
+
 fun TextView.setPoints(points: BigDecimal) {
     text = context.getString(R.string.race_format_points, points.convertThreeDigitComma())
 }
@@ -89,3 +103,12 @@ fun TextView.setTravelingTime(time: BigDecimal) {
         text = getString(R.string.home_traveling_time, hours, minutes)
     }
 }
+
+
+//fun TextView.setAppUsageTime(time: BigDecimal) {
+//    val hours = time.toHours()
+//    val minutes = time.toMinutes()
+//
+//    context.run {
+//        text = when {
+//            hours > 1 && minutes > 0 -> getString(R.string

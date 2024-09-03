@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -69,7 +70,7 @@ class MyPageFragment : Fragment() {
         }
 
         binding.btnAllowAppSetting.setOnClickListener {
-            val action = MyPageFragmentDirections.actionMyToModifyAllowApp()
+            val action = MyPageFragmentDirections.actionMyToModifyAllowApp(allowedApps.toTypedArray())
             findNavController().navigate(action)
         }
 
@@ -114,7 +115,11 @@ class MyPageFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
-        rvMyAppUsage.adapter = myAppUsageAdapter
+        val verticalSpaceHeight = resources.getDimensionPixelSize(R.dimen.item_app_usage_vertical_space)
+        rvMyAppUsage.apply {
+            adapter = myAppUsageAdapter
+            addItemDecoration(AppUsageItemDecoration(verticalSpaceHeight))
+        }
         rvMyTrophies.adapter = myTrophyAdapter
         myPageViewModel.loadMyInfo()
         allowedApps = emptyList()
@@ -137,6 +142,10 @@ class MyPageFragment : Fragment() {
 
                         is MyPageUiState.Success -> {
                             setMyInfo(uiState.data)
+                            binding.apply {
+                                rvMyTrophies.isVisible = uiState.data.trophies.isNotEmpty()
+                                tvNoTrophyMessage.isVisible = uiState.data.trophies.isEmpty()
+                            }
                             myTrophyAdapter.submitList(uiState.data.trophies)
                             allowedApps = uiState.data.apps
                         }

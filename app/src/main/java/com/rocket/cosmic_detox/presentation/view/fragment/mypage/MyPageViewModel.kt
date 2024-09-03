@@ -58,7 +58,9 @@ class MyPageViewModel @Inject constructor(
 
     fun setAppUsageLimit(allowedApp: AllowedApp, hour: String, minute: String) {
         viewModelScope.launch {
-            val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
+            //val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
+            val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 // 시간과 분을 초로 변환
+
 //            val success = repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
 //            _updateResult.value = success
 //            if (success) {
