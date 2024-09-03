@@ -68,25 +68,28 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:clipToPadding="false"
+            android:minHeight="78dp"
             android:nestedScrollingEnabled="false"
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="8"
-            tools:listitem="@layout/item_my_trophy" />
+            tools:listitem="@layout/item_my_trophy"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_no_trophy_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
             android:layout_gravity="center"
-            android:layout_marginTop="35dp"
-            android:layout_marginBottom="49dp"
+            android:layout_marginBottom="38dp"
+            android:gravity="center"
             android:text="아직 획득한 트로피가 없습니다. \n     더 열심히 여행 해봅시다!"
             android:textColor="@color/blue_grey"
             android:textSize="14sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -117,8 +120,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
             android:layout_marginTop="30dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:text="앱 사용기록을 확인하려면\n권한을 허용해주세요."
