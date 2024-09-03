@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
         ivHomeMyPlanet.loadHomePlanetImage(totalTime)
         tvHomePlanetName.setCurrentLocation(totalTime)
         tvHomeHoursCount.setCumulativeTime(totalTime, true)
-        tvHomeTravelingTime.setTravelingTime(totalTime)
+        tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
     }
 
     override fun onDestroyView() {
