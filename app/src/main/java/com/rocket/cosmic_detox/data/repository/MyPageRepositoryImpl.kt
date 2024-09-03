@@ -30,8 +30,8 @@ class MyPageRepositoryImpl @Inject constructor(
 ) : MyPageRepository {
 
     override fun getMyInfo(): Flow<User> = flow {
-        //val uid = firebaseAuth.currentUser?.uid ?: "test2" // TODO: 나중에 uid로 수정
-        val uid = "test2" // TODO: 나중에 uid로 수정
+        val uid = userDataSource.getUid()
+        //val uid = "test2" // TODO: 나중에 uid로 수정
 
         val userResult = userDataSource.getUserInfo(uid)
         val appsResult = userDataSource.getUserApps(uid)
@@ -71,17 +71,24 @@ class MyPageRepositoryImpl @Inject constructor(
                 .sortedByDescending { it.second } // 합산된 사용 시간을 기준으로 정렬
                 .take(5) // 많이 사용한 앱 5개만 가져옴
 
+            // 최대 사용 시간을 기준으로 usagePercentage 계산
+            val maxUsageTime = sortedUsageStats.maxOfOrNull { it.second } ?: 1L
+
             val appUsageList = sortedUsageStats.map { (packageId, usageTime) ->
                 val appName = packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(packageId, 0)
                 ).toString()
                 val appIcon = packageManager.getApplicationIcon(packageId)
 
+                // 사용 비율 계산
+                val usagePercentage = (usageTime.toDouble() / maxUsageTime * 100).toInt()
+
                 AppUsage(
                     packageId = packageId,
                     appName = appName,
                     appIcon = appIcon,
-                    usageTime = usageTime
+                    usageTime = usageTime,
+                    usagePercentage = usagePercentage
                 )
             }
 
@@ -92,8 +99,7 @@ class MyPageRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun updateAppUsageLimit(allowedApp: AllowedApp): Result<Boolean> {
-        //val uid = firebaseAuth.currentUser?.uid ?: "test2" // TODO: 나중에 uid로 수정
-        val uid = "test2"
+        val uid = userDataSource.getUid()
         return userDataSource.updateAppUsageLimit(uid, allowedApp)
     }
 }

@@ -16,6 +16,8 @@ class SignInRepositoryImpl @Inject constructor(
         val authUser = firebaseAuth.currentUser
         val uId = authUser?.uid.toString()
 
+        Log.d("User Data uId>>", "${uId}: 이게 uId야!!!!!!")
+
         val userRef = firestoreDB.collection("users").document(uId)
         val rankingUserRef = firestoreDB.collection("season").document("season-2024-08")
 
@@ -23,6 +25,7 @@ class SignInRepositoryImpl @Inject constructor(
             Log.d("User Data document>>", "${document}")
 
             if (document.exists()) {
+                Log.d("User Data 존재", "다큐먼트가 있어!!!!")
                 val userData = document.data
                 // 재로그인
                 // TODO : 해당 코드 정상작동하는지 검토 필요 (데이터 직접 넣어보며 테스트 요망)
@@ -32,6 +35,7 @@ class SignInRepositoryImpl @Inject constructor(
                         .addOnFailureListener { exception -> Log.w("User Data 업데이트 실패", "Error updating document", exception) }
                 }
             } else {
+                Log.d("User Data 존재하지 않음", "다큐먼트가 없어!!!!")
                 // 최초 로그인 (회원가입)
                 val trophies = listOf<Trophy>()
                 val apps = listOf<AllowedApp>()
@@ -44,9 +48,6 @@ class SignInRepositoryImpl @Inject constructor(
                     "totalTime" to 0L,
                     "totalDay" to 0,
                     "isWithdrawn" to false,
-                    // TODO: 아래 collection에 정보 넣는 거 하기
-                    "trophies" to trophies,
-                    "apps" to apps,
                 )
 
                 val firstRankingUser = hashMapOf(
@@ -56,7 +57,7 @@ class SignInRepositoryImpl @Inject constructor(
                     "totalTime" to 0,
                 )
 
-                rankingUserRef.collection("ranking").add(firstRankingUser)
+                rankingUserRef.collection("ranking").document(uId).set(firstRankingUser)
                     .addOnSuccessListener { Log.d("User Data의 Apps 전송 성공", "App document written!") }
                     .addOnFailureListener { exception -> Log.w("Firestore", "Error adding app document", exception) }
 
@@ -64,13 +65,6 @@ class SignInRepositoryImpl @Inject constructor(
                     .addOnSuccessListener { Log.d("User Data 전송 성공", "User data is successfully written!") }
                     .addOnFailureListener { exception -> Log.w("User Data 전송 실패", "Error writing document", exception) }
 
-                userRef.collection("trophies").add(trophies)
-                    .addOnSuccessListener { Log.d("User Data의 Trophies 전송 성공", "Trophy document written!") }
-                    .addOnFailureListener { exception -> Log.w("Firestore", "Error adding trophy document", exception) }
-
-                userRef.collection("apps").add(apps)
-                    .addOnSuccessListener { Log.d("User Data의 Apps 전송 성공", "App document written!") }
-                    .addOnFailureListener { exception -> Log.w("Firestore", "Error adding app document", exception) }
             }
         }
     }

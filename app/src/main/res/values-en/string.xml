@@ -31,6 +31,7 @@
     <string name="home_total">Total</string>
     <string name="home_travel_btn_text">Turn off the phone and travel into space.</string>
     <string name="home_travel_start">Would you like to travel into space?</string>
+    <string name="home_traveling_time">You traveled for %1$d hours %2$d minutes.</string>
 
     <!--  Timer  -->
     <string name="timer_finish">Finish</string>
@@ -98,5 +99,8 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_common_error">An error has occurred</string>
+
+    <!--  Error  -->
+    <string name="error_not_sign_in">User is not signed in</string>
 
 </resources>
