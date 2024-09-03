@@ -15,8 +15,11 @@ import javax.inject.Inject
 class AllowedAppViewModel @Inject constructor(
     private val getAllowedAppUseCase: GetAllowedAppUseCase
 ): ViewModel() {
-    private val _allowedAppList =  MutableStateFlow<GetListUiState<List<AllowedApp>>>(GetListUiState.Init)
+    private val _allowedAppList = MutableStateFlow<GetListUiState<List<AllowedApp>>>(GetListUiState.Init)
     val allowedAppList: StateFlow<GetListUiState<List<AllowedApp>>> = _allowedAppList
+
+    private val _countDownRemainTime = MutableStateFlow<Long?>(null)
+    val countDownRemainTime: StateFlow<Long?> = _countDownRemainTime
 
     fun getAllAllowedApps() {
         viewModelScope.launch {
@@ -34,5 +37,7 @@ class AllowedAppViewModel @Inject constructor(
         }
     }
 
-    // todo :: 허용 앱 설정하는 로직 여기에 구현.
+    fun updateRemainTime(remainTime: Long) {
+        _countDownRemainTime.value = remainTime
+    }
 }
