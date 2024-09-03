@@ -25,7 +25,7 @@ class SignInViewModel @Inject constructor(
     private val repository: SignInRepository,
 ) : ViewModel() {
     private val _user = MutableStateFlow<FirebaseUser?>(null)
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private val _status =  MutableStateFlow<UiState<FirebaseUser>>(UiState.Init)
     val status: StateFlow<UiState<FirebaseUser>> = _status.asStateFlow()
@@ -48,6 +48,8 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
+        _status.value = UiState.Loading
+
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
@@ -57,7 +59,7 @@ class SignInViewModel @Inject constructor(
                     _status.value = UiState.Success(_user.value!!)
                 } else {
                     _status.value = UiState.Failure(task.exception)
-                    Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다.")
+                    Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${task.exception}")
                 }
             }
     }

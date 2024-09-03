@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.uistate.UiState
@@ -20,7 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SignInActivity : AppCompatActivity() {
+class SignInActivity() : AppCompatActivity() {
     private val signInBinding by lazy { ActivitySignInBinding.inflate(layoutInflater) }
     private val signInViewModel by viewModels<SignInViewModel>()
     val googleSignInClient: GoogleSignInClient by lazy {
@@ -30,6 +32,20 @@ class SignInActivity : AppCompatActivity() {
             .build()
 
         GoogleSignIn.getClient(this, gso)
+    }
+
+    // 자동 로그인 로직
+    override fun onStart() {
+        super.onStart()
+
+        val user = signInViewModel.auth.currentUser
+
+        user?.getIdToken(true)?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
