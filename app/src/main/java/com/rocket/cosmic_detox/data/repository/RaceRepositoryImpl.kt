@@ -24,7 +24,7 @@ class RaceRepositoryImpl @Inject constructor(private val db: FirebaseFirestore) 
                 val docs = task.result?.documents?.mapNotNull {
                     it.toObject<RankingInfo>()
                 } ?: emptyList()
-
+                // 추후에 포인트 제도로 변경 시 totalTime point로 변경
                 trySend(docs.sortedByDescending { it.totalTime })
             } else {
                 Log.e("ggil", "실패")

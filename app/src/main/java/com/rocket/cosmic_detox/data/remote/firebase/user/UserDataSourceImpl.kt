@@ -12,8 +12,13 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : UserDataSource {
+
+    override suspend fun getUid(): String {
+        return firebaseAuth.currentUser?.uid ?: ""
+    }
 
     override suspend fun getUserInfo(uid: String): Result<User> { // Result는 코루틴에서 예외처리를 위한 클래스 (Result.success(true), Result.failure(exception)) -> 성공, 실패 시 로그 출력
         return runCatching {
@@ -70,6 +75,40 @@ class UserDataSourceImpl @Inject constructor(
             true
         }.onFailure {
             Log.e("UserDataSourceImpl", "허용 앱 업로드 실패", it)
+        }
+    }
+
+    override suspend fun addAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean> {
+        return runCatching {
+            val userDocRef = firestore.collection("users").document(uid)
+            val batch = firestore.batch()
+
+            apps.forEach { app ->
+                val appDocRef = userDocRef.collection("apps").document(app.packageId)
+                batch.set(appDocRef, app) // 새로운 앱 추가 (덮어쓰기)
+            }
+
+            batch.commit().await()
+            true
+        }.onFailure {
+            Log.e("UserDataSourceImpl", "허용 앱 추가 실패", it)
+        }
+    }
+
+    override suspend fun deleteAllowedApps(uid: String, appIds: List<String>): Result<Boolean> {
+        return runCatching {
+            val userDocRef = firestore.collection("users").document(uid)
+            val batch = firestore.batch()
+
+            appIds.forEach { appId ->
+                val appDocRef = userDocRef.collection("apps").document(appId)
+                batch.delete(appDocRef) // 앱 삭제
+            }
+
+            batch.commit().await()
+            true
+        }.onFailure {
+            Log.e("UserDataSourceImpl", "허용 앱 삭제 실패", it)
         }
     }
 }

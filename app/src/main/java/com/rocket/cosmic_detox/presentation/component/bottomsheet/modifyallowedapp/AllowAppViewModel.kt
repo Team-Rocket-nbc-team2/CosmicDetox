@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,11 +20,13 @@ class AllowAppViewModel @Inject constructor(
     private val repository: AllowAppRepository
 ) : ViewModel() {
 
-    private val _installedApps = MutableStateFlow<GetListUiState<List<AllowedApp>>>(GetListUiState.Init)
-    val installedApps: StateFlow<GetListUiState<List<AllowedApp>>> = _installedApps
+    private val _installedApps = MutableStateFlow<GetListUiState<List<CheckedApp>>>(GetListUiState.Init)
+    val installedApps: StateFlow<GetListUiState<List<CheckedApp>>> = _installedApps
 
     private val _updateResult = MutableStateFlow(false)
     val updateResult: StateFlow<Boolean> = _updateResult
+
+    private var currentApps: List<CheckedApp> = emptyList() // 현재 앱 리스트를 저장하는 변수
 
     fun loadInstalledApps() {
         viewModelScope.launch {
@@ -33,6 +37,7 @@ class AllowAppViewModel @Inject constructor(
                     Log.e("AllowAppViewModel", "알 수 없는 에러 발생", exception)
                 }
                 .collect { apps ->
+                    currentApps = apps // 데이터를 로드할 때 저장
                     _installedApps.value = if (apps.isEmpty()) {
                         GetListUiState.Empty
                     } else {
@@ -43,24 +48,30 @@ class AllowAppViewModel @Inject constructor(
         }
     }
 
-    fun updateAllowApps(uid: String, apps: List<AllowedApp>) {
+    fun updateAllowApps(originApps: List<AllowedApp>, updatedApps: List<AllowedApp>) {
         viewModelScope.launch {
-            repository.updateAllowedApps(uid, apps)
-                .onSuccess { // TODO: 나중에 UiState로 변경해서 Toast 띄우던가 하기
+            repository.updateAllowedApps(originApps, updatedApps)
+                .onSuccess {
                     Log.d("AllowAppViewModel", "허용 앱 업로드 성공")
                     _updateResult.value = true
                 }
                 .onFailure {
                     Log.e("AllowAppViewModel", "허용 앱 업로드 실패 $it")
                 }
-//                .catch { exception ->
-//                    Log.e("AllowAppViewModel", "허용 앱 업로드 실패 ${exception.message}")
-//                }
-//                .collect { result ->
-//                    if (result) {
-//                        Log.d("AllowAppViewModel", "허용 앱 업로드 성공")
-//                    }
-//                }
+        }
+    }
+
+    fun searchApp(query: String) {
+        val filteredApps = if (query.isEmpty()) {
+            currentApps
+        } else {
+            currentApps.filter { app -> app.appName.contains(query, ignoreCase = true) }
+        }
+
+        _installedApps.value = if (filteredApps.isEmpty()) {
+            GetListUiState.Empty
+        } else {
+            GetListUiState.Success(filteredApps)
         }
     }
 

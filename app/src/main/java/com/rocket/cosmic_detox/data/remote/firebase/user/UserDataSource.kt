@@ -6,6 +6,8 @@ import com.rocket.cosmic_detox.data.model.User
 
 interface UserDataSource {
 
+    suspend fun getUid(): String
+
     suspend fun getUserInfo(uid: String): Result<User>
 
     suspend fun getUserApps(uid: String): Result<List<AllowedApp>>
@@ -15,4 +17,8 @@ interface UserDataSource {
     suspend fun updateAppUsageLimit(uid: String, allowedApp: AllowedApp): Result<Boolean>
 
     suspend fun updateAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean>
+
+    suspend fun addAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean>
+
+    suspend fun deleteAllowedApps(uid: String, appIds: List<String>): Result<Boolean>
 }

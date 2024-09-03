@@ -31,6 +31,7 @@
     <string name="home_total">Total</string>
     <string name="home_travel_btn_text">Turn off the phone and travel into space.</string>
     <string name="home_travel_start">Would you like to travel into space?</string>
+    <string name="home_traveling_time">You traveled for %1$d hours %2$d minutes.</string>
 
     <!--  Timer  -->
     <string name="timer_start">timer start</string>
@@ -105,5 +106,8 @@
     <string name="dialog_timer_start">timer</string>
     <string name="timer_dialog_pin_request">After pinning the app, you can start the timer. Do you want to pin the app?</string>
     <string name="timer_dialog_pinning_request">"You can start a timer by pinning an app. Do you want to pin the app?"</string>
+
+    <!--  Error  -->
+    <string name="error_not_sign_in">User is not signed in</string>
 
 </resources>
