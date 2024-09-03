@@ -49,11 +49,14 @@
     <string name="dialog_withdrawal_desc">회원탈퇴 후 유저 정보는 7일 동안 임시 보관되며, 이후 영구 삭제됩니다.</string>
 
     <!--  Timer  -->
+    <string name="timer_start">타이머 시작</string>
     <string name="timer_finish">종료</string>
     <string name="timer_rest">잠깐 쉬기</string>
     <string name="timer_dialog_finish">정말로 여행을 종료 하시겠어요?</string>
     <string name="timer_bottom_sheet_title">사용할 어플 선택</string>
     <string name="allowed_app_is_empty">사용할 어플 리스트가 없습니다.\n내정보 화면에서 미리 선택 해보세요!</string>
+    <string name="timer_button_pinning">앱 고정하기</string>
+    <string name="timer_button_start">타이머 시작하기</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
@@ -98,5 +101,8 @@
     <string name="dialog_cancel">취소</string>
     <string name="dialog_confirm">확인</string>
     <string name="dialog_timer_running_warning">타이머가 작동중입니다.</string>
+    <string name="dialog_timer_start">타이머를 시작하시겠습니까?</string>
+    <string name="timer_dialog_pin_request">앱을 고정한 후에만 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?</string>
+    <string name="timer_dialog_pinning_request">"앱을 고정하여 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?"</string>
 
 </resources>
