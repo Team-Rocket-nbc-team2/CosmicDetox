@@ -10,7 +10,7 @@
         android:id="@+id/cl_home_illustration"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/black_planet_background"
+        android:background="@drawable/home_background"
         app:layout_constraintBottom_toTopOf="@+id/cl_home_explanation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
