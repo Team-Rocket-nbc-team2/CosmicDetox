@@ -1,7 +1,9 @@
 package com.rocket.cosmic_detox.data.repository
 
 import android.content.pm.ApplicationInfo
+import android.content.pm.InstallSourceInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
@@ -69,7 +71,6 @@ class AllowAppRepositoryImpl @Inject constructor(
     override fun getInstalledApps(): Flow<List<AllowedApp>> = flow {
         val apps = mutableListOf<AllowedApp>()
         val packages = packageManager.getInstalledPackages(0)
-        Log.d("AllowAppRepositoryImpl", "packages: $packages")
 
         for (packageInfo in packages) {
             val packageName = packageInfo.packageName
@@ -80,8 +81,13 @@ class AllowAppRepositoryImpl @Inject constructor(
             val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
             if (launchIntent != null) {  // 앱이 실행 가능한 경우에만 처리
                 try {
-                    val installSourceInfo = packageManager.getInstallSourceInfo(packageName)
-                    val installerPackageName = installSourceInfo.installingPackageName
+                    val installerPackageName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        val installSourceInfo = packageManager.getInstallSourceInfo(packageName)
+                        installSourceInfo.installingPackageName
+                    } else {
+                        // Android 11 (API 30) 이전 버전에서는 getInstallerPackageName 사용
+                        packageManager.getInstallerPackageName(packageName)
+                    }
 
                     // 기본 앱(시스템 앱) 또는 Google Play 스토어, 갤럭시 스토어, 원스토어에서 설치된 앱만 포함
                     if (isSystemApp || isUpdatedSystemApp
