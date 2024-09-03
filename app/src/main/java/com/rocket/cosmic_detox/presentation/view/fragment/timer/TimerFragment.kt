@@ -2,6 +2,8 @@ package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +20,6 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.os.Handler
-import android.os.Looper
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -99,9 +98,6 @@ class TimerFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        if (!isFinishingTimer) {
-            showTwoButtonDialog()
-        }
         stopTimer()  // 프래그먼트가 일시 정지될 때 타이머를 중지
     }
 

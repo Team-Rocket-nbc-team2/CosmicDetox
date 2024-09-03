@@ -2,8 +2,10 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +35,17 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
+    private val adapter by lazy {
+        AllowedAppAdapter(requireContext()) { packageId, limitedTime ->
+            val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
+            context?.startActivity(intent)
+
+            initCountDownTimer(packageId, limitedTime.toLong())
+            allowedAppViewModel.setSelectedAllowedAppPackage(packageId)
+        }
+    }
+    private var countDownTimer: CountDownTimer? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,12 +60,32 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
             dismiss()
         }
 
+        modalContentAllowedAppBinding.rvAllowedAppList.adapter = adapter
+        modalContentAllowedAppBinding.rvAllowedAppList.layoutManager = LinearLayoutManager(context)
+
         allowedAppViewModel.getAllAllowedApps()
-        allowedAppListObserve()
+        observeAllowAppList()
         return modalBottomSheetIconBinding.root
     }
 
-    private fun allowedAppListObserve() = with(modalContentAllowedAppBinding) {
+    override fun onResume() {
+        super.onResume()
+
+        val remainTime = allowedAppViewModel.countDownRemainTime.value
+        val selectedPackageId = allowedAppViewModel.selectedAllowedAppPackage.value
+        if (remainTime != null && countDownTimer != null && selectedPackageId != null) {
+            allowedAppViewModel.updateLimitedTimeAllowApp(
+                packageId = selectedPackageId,
+                remainTime = remainTime,
+                failCallback = {}
+            )
+            allowedAppViewModel.getAllAllowedApps()
+
+            countDownTimer?.cancel()
+        }
+    }
+
+    private fun observeAllowAppList() = with(modalContentAllowedAppBinding) {
         lifecycleScope.launch {
             allowedAppViewModel.allowedAppList.collectLatest {
                 tvAllowedAppIsEmpty.isVisible = it is GetListUiState.Empty
@@ -60,11 +93,7 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
                 rvAllowedAppList.isVisible = it is GetListUiState.Success
 
                 if (it is GetListUiState.Success) {
-                    rvAllowedAppList.adapter = AllowedAppAdapter(it.data, requireContext()) { packageId ->
-                        val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
-                        context?.startActivity(intent)
-                    }
-                    rvAllowedAppList.layoutManager = LinearLayoutManager(context)
+                    adapter.submitList(it.data)
                 }
             }
         }
@@ -104,5 +133,22 @@ class TimerAllowedAppBottomSheet: BottomSheetDialogFragment() {
             wm.defaultDisplay.getMetrics(displayMetrics)
             return displayMetrics.heightPixels
         }
+    }
+
+    private fun initCountDownTimer(packageId: String ,initTimer: Long) {
+        countDownTimer = object: CountDownTimer(initTimer * 1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
+            }
+
+            override fun onFinish() {
+                val toFrontIntent = context?.packageManager?.getLaunchIntentForPackage(requireContext().packageName)
+                    ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                context?.startActivity(toFrontIntent)
+                allowedAppViewModel.updateLimitedTimeAllowApp(packageId, 0, failCallback = {})
+            }
+        }
+
+        countDownTimer?.start()
     }
 }

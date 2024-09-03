@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -13,20 +15,27 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppTimeListBinding
 
 class AllowedAppAdapter(
-    private val allowedApps: List<AllowedApp>,
     private val context: Context,
-    private val onItemClick: (String) -> Unit
-): RecyclerView.Adapter<AllowedAppAdapter.ViewHolder>() {
+    private val onItemClick: (String, Int) -> Unit
+): ListAdapter<AllowedApp, AllowedAppAdapter.ViewHolder>(
+    object: DiffUtil.ItemCallback<AllowedApp>() {
+        override fun areItemsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
+            return oldItem.limitedTime == newItem.limitedTime
+        }
+    }
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllowedAppAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_app_time_list, parent, false)
         return ViewHolder(ItemAppTimeListBinding.bind(view))
     }
 
     override fun onBindViewHolder(holder: AllowedAppAdapter.ViewHolder, position: Int) {
-        holder.bind(allowedApps[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = allowedApps.size
 
     inner class ViewHolder(private val binding: ItemAppTimeListBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(allowedApp: AllowedApp) {
@@ -34,7 +43,7 @@ class AllowedAppAdapter(
                 if (allowedApp.limitedTime == 0) emphasizeDarkerLayout.visibility = View.VISIBLE
                 else {
                     root.setOnClickListener {
-                        onItemClick(allowedApp.packageId)
+                        onItemClick(allowedApp.packageId, allowedApp.limitedTime)
                     }
                 }
 
