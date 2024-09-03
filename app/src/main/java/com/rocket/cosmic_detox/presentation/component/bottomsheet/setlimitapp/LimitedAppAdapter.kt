@@ -3,19 +3,20 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.setlimitapp
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
-import com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp.AppDiffCallback
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class LimitedAppAdapter(
     private val context: Context,
     private val onClick: (AllowedApp) -> Unit
-) : ListAdapter<AllowedApp, ViewHolder<AllowedApp>>(AppDiffCallback()) {
+) : ListAdapter<AllowedApp, ViewHolder<AllowedApp>>(AllowedAppDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<AllowedApp> {
         return LimitedAppViewHolder.from(parent, onClick, context)
@@ -51,5 +52,15 @@ class LimitedAppAdapter(
                 return LimitedAppViewHolder(binding, onClick, context)
             }
         }
+    }
+}
+
+class AllowedAppDiffCallback : DiffUtil.ItemCallback<AllowedApp>() {
+    override fun areItemsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
+        return oldItem.packageId == newItem.packageId
+    }
+
+    override fun areContentsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
+        return oldItem == newItem
     }
 }

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import kotlinx.coroutines.Dispatchers
@@ -68,8 +69,8 @@ class AllowAppRepositoryImpl @Inject constructor(
 //        emit(apps.sortedBy { it.appName })
 //    }.flowOn(Dispatchers.IO) // Background thread에서 작업 실행
 
-    override fun getInstalledApps(): Flow<List<AllowedApp>> = flow {
-        val apps = mutableListOf<AllowedApp>()
+    override fun getInstalledApps(): Flow<List<CheckedApp>> = flow {
+        val apps = mutableListOf<CheckedApp>()
         val packages = packageManager.getInstalledPackages(0)
 
         for (packageInfo in packages) {
@@ -94,7 +95,7 @@ class AllowAppRepositoryImpl @Inject constructor(
                         || installerPackageName == "com.android.vending"
                         || installerPackageName == "com.sec.android.app.samsungapps"
                         || installerPackageName == "com.skt.skaf.OA00000000") {
-                        val app = AllowedApp(
+                        val app = CheckedApp(
                             packageId = packageName,
                             appName = packageInfo.applicationInfo.loadLabel(packageManager).toString(),
                             limitedTime = 0
@@ -109,8 +110,38 @@ class AllowAppRepositoryImpl @Inject constructor(
         emit(apps.sortedBy { it.appName })
     }.flowOn(Dispatchers.IO) // Background thread에서 작업 실행
 
-    override suspend fun updateAllowedApps(apps: List<AllowedApp>): Result<Boolean> {
+//    override suspend fun updateAllowedApps(apps: List<AllowedApp>): Result<Boolean> {
+//        val uid = userDataSource.getUid()
+//        return userDataSource.updateAllowedApps(uid, apps)
+//    }
+
+    override suspend fun updateAllowedApps(originApps: List<AllowedApp>, updatedApps: List<AllowedApp>): Result<Boolean> {
         val uid = userDataSource.getUid()
-        return userDataSource.updateAllowedApps(uid, apps)
+
+        // originApps와 updatedApps를 비교하여 없어진 앱을 삭제하고 추가된 앱을 추가
+        val deletedApps = originApps.filter { originApp -> updatedApps.none { it.packageId == originApp.packageId } }
+        val addedApps = updatedApps.filter { updatedApp -> originApps.none { it.packageId == updatedApp.packageId } }
+
+        // 삭제할 앱이 있는 경우 삭제
+        if (deletedApps.isNotEmpty()) {
+            val deletedAppIds = deletedApps.map { it.packageId }
+            val result = userDataSource.deleteAllowedApps(uid, deletedAppIds)
+            if (result.isFailure) {
+                Log.e("AllowAppRepositoryImpl", "허용 앱 삭제 실패", result.exceptionOrNull())
+                return result // 삭제 작업이 실패하면 해당 실패 결과 반환
+            }
+        }
+
+        // 추가할 앱이 있는 경우 추가
+        if (addedApps.isNotEmpty()) {
+            val result = userDataSource.addAllowedApps(uid, addedApps)
+            if (result.isFailure) {
+                Log.e("AllowAppRepositoryImpl", "허용 앱 추가 실패", result.exceptionOrNull())
+                return result // 추가 작업이 실패하면 해당 실패 결과 반환
+            }
+        }
+
+        // 모든 작업이 성공적으로 완료되면 성공 결과 반환
+        return Result.success(true)
     }
 }

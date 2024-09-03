@@ -9,47 +9,36 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ItemAppCheckboxListBinding
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class AllowAppListAdapter(
     private val context: Context,
-    private val onClick: (AllowedApp) -> Unit
-) : ListAdapter<AllowedApp, ViewHolder<AllowedApp>>(AppDiffCallback()) {
+    private val onClick: (CheckedApp) -> Unit
+) : ListAdapter<CheckedApp, ViewHolder<CheckedApp>>(CheckedAppDiffCallback()) {
 
-    private val checkedItems = mutableSetOf<AllowedApp>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<AllowedApp> {
-        return AllowAppViewHolder.from(parent, onClick, context, checkedItems)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<CheckedApp> {
+        return AllowAppViewHolder.from(parent, onClick, context)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<AllowedApp>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<CheckedApp>, position: Int) {
         holder.onBind(currentList[position])
-    }
-
-    fun getCheckedItems(): List<AllowedApp> {
-        return checkedItems.toList()
     }
 
     class AllowAppViewHolder(
         private val binding: ItemAppCheckboxListBinding,
-        private val onClick: (AllowedApp) -> Unit,
-        private val context: Context,
-        private val checkedItems: MutableSet<AllowedApp>
-    ) : ViewHolder<AllowedApp>(binding.root) {
+        private val onClick: (CheckedApp) -> Unit,
+        private val context: Context
+    ) : ViewHolder<CheckedApp>(binding.root) {
 
-        override fun onBind(item: AllowedApp) {
+        override fun onBind(item: CheckedApp) {
             with(binding) {
-                checkboxAllowApp.isChecked = checkedItems.contains(item)
+                checkboxAllowApp.isChecked = item.isChecked
                 itemView.setOnClickListener {
                     checkboxAllowApp.isChecked = !checkboxAllowApp.isChecked
                 }
                 checkboxAllowApp.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        checkedItems.add(item)
-                    } else {
-                        checkedItems.remove(item)
-                    }
                     onClick(item)
                 }
 
@@ -63,20 +52,20 @@ class AllowAppListAdapter(
         }
 
         companion object {
-            fun from(parent: ViewGroup, onClick: (AllowedApp) -> Unit, context: Context, checkedItems: MutableSet<AllowedApp>): AllowAppViewHolder {
+            fun from(parent: ViewGroup, onClick: (CheckedApp) -> Unit, context: Context): AllowAppViewHolder {
                 val binding = ItemAppCheckboxListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return AllowAppViewHolder(binding, onClick, context, checkedItems)
+                return AllowAppViewHolder(binding, onClick, context)
             }
         }
     }
 }
 
-class AppDiffCallback : DiffUtil.ItemCallback<AllowedApp>() {
-    override fun areItemsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
+class CheckedAppDiffCallback : DiffUtil.ItemCallback<CheckedApp>() {
+    override fun areItemsTheSame(oldItem: CheckedApp, newItem: CheckedApp): Boolean {
         return oldItem.packageId == newItem.packageId
     }
 
-    override fun areContentsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
+    override fun areContentsTheSame(oldItem: CheckedApp, newItem: CheckedApp): Boolean {
         return oldItem == newItem
     }
 }

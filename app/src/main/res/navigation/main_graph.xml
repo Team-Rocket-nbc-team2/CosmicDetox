@@ -40,7 +40,11 @@
         android:id="@+id/navigation_modify_allow_app_dialog"
         android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp.MyPageModifyAllowAppBottomSheet"
         android:label="MyPageModifyAllowAppBottomSheet"
-        tools:layout="@layout/modal_content_modify_allow_app" />
+        tools:layout="@layout/modal_content_modify_allow_app">
+        <argument
+            android:name="allowedApps"
+            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp[]" />
+    </dialog>
     <dialog
         android:id="@+id/navigation_set_limit_app_dialog"
         android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.setlimitapp.MyPageSetLimitAppBottomSheet"

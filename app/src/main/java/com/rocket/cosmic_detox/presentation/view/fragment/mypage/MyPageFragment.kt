@@ -70,7 +70,7 @@ class MyPageFragment : Fragment() {
         }
 
         binding.btnAllowAppSetting.setOnClickListener {
-            val action = MyPageFragmentDirections.actionMyToModifyAllowApp()
+            val action = MyPageFragmentDirections.actionMyToModifyAllowApp(allowedApps.toTypedArray())
             findNavController().navigate(action)
         }
 
