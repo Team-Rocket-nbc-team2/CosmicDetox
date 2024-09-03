@@ -1,25 +1,32 @@
-package com.rocket.cosmic_detox.presentation.view.fragment
+package com.rocket.cosmic_detox.presentation.view.fragment.home
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
-import com.rocket.cosmic_detox.presentation.extensions.loadHomePlanetImage
+import com.rocket.cosmic_detox.presentation.extensions.*
+import com.rocket.cosmic_detox.presentation.uistate.UiState
+import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +48,20 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
 
+        userViewModel.fetchUserData()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.userState.collectLatest { uiState ->
+                when (uiState) {
+                    is UiState.Success -> {
+                        bindingUserData(uiState.data)
+                    }
+                    else -> {
+                        Log.e("HomeFragment get UserData", "유저 정보 불러오기를 실패했습니다.")
+                    }
+                }
+            }
+        }
     }
 
     private fun initView() = with(binding) {
@@ -50,12 +71,20 @@ class HomeFragment : Fragment() {
                 onClickConfirm = {
                     val action = HomeFragmentDirections.actionHomeToTimer()
                     findNavController().navigate(action) },
-                onClickCancel = { false }
+                onClickCancel = { }
             )
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
         }
-        binding.ivHomeMyPlanet.loadHomePlanetImage(BigDecimal(800000))
+
+    }
+
+    private fun bindingUserData(user: User) = with(binding) {
+        val totalTime = user.totalTime.toBigDecimal()
+        ivHomeMyPlanet.loadHomePlanetImage(totalTime)
+        tvHomePlanetName.setCurrentLocation(totalTime)
+        tvHomeHoursCount.setCumulativeTime(totalTime, true)
+        tvHomeTravelingTime.setTravelingTime(totalTime)
     }
 
     override fun onDestroyView() {
