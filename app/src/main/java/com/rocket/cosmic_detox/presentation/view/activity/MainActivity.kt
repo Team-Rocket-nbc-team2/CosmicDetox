@@ -1,7 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.app.ActivityManager
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private var lastBackPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         bottomNavigationMain.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_home, R.id.navigation_race, R.id.navigation_my -> {
                     bottomNavigationMain.visibility = View.VISIBLE
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Log.d("Main","hello")
+        Log.d("Main", "hello lock mode")
         checkLockTaskMode() // 앱 고정 모드 상태 체크
     }
 
@@ -81,8 +79,22 @@ class MainActivity : AppCompatActivity() {
         // 잠금 모드가 아닐 때만 리셋
         val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
         if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE) {
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
             navHostFragment?.navController?.navigate(R.id.navigation_home)
+        }
+    }
+
+    override fun onBackPressed() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+
+        if (currentFragment is TimerFragment) {
+            // 타이머 화면이 열려 있을 때는 종료하지 않도록 ..
+            currentFragment.showTwoButtonDialog()
+        } else {
+            super.onBackPressed() // 다른 화면일 때는 기본 , 없어도 됨 다른 코드로 대체 할 수 있는 것 찾기
         }
     }
 }
