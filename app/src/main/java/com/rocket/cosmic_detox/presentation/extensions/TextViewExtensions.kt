@@ -33,9 +33,17 @@ fun BigDecimal.toSeconds(): Long {
     return this.toLong() % 60
 }
 
+fun Long.fromSecondsToMinutes(): Long {
+    return this / 60
+}
+
+fun Long.fromSecondsToHours(): Long {
+    return this / 3600
+}
+
 // ms -> s
 fun BigDecimal.fromMillisecondsToSeconds(): BigDecimal {
-    return this / 1000.toBigDecimal()
+    return this.divide(BigDecimal(1000))
 }
 
 fun TextView.setPoints(points: BigDecimal) {

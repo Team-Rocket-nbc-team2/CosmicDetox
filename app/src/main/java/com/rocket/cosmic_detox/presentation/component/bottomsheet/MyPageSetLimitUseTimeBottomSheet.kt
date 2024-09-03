@@ -12,6 +12,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetUseTimeBinding
+import com.rocket.cosmic_detox.presentation.extensions.fromSecondsToHours
+import com.rocket.cosmic_detox.presentation.extensions.fromSecondsToMinutes
+import com.rocket.cosmic_detox.presentation.extensions.toHours
+import com.rocket.cosmic_detox.presentation.extensions.toMinutes
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -77,6 +81,14 @@ class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setNumberPicker() {
+        val limitedTime = args.allowedApp.limitedTime // 초
+        val initialHour = limitedTime.toLong().fromSecondsToHours().toInt() // TODO: 나중에 타입은 어떻게 할지 생각해보기, 차피 초니까 Int로 해도 되지 않을까
+        val remainingSeconds = limitedTime % 3600
+        val initialMinute = remainingSeconds.toLong().fromSecondsToMinutes().toInt()
+
+        Log.d("MyPageSetLimitUseTimeBottomSheet", "initialHour: $initialHour, initialMinute: $initialMinute")
+        val initialMinuteIndex = minuteArray.indexOf(initialMinute.toString().padStart(2, '0'))
+
         modalContentSetUseTimeBinding.numberPickerHour.apply {
             val hourList = hourArray.map { "${it}${getString(R.string.number_picker_unit_hour)}" }
                 .toTypedArray()
@@ -85,6 +97,7 @@ class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
             maxValue = hourList.lastIndex
             wrapSelectorWheel = true
             displayedValues = hourList
+            value = initialHour
         }
         modalContentSetUseTimeBinding.numberPickerMinute.apply {
             val minList = minuteArray.map { "${it}${getString(R.string.number_picker_unit_minute)}" }
@@ -94,6 +107,7 @@ class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
             maxValue = minList.lastIndex
             wrapSelectorWheel = true
             displayedValues = minList
+            value = initialMinuteIndex
         }
     }
 }
