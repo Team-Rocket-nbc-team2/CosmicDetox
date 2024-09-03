@@ -22,7 +22,7 @@ data class RankingBottom(
 
 data class RankingInfo(
     val name: String = "",
-    val point: String = "",
+    val point: Int = 0,
     val totalTime: Int = 0,
     val uid: String = ""
 )

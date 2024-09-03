@@ -60,7 +60,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         myRanking.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val point = document.getString("point")?: ""
+                    val point = document.getLong("point")?: 0
                     val totalTime = document.getLong("totalTime")?: 0
                     val name = document.getString("name")
 
@@ -70,7 +70,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
 //                        if (uiState is MyPageUiState.Success) {
 //                            uiState.data.indexOfFirst { it.uid == document.id } + 1
 //                        } else {
-//                            -1 // 순위를 찾지 못했을 때 -1 반환
+//                            // 순위를 찾지 못했을 때 아무 것도 반환 x
 //                        }
 //                    }
 
