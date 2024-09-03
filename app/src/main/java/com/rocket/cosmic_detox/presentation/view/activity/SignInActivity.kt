@@ -11,10 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
+import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,8 +71,13 @@ class SignInActivity() : AppCompatActivity() {
                         val intent = Intent(context, MainActivity::class.java)
                         startActivity(intent)
                     }
+                    is UiState.Failure -> {
+                        val dialog = OneButtonDialogFragment(getString(R.string.sign_failure)){}
+                        dialog.isCancelable = false
+                        dialog.show(supportFragmentManager, "ConfirmDialog")
+                    }
                     else -> {
-                        // 로그인 실패 또는 로딩 중
+                        // 로딩 중
                     }
                 }
             }
