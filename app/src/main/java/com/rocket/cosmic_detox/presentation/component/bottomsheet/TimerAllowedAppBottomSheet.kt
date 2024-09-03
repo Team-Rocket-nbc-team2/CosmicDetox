@@ -45,9 +45,11 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private val modalBottomSheetIconBinding by lazy { ModalBottomsheetIconBinding.inflate(layoutInflater) }
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
+    private var isChecked = false
 
     private val adapter by lazy {
         AllowedAppAdapter(requireContext()) { packageId, limitedTime ->
+            isChecked = true
             val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
             context?.startActivity(intent)
 
@@ -107,8 +109,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
         // 오버레이가 표시된 상태에서 돌아왔을 경우 오버레이 제거 및 BottomSheet 닫기
         if (isOverlayVisible) {
             Log.d("isOverlayVisible", "$isOverlayVisible true")
+            isChecked = false
             removeOverlay()
-            dismiss()
+            //dismiss()
         } else {
            Log.d("isOverlayVisible", "$isOverlayVisible false")
         }
@@ -234,5 +237,19 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
         super.onDestroyView()
         BottomSheetState.setIsBottomSheetOpen(false)
         removeOverlay()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!isChecked) {
+            showOverlay()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (!isChecked) {
+            showOverlay()
+        }
     }
 }
