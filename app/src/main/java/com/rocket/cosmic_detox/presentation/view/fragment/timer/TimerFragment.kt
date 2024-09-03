@@ -1,9 +1,12 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +23,8 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import android.os.Handler
+import android.os.Looper
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -53,7 +58,7 @@ class TimerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallBack)
 
         observeViewModel()
 
@@ -95,23 +100,35 @@ class TimerFragment : Fragment() {
         dialog.show(parentFragmentManager, "ErrorDialog")
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!isFinishingTimer && !isTimerRunning) {
+            startTimer()
+        }
+
+        // Receiver 등록
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_USER_PRESENT)
+        }
+        requireContext().registerReceiver(appSwitchReceiver, filter)
+    }
 
     override fun onPause() {
         super.onPause()
-        stopTimer()  // 프래그먼트가 일시 정지될 때 타이머를 중지
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!isFinishingTimer && !isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
-            startTimer()  // 프래그먼트가 다시 활성화되면 타이머를 재개
+        if (!isFinishingTimer) {
+            showTwoButtonDialog()
         }
+        stopTimer()
+
+        // Receiver 해제
+        requireContext().unregisterReceiver(appSwitchReceiver)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        stopTimer()  // 뷰가 파괴될 때 타이머를 중지
+        stopTimer()
     }
 
     private fun initView() = with(binding) {
@@ -120,22 +137,37 @@ class TimerFragment : Fragment() {
                 title = getString(R.string.timer_dialog_finish),
                 onClickConfirm = {
                     isFinishingTimer = true
-                    stopTimer() // 타이머를 종료하는 버튼이 눌릴 때 타이머를 중지
-                    findNavController().popBackStack() },
-                onClickCancel = { false }
+                    stopTimer()
+                    findNavController().popBackStack()
+                },
+                onClickCancel = {
+                    // 취소 버튼 클릭 시의 행동을 정의 (현재는 아무것도 하지 않음)
+                }
             )
             dialog.isCancelable = false
             dialog.show(parentFragmentManager, "ConfirmDialog")
         }
 
         btnTimerRest.setOnClickListener {
-            val bottomSheet = TimerAllowedAppBottomSheet()
+            stopAppPinning()
+            val bottomSheet = TimerAllowedAppBottomSheet {
+                startAppPinning()
+            }
             bottomSheet.show(parentFragmentManager, "BottomSheet")
         }
     }
 
+    private val appSwitchReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_USER_PRESENT) {
+                if (isAdded && view != null) {
+                    findNavController().navigate(R.id.navigation_timer)
+                }
+            }
+        }
+    }
+
     private val backPressedCallBack = object : OnBackPressedCallback(true) {
-        @SuppressLint("NotifyDataSetChanged")
         override fun handleOnBackPressed() {
             showTwoButtonDialog()
         }
@@ -145,24 +177,41 @@ class TimerFragment : Fragment() {
         val dialog = OneButtonDialogFragment(
             getString(R.string.dialog_common_focus)
         ) {
-            // 화면 강제 유지하는 코드
+            navigateToHomeFragment() // 앱 고정 모드 여부와 상관없이 홈 화면으로 이동
         }
         dialog.isCancelable = false
         dialog.show(parentFragmentManager, "ConfirmDialog")
     }
 
+    private fun startAppPinning() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity?.startLockTask()
+        }
+    }
+
+    private fun stopAppPinning() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity?.stopLockTask()
+        }
+    }
+
+    fun navigateToHomeFragment() {
+        findNavController().navigate(R.id.navigation_home)
+    }
+
     private fun startTimer() {
-        if (!isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
+        if (!isTimerRunning) {
+            startAppPinning()
             handler.post(runnable)
-            isTimerRunning = true  // 타이머 실행 상태를 true로 설정
+            isTimerRunning = true
         }
     }
 
     private fun stopTimer() {
         handler.removeCallbacks(runnable)
-        isTimerRunning = false  // 타이머 실행 상태를 false로 설정
+        isTimerRunning = false
 
-        // 타이머가 중지될 때 totalTime을 Firestore에 저장
+        stopAppPinning()
         userViewModel.updateTotalTime(time.toLong())
     }
 
