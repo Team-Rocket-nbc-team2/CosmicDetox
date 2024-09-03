@@ -64,11 +64,22 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                     val totalTime = document.getLong("totalTime")?: 0
                     val name = document.getString("name")
 
+                    // TODO() 내 순위도 순위에 반영하는 로직 구현 못하는 중
+
+//                    val myRank = viewModel.uiState.value.let { uiState ->
+//                        if (uiState is MyPageUiState.Success) {
+//                            uiState.data.indexOfFirst { it.uid == document.id } + 1
+//                        } else {
+//                            -1 // 순위를 찾지 못했을 때 -1 반환
+//                        }
+//                    }
+
                     layoutMyRanking.apply {
                         root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
                         ivRankingBottomUserProfile.loadRankingPlanetImage(totalTime.toBigDecimal())
                         tvRankingBottomStats.setStats(point.toBigDecimal(), totalTime.toBigDecimal())
                         tvRankingBottomUserName.text = "$name"
+//                        tvRankingBottomRank.text = myRank.toString()
                     }
                 } else {
                     Log.d("db", "No Documents")
