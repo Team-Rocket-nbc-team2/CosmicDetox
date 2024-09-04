@@ -13,6 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ItemAppCheckboxListBinding
+import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class AllowAppListAdapter(
@@ -60,10 +61,7 @@ class AllowAppListAdapter(
                     onClick(item)
                 }
 
-                Glide.with(ivAllowAppIcon)
-                    .load(context.packageManager.getApplicationIcon(item.packageId))
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-                    .into(ivAllowAppIcon)
+                ivAllowAppIcon.loadAppIcon(context, item.packageId)
                 tvAllowAppName.text = item.appName
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
             }

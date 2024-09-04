@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.databinding.ItemAppUsageBinding
 import com.rocket.cosmic_detox.presentation.extensions.fromMillisecondsToSeconds
+import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
@@ -26,10 +27,7 @@ class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDi
     class MyAppUsageViewHolder(private val binding: ItemAppUsageBinding) : ViewHolder<AppUsage>(binding.root) {
         override fun onBind(item: AppUsage) {
             with(binding) {
-                Glide.with(ivAppUsageIcon)
-                    .load(item.appIcon)
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-                    .into(ivAppUsageIcon)
+                ivAppUsageIcon.loadAppIcon(itemView.context, item.packageId)
                 tvAppUsageName.text = item.appName
                 tvAppUsageTime.setCumulativeTime(item.usageTime.toBigDecimal().fromMillisecondsToSeconds())
                 progressbarAppUsage.setProgress(item.usagePercentage, true) // TODO: 퍼센트 설정해야 함.
