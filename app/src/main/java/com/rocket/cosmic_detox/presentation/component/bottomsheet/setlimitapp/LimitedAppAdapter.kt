@@ -10,6 +10,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
+import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
+import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
 
 class LimitedAppAdapter(
@@ -36,12 +38,9 @@ class LimitedAppAdapter(
                 onClick(item)
             }
             with(binding) {
-                Glide.with(ivDepthAppIcon)
-                    .load(context.packageManager.getApplicationIcon(item.packageId))
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-                    .into(ivDepthAppIcon)
+                ivDepthAppIcon.loadAppIcon(context, item.packageId)
                 tvAppDepthName.text = item.appName
-                tvAppDepthUsageTime.text = item.limitedTime.toString()
+                tvAppDepthUsageTime.setCumulativeTime(item.limitedTime.toBigDecimal())
             }
         }
 
