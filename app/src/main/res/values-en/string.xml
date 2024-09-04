@@ -59,6 +59,8 @@
     <string name="dialog_sign_out">Are you sure you want to sign out?</string>
     <string name="dialog_withdrawal">Are you sure you want to leave?</string>
     <string name="dialog_withdrawal_desc">After withdrawal, user information will be temporarily stored for 7 days, and will be permanently deleted.</string>
+    <string name="dialog_withdrawal_failure">Leave failed.</string>
+    <string name="dialog_sign_out_failure">Sign out failed.</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>

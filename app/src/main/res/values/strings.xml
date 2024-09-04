@@ -48,6 +48,8 @@
     <string name="dialog_sign_out">정말로 로그아웃 하시겠어요?</string>
     <string name="dialog_withdrawal">정말로 탈퇴하시겠어요?</string>
     <string name="dialog_withdrawal_desc">회원탈퇴 후 유저 정보는 7일 동안 임시 보관되며, 이후 영구 삭제됩니다.</string>
+    <string name="dialog_withdrawal_failure">탈퇴에 실패했습니다.</string>
+    <string name="dialog_sign_out_failure">로그아웃에 실패했습니다.</string>
 
     <!--  Timer  -->
     <string name="timer_start">타이머 시작</string>

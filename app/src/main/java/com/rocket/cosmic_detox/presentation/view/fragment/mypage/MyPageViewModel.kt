@@ -3,23 +3,32 @@ package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
+import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val repository: MyPageRepository
+    private val repository: MyPageRepository,
+    private val firestoreDB: FirebaseFirestore,
+    private val firebaseAuth: FirebaseAuth,
 ) : ViewModel() {
-
     private val _myInfo = MutableStateFlow<MyPageUiState<User>>(MyPageUiState.Loading)
     val myInfo: StateFlow<MyPageUiState<User>> = _myInfo
 
@@ -28,6 +37,9 @@ class MyPageViewModel @Inject constructor(
 
     private val _updateResult = MutableStateFlow(false)
     val updateResult: StateFlow<Boolean> = _updateResult
+
+    private val _userStatus =  MutableStateFlow<UiState<FirebaseUser>>(UiState.Init)
+    val userStatus: StateFlow<UiState<FirebaseUser>> = _userStatus.asStateFlow()
 
     fun loadMyInfo() {
         viewModelScope.launch {
@@ -79,5 +91,45 @@ class MyPageViewModel @Inject constructor(
 
     fun resetUpdateResult() {
         _updateResult.value = false
+    }
+
+    fun withdraw() {
+        val user = firebaseAuth.currentUser!!
+        Log.d("withdrawal1", "Working?")
+
+        user.delete()
+            .addOnCompleteListener { task ->
+                Log.d("withdrawal2", "Working? ${task.isSuccessful}")
+                if (task.isSuccessful) {
+                    Log.d("withdrawal", "User Authentication is deleted.")
+                    withdrawUserCoroutine(user)
+                } else {
+                    Log.d("withdrawal failed", "${task.exception}")
+                }
+            }
+    }
+
+    private fun withdrawUserCoroutine(user: FirebaseUser) = viewModelScope.launch {
+        val userRef = firestoreDB.collection("users").document(user.uid)
+        val rankingRef = firestoreDB.collection("season").document("season-2024-08").collection("ranking").document(user.uid)
+
+        try {
+            awaitAll(
+                async { userRef.delete() },
+                async { rankingRef.delete() }
+            )
+
+            Log.d("회원탈퇴 FireStore DB 삭제", "User data successfully deleted!")
+            _userStatus.value = UiState.Success(user)
+        } catch (e: FirebaseAuthException) {
+            Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${e.message}")
+            _userStatus.value = UiState.Failure(e)
+        } catch (e: Exception) {
+            Log.e("회원탈퇴 FireStore DB 삭제", "Error deleting document", e)
+        }
+    }
+
+    fun logout(){
+
     }
 }
