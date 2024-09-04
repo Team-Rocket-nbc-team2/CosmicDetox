@@ -102,13 +102,10 @@ class MyPageViewModel @Inject constructor(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     user.delete()
-                        .addOnCompleteListener { task ->
-                            Log.d("withdrawal2", "Working? ${task.isSuccessful}")
-                            if (task.isSuccessful) {
-                                Log.d("withdrawal", "User Authentication is deleted.")
+                        .addOnCompleteListener { deleteTask ->
+                            if (deleteTask.isSuccessful) {
+                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
                                 withdrawUserCoroutine(user)
-                            } else {
-                                Log.d("withdrawal failed", "${task.exception}")
                             }
                         }
                 } else {
@@ -116,8 +113,6 @@ class MyPageViewModel @Inject constructor(
                     Log.e("회원 재인증", "회원 재인증 실패", task.exception)
                 }
             }
-
-
     }
 
     private fun withdrawUserCoroutine(user: FirebaseUser) = viewModelScope.launch {
