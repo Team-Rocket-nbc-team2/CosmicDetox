@@ -3,8 +3,6 @@ package com.rocket.cosmic_detox.data.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
 import javax.inject.Inject
 
@@ -37,10 +35,6 @@ class SignInRepositoryImpl @Inject constructor(
             } else {
                 Log.d("User Data 존재하지 않음", "다큐먼트가 없어!!!!")
                 // 최초 로그인 (회원가입)
-                val trophies = listOf<Trophy>()
-                val apps = listOf<AllowedApp>()
-
-                // TODO : User DataClass 생성 되면 DataClass 맞춰서 생성할 것
                 val firstUser = hashMapOf(
                     "uID" to uId,
                     "name" to authUser?.displayName.toString(),
@@ -58,8 +52,9 @@ class SignInRepositoryImpl @Inject constructor(
                 )
 
                 rankingUserRef.collection("ranking").document(uId).set(firstRankingUser)
-                    .addOnSuccessListener { Log.d("User Data의 Apps 전송 성공", "App document written!") }
-                    .addOnFailureListener { exception -> Log.w("Firestore", "Error adding app document", exception) }
+                    .addOnSuccessListener { Log.d("Ranking User Data 전송 성공", "App document written!") }
+                    .addOnFailureListener { exception -> Log.w("Ranking User Data 전송 실패", "Error adding app document", exception) }
+
 
                 userRef.set(firstUser)
                     .addOnSuccessListener { Log.d("User Data 전송 성공", "User data is successfully written!") }
