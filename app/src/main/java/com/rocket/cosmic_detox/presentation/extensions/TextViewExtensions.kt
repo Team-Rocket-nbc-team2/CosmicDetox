@@ -7,7 +7,7 @@ import org.w3c.dom.Text
 import java.math.BigDecimal
 
 fun TextView.setCurrentLocation(cumulativeTime: BigDecimal) {
-    context.run {
+    context.apply {
         text = when {
             cumulativeTime < BigDecimal(6 * 3600) -> "수성" // 수성: 누적 6시간 (21600초)
             cumulativeTime < BigDecimal(12 * 3600) -> "화성" // 화성: 누적 12시간 (43200초)
@@ -26,7 +26,7 @@ fun TextView.setCumulativeTime(time: BigDecimal, home: Boolean = false) {
     val hours = time.toHours()
     val minutes = time.toMinutes()
 
-    context.run {
+    with(context) {
         text = if(home){
             when {
                 hours > 1 && minutes == 0L -> hours.toString()
@@ -83,7 +83,7 @@ fun TextView.setStats(time: BigDecimal, points: BigDecimal) {
     val minutes = time.toMinutes()
     val formattedPoints = points.convertThreeDigitComma()
 
-    context.run {
+    with(context) {
         text = when {
             hours > 1 && minutes > 0 -> getString(R.string.race_format_stats, hours, minutes, formattedPoints)
             hours > 1 && minutes == 0L -> getString(R.string.race_format_stats_time_no_minutes, hours, formattedPoints)
@@ -99,8 +99,24 @@ fun TextView.setTravelingTime(time: BigDecimal) {
     val minutes = time.toMinutes()
     val seconds = time.toSeconds()
 
-    context.run {
+    with(context) {
         text = getString(R.string.home_traveling_time, hours, minutes)
+    }
+}
+
+fun TextView.setMyDescription(days: Long, time: BigDecimal) {
+    val hours = time.toHours()
+    val minutes = time.toMinutes()
+
+    with(context) {
+        text = when {
+            days == 0L -> getString(R.string.format_my_description_no_days)
+            hours > 1 && minutes > 0 -> getString(R.string.format_my_description, days, hours, minutes)
+            hours > 1 && minutes == 0L -> getString(R.string.format_my_description_no_minutes, days, hours)
+            hours == 1L && minutes > 0 -> getString(R.string.format_my_description_one_hour, days, minutes)
+            hours == 1L && minutes == 0L -> getString(R.string.format_my_description_no_minutes_one_hour, days)
+            else -> getString(R.string.format_my_description_no_hours, days, minutes)
+        }
     }
 }
 

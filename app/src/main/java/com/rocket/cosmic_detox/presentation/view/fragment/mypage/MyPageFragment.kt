@@ -27,6 +27,7 @@ import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
+import com.rocket.cosmic_detox.presentation.extensions.setMyDescription
 import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
@@ -189,11 +190,11 @@ class MyPageFragment : Fragment() {
     }
 
     private fun setMyInfo(user: User) = with(binding) {
-        ivMyProfileImage.loadRankingPlanetImage(user.totalTime.toBigDecimal())
-        tvMyName.text = user.name
-        tvMyDescription.text = "지난 ${user.totalDay}일 동안 ${
-            user.totalTime.toBigDecimal().toHours()
-        }시간 여행하였습니다." // TODO: 리소스로 변경
+        user.apply {
+            ivMyProfileImage.loadRankingPlanetImage(totalTime.toBigDecimal())
+            tvMyName.text = name
+            tvMyDescription.setMyDescription(totalDay, totalTime.toBigDecimal())
+        }
     }
 
     private fun checkAndRequestUsageStatsPermission() {

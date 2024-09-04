@@ -59,6 +59,12 @@
     <string name="dialog_sign_out">Are you sure you want to sign out?</string>
     <string name="dialog_withdrawal">Are you sure you want to leave?</string>
     <string name="dialog_withdrawal_desc">After withdrawal, user information will be temporarily stored for 7 days, and will be permanently deleted.</string>
+    <string name="format_my_description">You traveled for %1$d days %2$d hours %3$d minutes.</string>
+    <string name="format_my_description_one_hour">You traveled for %1$d day 1 hour %2$d minutes.</string>
+    <string name="format_my_description_no_hours">You traveled for %1$d days %2$d minutes.</string>
+    <string name="format_my_description_no_minutes">You traveled for %1$d days %2$d hours.</string>
+    <string name="format_my_description_no_minutes_one_hour">You traveled for %1$d day 1 hour.</string>
+    <string name="format_my_description_no_days">You haven\'t started traveling yet.\nStart your journey now!</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
