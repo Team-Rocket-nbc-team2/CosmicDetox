@@ -57,44 +57,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("Main", "hello lock mode")
-        checkLockTaskMode() // 앱 고정 모드 상태 체크
-    }
-
-    private fun checkLockTaskMode() {
-        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
-        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
-
-        if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE && currentFragment is TimerFragment) {
-            currentFragment.navigateToHomeFragment()
-        } else {
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // 잠금 모드가 아닐 때만 리셋
-        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE) {
-            val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
-            navHostFragment?.navController?.navigate(R.id.navigation_home)
-        }
-    }
-
-    override fun onBackPressed() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
-        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
-
-        if (currentFragment is TimerFragment) {
-            // 타이머 화면이 열려 있을 때는 종료하지 않도록 ..
-            currentFragment.showTwoButtonDialog()
-        } else {
-            super.onBackPressed() // 다른 화면일 때는 기본 , 없어도 됨 다른 코드로 대체 할 수 있는 것 찾기
-        }
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        Log.d("Main", "hello lock mode")
+//        checkLockTaskMode() // 앱 고정 모드 상태 체크
+//    }
+//
+//    private fun checkLockTaskMode() {
+//        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+//        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+//
+//        if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE && currentFragment is TimerFragment) {
+//            currentFragment.navigateToHomeFragment()
+//        } else {
+//        }
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        // 잠금 모드가 아닐 때만 리셋
+//        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+//        if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE) {
+//            val navHostFragment =
+//                supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+//            navHostFragment?.navController?.navigate(R.id.navigation_home)
+//        }
+//    }
+//
+//    override fun onBackPressed() {
+//        val navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+//        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+//
+//        if (currentFragment is TimerFragment) {
+//            // 타이머 화면이 열려 있을 때는 종료하지 않도록 ..
+//            currentFragment.showTwoButtonDialog()
+//        } else {
+//            super.onBackPressed() // 다른 화면일 때는 기본 , 없어도 됨 다른 코드로 대체 할 수 있는 것 찾기
+//        }
+//    }
 }
