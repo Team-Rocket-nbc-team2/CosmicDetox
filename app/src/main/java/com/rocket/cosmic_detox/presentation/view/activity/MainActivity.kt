@@ -1,12 +1,9 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.annotation.SuppressLint
-import android.app.AppOpsManager
-import android.content.Context
+import android.app.ActivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,14 +12,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
+import com.rocket.cosmic_detox.presentation.view.fragment.timer.TimerFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private var lastBackPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         }
         setBottomNavigation()
 
-        onBackPressedDispatcher.addCallback(this, backPressedCallBack)
 
 //        if (!hasUsageStatsPermission(this)) {
 //            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
@@ -43,14 +39,13 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
-
     private fun setBottomNavigation() = with(binding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment
         val navController = navHostFragment.navController
 
         bottomNavigationMain.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_home, R.id.navigation_race, R.id.navigation_my, R.id.navigation_modify_allow_app_dialog, R.id.navigation_set_limit_app_dialog -> {
                     bottomNavigationMain.visibility = View.VISIBLE
@@ -62,28 +57,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hasUsageStatsPermission(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            context.packageName
-        )
-        return mode == AppOpsManager.MODE_ALLOWED
+    override fun onResume() {
+        super.onResume()
+        Log.d("Main", "hello lock mode")
+        checkLockTaskMode() // 앱 고정 모드 상태 체크
     }
 
+    private fun checkLockTaskMode() {
+        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
 
-    private val backPressedCallBack = object : OnBackPressedCallback(true) {
-        @SuppressLint("NotifyDataSetChanged")
-        override fun handleOnBackPressed() {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastBackPressedTime >= 2000) {
-                Toast.makeText(this@MainActivity, getString(R.string.terminate_app_alert), Toast.LENGTH_SHORT).show()
-                lastBackPressedTime = currentTime
-            } else {
-                finishAffinity()
-                exitProcess(0)
-            }
+        if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE && currentFragment is TimerFragment) {
+            currentFragment.navigateToHomeFragment()
+        } else {
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 잠금 모드가 아닐 때만 리셋
+        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE) {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+            navHostFragment?.navController?.navigate(R.id.navigation_home)
+        }
+    }
+
+    override fun onBackPressed() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.container_main) as? NavHostFragment
+        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+
+        if (currentFragment is TimerFragment) {
+            // 타이머 화면이 열려 있을 때는 종료하지 않도록 ..
+            currentFragment.showTwoButtonDialog()
+        } else {
+            super.onBackPressed() // 다른 화면일 때는 기본 , 없어도 됨 다른 코드로 대체 할 수 있는 것 찾기
         }
     }
 }

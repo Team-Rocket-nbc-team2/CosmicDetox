@@ -14,7 +14,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getUserData(successCallback: (User) -> Unit, failCallback: (Exception?) -> Unit) {
         val fireStoreRef = fireStore.collection("users")
-            .document(firebaseAuth.currentUser?.uid ?: "chanhue")
+            .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
 
         fireStoreRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -33,7 +33,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun saveUserData(user: User, successCallback: () -> Unit, failCallback: (Exception?) -> Unit) {
         val fireStoreRef = fireStore.collection("users")
-            .document(firebaseAuth.currentUser?.uid ?: "chanhue")
+            .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
 
         fireStoreRef.set(user).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -46,7 +46,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun updateTotalTime(totalTime: Long, successCallback: () -> Unit, failCallback: (Exception?) -> Unit) {
         val fireStoreRef = fireStore.collection("users")
-            .document(firebaseAuth.currentUser?.uid ?: "chanhue")
+            .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
 
         fireStoreRef.update("totalTime", totalTime).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -59,7 +59,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getTotalTime(successCallback: (Long) -> Unit, failCallback: (Exception?) -> Unit) {
         val fireStoreRef = fireStore.collection("users")
-            .document(firebaseAuth.currentUser?.uid ?: "chanhue")
+            .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
 
         fireStoreRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
