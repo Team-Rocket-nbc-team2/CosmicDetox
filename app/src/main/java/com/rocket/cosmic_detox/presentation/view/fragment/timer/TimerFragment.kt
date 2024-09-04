@@ -255,6 +255,7 @@ class TimerFragment : Fragment() {
                     is UiState.Init -> {
                         // 초기 상태 처리코드 추후 작성
                     }
+                    else -> {}
                 }
             }
         }

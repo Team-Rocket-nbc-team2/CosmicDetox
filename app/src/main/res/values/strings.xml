@@ -117,6 +117,17 @@
     <string name="timer_dialog_pin_request">앱을 고정한 후에만 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?</string>
     <string name="timer_dialog_pinning_request">"앱을 고정하여 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?"</string>
 
+    <!-- Planet -->
+    <string name="earth">지구</string>
+    <string name="jupiter">목성</string>
+    <string name="mars">화성</string>
+    <string name="mercury">수성</string>
+    <string name="neptune">해왕성</string>
+    <string name="saturn">토성</string>
+    <string name="sun">태양</string>
+    <string name="uranus">천왕성</string>
+    <string name="venus">금성</string>
+
     <!--  Error  -->
     <string name="error_not_sign_in">로그인이 필요합니다.</string>
 
