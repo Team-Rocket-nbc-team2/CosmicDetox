@@ -152,12 +152,6 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun updateCheckedApp(updatedApp: CheckedApp) {
-        val packageManager = requireContext().packageManager
-        val appInfo = packageManager.getApplicationInfo(updatedApp.packageId, 0)
-        val category = ApplicationInfo.getCategoryTitle(requireContext(), appInfo.category)
-
-        Toast.makeText(requireContext(), "카테고리: $category", Toast.LENGTH_SHORT).show() // TODO: 나중에 삭제
-
         // 만약 체크된 앱이면 체크를 해제하고, 체크되지 않은 앱이면 체크를 함
         val index = checkedApps.indexOfFirst { it.packageId == updatedApp.packageId }
         if (index != -1) {
@@ -190,37 +184,6 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             val displayMetrics = DisplayMetrics()
             wm.defaultDisplay.getMetrics(displayMetrics)
             return displayMetrics.heightPixels
-        }
-    }
-
-    private fun getAppCategory(packageName: String): String {
-        val packageManager = requireContext().packageManager
-        try {
-            // 패키지 이름으로 ApplicationInfo 가져오기
-            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
-
-            // 카테고리 확인 (API 26 이상에서만 지원)
-            val category = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                when (applicationInfo.category) {
-                    ApplicationInfo.CATEGORY_GAME -> "Game"
-                    ApplicationInfo.CATEGORY_AUDIO -> "Audio"
-                    ApplicationInfo.CATEGORY_VIDEO -> "Video"
-                    ApplicationInfo.CATEGORY_IMAGE -> "Image"
-                    ApplicationInfo.CATEGORY_SOCIAL -> "Social"
-                    ApplicationInfo.CATEGORY_NEWS -> "News"
-                    ApplicationInfo.CATEGORY_MAPS -> "Maps"
-                    ApplicationInfo.CATEGORY_PRODUCTIVITY -> "Productivity"
-                    else -> "Undefined"
-                }
-            } else {
-                "카텍고리 확인 불가"
-            }
-
-            return category
-
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-            return "App not found"
         }
     }
 }

@@ -140,11 +140,8 @@ class MyPageFragment : Fragment() {
             myInfo
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
+                    binding.groupMyPageProgressBar.isVisible = uiState is MyPageUiState.Loading
                     when (uiState) {
-                        MyPageUiState.Loading -> {
-                            Log.d("MyPageFragment", "MyPageFragment - Loading")
-                        }
-
                         is MyPageUiState.Success -> {
                             setMyInfo(uiState.data)
                             binding.apply {
@@ -154,13 +151,13 @@ class MyPageFragment : Fragment() {
                             myTrophyAdapter.submitList(uiState.data.trophies)
                             allowedApps = uiState.data.apps
                         }
-
                         is MyPageUiState.Error -> {
                             Log.d(
                                 "MyPageFragment",
                                 "MyPageFragment - Error: ${uiState.message}"
                             )
                         }
+                        else -> Unit
                     }
                 }
         }
@@ -173,11 +170,9 @@ class MyPageFragment : Fragment() {
                         MyPageUiState.Loading -> {
                             Log.d("MyPageFragment", "myAppUsageList - Loading")
                         }
-
                         is MyPageUiState.Success -> {
                             myAppUsageAdapter.submitList(uiState.data)
                         }
-
                         is MyPageUiState.Error -> {
                             Log.d(
                                 "MyPageFragment",
