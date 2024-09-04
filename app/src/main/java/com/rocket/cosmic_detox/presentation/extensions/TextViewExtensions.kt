@@ -9,15 +9,15 @@ import java.math.BigDecimal
 fun TextView.setCurrentLocation(cumulativeTime: BigDecimal) {
     context.run {
         text = when {
-            cumulativeTime < BigDecimal(6 * 3600) -> "수성" // 수성: 누적 6시간 (21600초)
-            cumulativeTime < BigDecimal(12 * 3600) -> "화성" // 화성: 누적 12시간 (43200초)
-            cumulativeTime < BigDecimal(24 * 3600) -> "금성" // 금성: 누적 24시간 (86400초)
-            cumulativeTime < BigDecimal(48 * 3600) -> "지구" // 지구: 누적 48시간 (172800초)
-            cumulativeTime < BigDecimal(64 * 3600) -> "해왕성" // 해왕성: 누적 64시간 (230400초)
-            cumulativeTime < BigDecimal(120 * 3600) -> "천왕성" // 천왕성: 누적 120시간 (432000초)
-            cumulativeTime < BigDecimal(240 * 3600) -> "토성" // 토성: 누적 240시간 (864000초)
-            cumulativeTime < BigDecimal(400 * 3600) -> "목성" // 목성: 누적 400시간 (1440000초)
-            else -> "태양"// 500시간 이상일 경우 태양 이미지
+            cumulativeTime < BigDecimal(6 * 3600) -> getString(R.string.mercury) // 수성: 누적 6시간 (21600초)
+            cumulativeTime < BigDecimal(12 * 3600) -> getString(R.string.mars) // 화성: 누적 12시간 (43200초)
+            cumulativeTime < BigDecimal(24 * 3600) -> getString(R.string.venus) // 금성: 누적 24시간 (86400초)
+            cumulativeTime < BigDecimal(48 * 3600) -> getString(R.string.earth) // 지구: 누적 48시간 (172800초)
+            cumulativeTime < BigDecimal(64 * 3600) -> getString(R.string.neptune) // 해왕성: 누적 64시간 (230400초)
+            cumulativeTime < BigDecimal(120 * 3600) -> getString(R.string.uranus) // 천왕성: 누적 120시간 (432000초)
+            cumulativeTime < BigDecimal(240 * 3600) -> getString(R.string.saturn) // 토성: 누적 240시간 (864000초)
+            cumulativeTime < BigDecimal(400 * 3600) -> getString(R.string.jupiter) // 목성: 누적 400시간 (1440000초)
+            else -> getString(R.string.sun)// 500시간 이상일 경우 태양 이미지
         }
     }
 }

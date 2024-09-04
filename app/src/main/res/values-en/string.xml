@@ -111,6 +111,17 @@
     <string name="timer_dialog_pin_request">After pinning the app, you can start the timer. Do you want to pin the app?</string>
     <string name="timer_dialog_pinning_request">"You can start a timer by pinning an app. Do you want to pin the app?"</string>
 
+    <!-- Planet -->
+    <string name="earth">Earth</string>
+    <string name="jupiter">Jupiter</string>
+    <string name="mars">Mars</string>
+    <string name="mercury">Mercury</string>
+    <string name="neptune">Neptune</string>
+    <string name="saturn">Saturn</string>
+    <string name="sun">Sun</string>
+    <string name="uranus">Uranus</string>
+    <string name="venus">Venus</string>
+
     <!--  Error  -->
     <string name="error_not_sign_in">User is not signed in</string>
 
