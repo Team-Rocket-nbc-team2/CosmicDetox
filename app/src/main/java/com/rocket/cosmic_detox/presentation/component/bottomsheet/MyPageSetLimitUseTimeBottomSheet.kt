@@ -81,13 +81,13 @@ class MyPageSetLimitUseTimeBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setNumberPicker() {
-        val limitedTime = args.allowedApp.limitedTime // 초
+        val limitedTime = args.allowedApp.limitedTime
         val initialHour = limitedTime.toLong().fromSecondsToHours().toInt() // TODO: 나중에 타입은 어떻게 할지 생각해보기, 차피 초니까 Int로 해도 되지 않을까
         val remainingSeconds = limitedTime % 3600
         val initialMinute = remainingSeconds.toLong().fromSecondsToMinutes().toInt()
 
         Log.d("MyPageSetLimitUseTimeBottomSheet", "initialHour: $initialHour, initialMinute: $initialMinute")
-        val initialMinuteIndex = minuteArray.indexOf(initialMinute.toString().padStart(2, '0'))
+        val initialMinuteIndex = minuteArray.indexOf(initialMinute.toString().padStart(2, '0')) // 0 -> 00으로 변환
 
         modalContentSetUseTimeBinding.numberPickerHour.apply {
             val hourList = hourArray.map { "${it}${getString(R.string.number_picker_unit_hour)}" }

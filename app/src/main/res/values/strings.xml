@@ -48,6 +48,16 @@
     <string name="dialog_sign_out">정말로 로그아웃 하시겠어요?</string>
     <string name="dialog_withdrawal">정말로 탈퇴하시겠어요?</string>
     <string name="dialog_withdrawal_desc">회원탈퇴 후 유저 정보는 7일 동안 임시 보관되며, 이후 영구 삭제됩니다.</string>
+    <string name="format_my_description">지난 %1$d일 동안 %2$d시간 %3$d분 여행했습니다.</string>
+    <string name="format_my_description_one_hour">지난 %1$d일 동안 1시간 %2$d분 여행했습니다.</string>
+    <string name="format_my_description_no_hours">지난 %1$d일 동안 %2$d분 여행했습니다.</string>
+    <string name="format_my_description_no_minutes">지난 %1$d일 동안 %2$d시간 여행했습니다.</string>
+    <string name="format_my_description_no_minutes_one_hour">지난 %1$d일 동안 1시간 여행했습니다.</string>
+    <string name="format_my_description_no_days">아직 여행을 시작하지 않았습니다.\n지금 바로 여행을 시작해보세요!</string>
+    <string name="dialog_withdrawal_failure">탈퇴에 실패했습니다.</string>
+    <string name="dialog_withdrawal_logout_title">회원 인증을 다시 해주세요!</string>
+    <string name="dialog_withdrawal_logout_desc">로그아웃 하고 다시 로그인 하여 회원탈퇴를 진행해주세요.\n로그아웃 하시겠어요?</string>
+    <string name="dialog_sign_out_failure">로그아웃에 실패했습니다.</string>
 
     <!--  Timer  -->
     <string name="timer_start">타이머 시작</string>
@@ -81,6 +91,7 @@
         <item>6</item>
     </string-array>
     <string-array name="number_picker_minute">
+        <item>00</item>
         <item>05</item>
         <item>10</item>
         <item>15</item>
@@ -105,6 +116,17 @@
     <string name="dialog_timer_start">타이머를 시작하시겠습니까?</string>
     <string name="timer_dialog_pin_request">앱을 고정한 후에만 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?</string>
     <string name="timer_dialog_pinning_request">"앱을 고정하여 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?"</string>
+
+    <!-- Planet -->
+    <string name="earth">지구</string>
+    <string name="jupiter">목성</string>
+    <string name="mars">화성</string>
+    <string name="mercury">수성</string>
+    <string name="neptune">해왕성</string>
+    <string name="saturn">토성</string>
+    <string name="sun">태양</string>
+    <string name="uranus">천왕성</string>
+    <string name="venus">금성</string>
 
     <!--  Error  -->
     <string name="error_not_sign_in">로그인이 필요합니다.</string>
