@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.R
@@ -20,6 +22,8 @@ import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.race.adapter.RaceAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel.RaceViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RaceFragment : Fragment(), RankingItemClickListener {
@@ -50,6 +54,7 @@ class RaceFragment : Fragment(), RankingItemClickListener {
     private fun initView() = with(binding) {
         rvRace.adapter = raceAdapter
         viewModel.getRanking()
+        viewModel.getMyRank()
 
         // 내 데이터 받아오는 부분
         val myRanking = db.collection("season")
@@ -90,9 +95,9 @@ class RaceFragment : Fragment(), RankingItemClickListener {
             }
     }
 
-    private fun observeViewModel() {
+    private fun observeViewModel() = with(viewModel) {
         lifecycleScope.launchWhenStarted {
-            viewModel.uiState.collect { uiState ->
+            uiState.collect { uiState ->
                 when (uiState) {
 //                    is UiState.Loading -> {   ////  로딩 상태 처리
                     is MyPageUiState.Success -> {
@@ -116,6 +121,29 @@ class RaceFragment : Fragment(), RankingItemClickListener {
                     }
                 }
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            myRank
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { uiState ->
+                    when (uiState) {
+                        MyPageUiState.Loading -> {
+                            Log.d("MyPageFragment", "MyPageFragment - Loading")
+                        }
+
+                        is MyPageUiState.Success -> {
+                            binding.layoutMyRanking.tvRankingBottomRank.text = uiState.data.toString()
+                        }
+
+                        is MyPageUiState.Error -> {
+                            Log.d(
+                                "MyPageFragment",
+                                "MyPageFragment - Error: ${uiState.message}"
+                            )
+                        }
+                    }
+                }
         }
     }
 
