@@ -41,7 +41,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
-
     private val modalBottomSheetIconBinding by lazy { ModalBottomsheetIconBinding.inflate(layoutInflater) }
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
@@ -192,6 +191,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
                 allowedAppViewModel.updateLimitedTimeAllowApp(packageId, 0, failCallback = {})
             }
         }
+
         countDownTimer?.start()
     }
 

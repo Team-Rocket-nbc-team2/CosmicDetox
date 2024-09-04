@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface RaceRepository {
     fun getRanking() : Flow<List<RankingInfo>>
+
+    suspend fun getMyRank(): Result<Int>
 }

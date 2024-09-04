@@ -4,29 +4,22 @@ import android.app.usage.UsageStatsManager
 import android.content.pm.PackageManager
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.toObject
-import com.google.firebase.firestore.toObjects
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
-import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class MyPageRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource,
     private val usageStatsManager: UsageStatsManager,
     private val packageManager: PackageManager,
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
 ) : MyPageRepository {
 
     override fun getMyInfo(): Flow<User> = flow {

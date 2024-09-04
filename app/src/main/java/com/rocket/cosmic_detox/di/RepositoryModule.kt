@@ -1,5 +1,7 @@
 package com.rocket.cosmic_detox.di
 
+import com.rocket.cosmic_detox.data.remote.firebase.season.SeasonDataSource
+import com.rocket.cosmic_detox.data.remote.firebase.season.SeasonDataSourceImpl
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSourceImpl
 import com.rocket.cosmic_detox.data.repository.AllowAppRepositoryImpl
@@ -38,4 +40,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindUserDataSource(userDataSourceImpl: UserDataSourceImpl): UserDataSource
+
+    @Binds
+    abstract fun bindSeasonDataSource(seasonDataSourceImpl: SeasonDataSourceImpl): SeasonDataSource
 }

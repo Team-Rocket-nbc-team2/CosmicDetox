@@ -112,10 +112,10 @@
 
             <TextView
                 android:id="@+id/tv_home_hours_count"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="2dp"
-                android:text="hours"
+                android:text="0"
                 android:textColor="@color/primary"
                 android:textSize="@dimen/text_size_16sp"
                 app:layout_constraintEnd_toStartOf="@id/tv_home_hours"
@@ -153,6 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            app:iconTint="@null"
             android:drawableStart="@drawable/ic_clock"
             android:gravity="center"
             android:text="@string/home_travel_btn_text"

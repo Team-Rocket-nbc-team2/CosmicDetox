@@ -48,8 +48,8 @@ class TimerFragment : Fragment() {
     private val binding get() = _binding!!
     private var isFinishingTimer = false
     private var time = 0 // 시간
-    private val handler = Handler(Looper.getMainLooper())
-    private var isTimerRunning = false
+    private val handler = Handler(Looper.getMainLooper()) // 메인 스레드에서 실행할 핸들러
+    private var isTimerRunning = false // 타이머가 실행 중인지 확인하는 변수
 
     private val userViewModel: UserViewModel by viewModels()
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
@@ -57,7 +57,7 @@ class TimerFragment : Fragment() {
     private val runnable = object : Runnable {
         override fun run() {
             updateTime()
-            handler.postDelayed(this, 1000)
+            handler.postDelayed(this, 1000) // 1초마다 다시 실행
         }
     }
 
@@ -300,15 +300,15 @@ class TimerFragment : Fragment() {
     }
 
     private fun startTimer() {
-        if (!isTimerRunning) {
+        if (!isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
             handler.post(runnable)
-            isTimerRunning = true
+            isTimerRunning = true  // 타이머 실행 상태를 true로 설정
         }
     }
 
     private fun stopTimer() {
         handler.removeCallbacks(runnable)
-        isTimerRunning = false
+        isTimerRunning = false  // 타이머 실행 상태를 false로 설정
 
         // 타이머가 중지될 때 totalTime을 Firestore에 저장
         userViewModel.updateTotalTime(time.toLong())
