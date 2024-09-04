@@ -52,7 +52,7 @@ class TimerFragment : Fragment() {
     private var isTimerRunning = false
 
     private val userViewModel: UserViewModel by viewModels()
-    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
+    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
 
     private val runnable = object : Runnable {
         override fun run() {
@@ -61,11 +61,11 @@ class TimerFragment : Fragment() {
         }
     }
 
-    private lateinit var windowManager: WindowManager
-    private var overlayView: View? = null
-    private var isOverlayVisible = false
+    private lateinit var windowManager: WindowManager // 오버레이를 위한 WindowManager
+    private var overlayView: View? = null // 오버레이 뷰
+    private var isOverlayVisible = false // 오버레이가 보이는지 여부
 
-    private val overlayPermissionLauncher = registerForActivityResult(
+    private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (Settings.canDrawOverlays(requireContext())) {
@@ -90,9 +90,9 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkAndRequestOverlayPermission()
+        checkAndRequestOverlayPermission() // 오버레이 권한 확인 및 요청
         initView()
-        allowedAppViewModel.getAllAllowedApps()
+        allowedAppViewModel.getAllAllowedApps() // 허용 앱 리스트 가져오기 -> 서비스에 전달하려고 가져온거긴 한데 지금 당장은 필요없을 듯
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
 
         observeViewModel()
@@ -101,7 +101,7 @@ class TimerFragment : Fragment() {
         startTimer()
     }
 
-    private fun startAppMonitorService() {
+    private fun startAppMonitorService() { // 허용 앱 리스트 가져오면 서비스 시작 -> 이해도 안되지만 타이머에서는 필요없는 것 같음. 근데 나중에 허용 앱 실행 중에 뒤로가기나 홈으로 이동하면 이걸 감지하려면 필요할라나
         Log.d("AllowedAppList", "startAppMonitorService!!!!!!!!!1 : $allowedAppList")
         val intent = Intent(requireContext(), AppMonitorService::class.java).apply {
             putStringArrayListExtra("ALLOWED_APP_LIST", allowedAppList as ArrayList<String>)
@@ -110,7 +110,7 @@ class TimerFragment : Fragment() {
         requireContext().startService(intent)
     }
 
-    private fun stopAppMonitorService() {
+    private fun stopAppMonitorService() { // 타이머 종료 시 앱 모니터링 서비스 종료
         val intent = Intent(requireContext(), AppMonitorService::class.java)
         requireContext().stopService(intent)
     }
@@ -124,20 +124,20 @@ class TimerFragment : Fragment() {
             overlayPermissionLauncher.launch(intent)
         } else {
             // 이미 권한이 허용된 경우 바로 오버레이를 띄움
-            showOverlay()
+            showOverlay() // 이거는 근데 진짜 왜 있는 거..? 권한 허용되어 있으면 바로 오버레이 띄운다는 의미 아닌가..?
         }
     }
 
 
     override fun onPause() {
         super.onPause()
-        if (!isOverlayVisible) {
-            requestOverlayPermission()
+        if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
+            requestOverlayPermission() // 오버레이 권한 요청
         }
         stopTimer()
     }
 
-    private fun requestOverlayPermission() {
+    private fun requestOverlayPermission() { // 오버레이 권한 요청
         if (!Settings.canDrawOverlays(requireContext())) {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -145,23 +145,24 @@ class TimerFragment : Fragment() {
             )
             overlayPermissionLauncher.launch(intent)
         } else {
-            if (!BottomSheetState.getIsBottomSheetOpen()) {
-                showOverlay()
+            if (!BottomSheetState.getIsBottomSheetOpen()) { // 바텀시트가 열려있지 않은 경우에만 오버레이 띄우기 -> 바텀시트가 열려있을 때는 오버레이 띄우지 않음
+                                                            // 이걸 안 해주면 바텀시트에서 허용 앱으로 이동할 때 TimerFragment도 살아있어서 이거 같이 호출됨. 중복 호출되는 것을 방지하기 위함.
+                showOverlay() // 오버레이 띄우기
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (isOverlayVisible) {
-            removeOverlay()
+        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
+            removeOverlay() // 오버레이 제거
         }
         if (!isFinishingTimer && !isTimerRunning) {
             startTimer()
         }
     }
 
-    private fun showOverlay() {
+    private fun showOverlay() { // 오버레이 띄우기
         if (!isOverlayVisible && Settings.canDrawOverlays(requireContext())) {
             val overlayParams = WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -174,13 +175,13 @@ class TimerFragment : Fragment() {
             overlayView = LayoutInflater.from(requireContext()).inflate(R.layout.activity_dialog, null)
 
             overlayView?.let {
-                it.findViewById<Button>(R.id.btn_back).setOnClickListener {
-                    removeOverlay()
-                    returnToTimer()
+                it.findViewById<Button>(R.id.btn_back).setOnClickListener { // "이전화면으로 돌아가기" 버튼 클릭 시
+                    removeOverlay() // 오버레이 제거
+                    returnToTimer() // 타이머로 돌아가기
                 }
 
-                windowManager.addView(it, overlayParams)
-                isOverlayVisible = true
+                windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
+                isOverlayVisible = true // 오버레이가 보이는 상태로 변경
             }
         }
     }
@@ -194,7 +195,7 @@ class TimerFragment : Fragment() {
     }
 
     private fun removeOverlay() {
-        overlayView?.let {
+        overlayView?.let { // 오버레이 제거
             windowManager.removeView(it)
             isOverlayVisible = false
         }
@@ -204,8 +205,8 @@ class TimerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         stopTimer()
-        removeOverlay()
-        stopAppMonitorService()
+        removeOverlay() // Fragment 종료 시 오버레이 제거
+        stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료
     }
 
     private fun initView() = with(binding) {
@@ -221,13 +222,13 @@ class TimerFragment : Fragment() {
             )
             dialog.isCancelable = false
             dialog.show(parentFragmentManager, "ConfirmDialog")
-            stopAppMonitorService()
+            stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료 -> TODO: 이거 없애도 될 것 같은데.. 일단 올림. 차라리 해도 바텀시트에서 허용앱 갔을 때 서비스 시작하는게 맞나..?
         }
 
         btnTimerRest.setOnClickListener {
             val bottomSheet = TimerAllowedAppBottomSheet()
             bottomSheet.show(parentFragmentManager, "BottomSheet")
-            BottomSheetState.setIsBottomSheetOpen(true)
+            BottomSheetState.setIsBottomSheetOpen(true) // 바텀시트 열림 -> isBottomSheetOpen을 true로 변경
         }
     }
 
@@ -257,7 +258,7 @@ class TimerFragment : Fragment() {
                 }
             }
         }
-        lifecycleScope.launch {
+        lifecycleScope.launch { // 허용 앱 리스트 가져오기 -> AppMonitorService에 리스트 전달하려고 뷰모델 가져와서 구현하긴 했는데.. Service를 안 써서.. 굳이?
             allowedAppViewModel.allowedAppList.collectLatest {
                 if (it is GetListUiState.Success) {
                     allowedAppList.clear()
@@ -265,7 +266,7 @@ class TimerFragment : Fragment() {
                         allowedAppList.add(allowedApp.packageId)
                     }
                     Log.d("AllowedAppList", "앱 리스트 가져오기 성공!!!!!!!!!1 : $allowedAppList")
-                    startAppMonitorService()
+                    startAppMonitorService() // 허용 앱 리스트 가져오면 서비스 시작
                 } else if (it is GetListUiState.Failure) {
                     Log.e("AllowedAppList", "앱 리스트 가져오기 실패!!!!!!!!!1")
                 } else if (it is GetListUiState.Empty) {
@@ -322,7 +323,9 @@ class TimerFragment : Fragment() {
     }
 }
 
-object BottomSheetState {
+object BottomSheetState { // 바텀시트 상태 저장 -> 이걸 해야 바텀시트에서 허용 앱 이동했을 때 오버레이뷰가 뜨는 것을 방지할 수 있음.
+    // 결국 TimerFragment에서 바텀시트로 이동해도 TimerFragment 위에 바텀시트를 덮어씌우는 거나 마찬가지라 TimerFragment도 살아있는 상태라 바텀시트랑 중복이 됨.
+    // 바텀시트에서 허용 앱 이동을 해도 TimerFragment도 이를 감지하기 때문에 중복 발생한다는 의미. 따로 동작하도록 바텀시트 상태 저장
     private var isBottomSheetOpen = false
 
     fun setIsBottomSheetOpen(value: Boolean) {
