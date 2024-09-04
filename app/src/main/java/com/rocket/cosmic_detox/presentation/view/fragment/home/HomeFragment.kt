@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
+import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.*
 import com.rocket.cosmic_detox.presentation.uistate.UiState
@@ -51,10 +52,16 @@ class HomeFragment : Fragment() {
         userViewModel.fetchUserData()
 
         viewLifecycleOwner.lifecycleScope.launch {
+            val progressDialog = ProgressDialogFragment()
             userViewModel.userState.collectLatest { uiState ->
                 when (uiState) {
+                    is UiState.Loading -> {
+                        progressDialog.setCancelable(false)
+                        progressDialog.show(parentFragmentManager, "ConfirmDialog")
+                    }
                     is UiState.Success -> {
                         bindingUserData(uiState.data)
+                        progressDialog.dismiss()
                     }
                     else -> {
                         Log.e("HomeFragment get UserData", "유저 정보 불러오기를 실패했습니다.")
@@ -84,7 +91,7 @@ class HomeFragment : Fragment() {
         ivHomeMyPlanet.loadHomePlanetImage(totalTime)
         tvHomePlanetName.setCurrentLocation(totalTime)
         tvHomeHoursCount.setCumulativeTime(totalTime, true)
-        tvHomeTravelingTime.setTravelingTime(totalTime)
+        tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
     }
 
     override fun onDestroyView() {
