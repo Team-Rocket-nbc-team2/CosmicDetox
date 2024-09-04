@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
@@ -95,18 +96,28 @@ class MyPageViewModel @Inject constructor(
 
     fun withdraw() {
         val user = firebaseAuth.currentUser!!
-        Log.d("withdrawal1", "Working?")
+        val credential = GoogleAuthProvider.getCredential(user.uid, null)
 
-        user.delete()
+        user.reauthenticate(credential)
             .addOnCompleteListener { task ->
-                Log.d("withdrawal2", "Working? ${task.isSuccessful}")
                 if (task.isSuccessful) {
-                    Log.d("withdrawal", "User Authentication is deleted.")
-                    withdrawUserCoroutine(user)
+                    user.delete()
+                        .addOnCompleteListener { task ->
+                            Log.d("withdrawal2", "Working? ${task.isSuccessful}")
+                            if (task.isSuccessful) {
+                                Log.d("withdrawal", "User Authentication is deleted.")
+                                withdrawUserCoroutine(user)
+                            } else {
+                                Log.d("withdrawal failed", "${task.exception}")
+                            }
+                        }
                 } else {
-                    Log.d("withdrawal failed", "${task.exception}")
+                    _userStatus.value = UiState.SigningFailure(task.exception)
+                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
                 }
             }
+
+
     }
 
     private fun withdrawUserCoroutine(user: FirebaseUser) = viewModelScope.launch {
@@ -127,9 +138,5 @@ class MyPageViewModel @Inject constructor(
         } catch (e: Exception) {
             Log.e("회원탈퇴 FireStore DB 삭제", "Error deleting document", e)
         }
-    }
-
-    fun logout(){
-
     }
 }

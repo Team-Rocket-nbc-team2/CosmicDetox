@@ -100,6 +100,7 @@ class MyPageFragment : Fragment() {
                 title = getString(R.string.dialog_sign_out),
                 onClickConfirm = {
                     FirebaseAuth.getInstance().signOut()
+
                     val intent = Intent(requireContext(), SignInActivity::class.java)
                     startActivity(intent)
                 },
@@ -240,6 +241,22 @@ class MyPageFragment : Fragment() {
                         OneButtonDialogFragment(
                             if(withdraw) getString(R.string.dialog_withdrawal_failure) else getString(R.string.dialog_sign_out_failure)) {}
                     dialog.isCancelable = false
+                    dialog.show(getParentFragmentManager(), "ConfirmDialog")
+                }
+                is UiState.SigningFailure -> {
+                    val dialog =
+                        TwoButtonDialogDescFragment(
+                            title = getString(R.string.dialog_withdrawal_logout_title),
+                            description = getString(R.string.dialog_withdrawal_logout_title),
+                            onClickConfirm = {
+                                FirebaseAuth.getInstance().signOut()
+
+                                val intent = Intent(requireContext(), SignInActivity::class.java)
+                                startActivity(intent)
+                            },
+                            onClickCancel = {})
+                    dialog.isCancelable = false
+                    dialog.show(getParentFragmentManager(), "ConfirmDialog")
                 }
                 else -> {
                     // 로딩 중
