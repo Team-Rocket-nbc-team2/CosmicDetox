@@ -73,6 +73,10 @@ class MyPageFragment : Fragment() {
             val action = MyPageFragmentDirections.actionMyToModifyAllowApp(allowedApps.toTypedArray())
             findNavController().navigate(action)
         }
+        // 개인정보보호정책 및 이용약관
+//        binding.tvPolicy.setOnClickListener {
+//        노션에 개인정보보호정책 및 이용약관 작업 후 move to notion 작업
+//        }
 
         // 회원 탈퇴 기능 구현
         binding.tvWithdrawal.setOnClickListener {
