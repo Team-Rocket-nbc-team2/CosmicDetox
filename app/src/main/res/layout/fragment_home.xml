@@ -153,6 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            app:iconTint="@null"
             android:drawableStart="@drawable/ic_clock"
             android:gravity="center"
             android:text="@string/home_travel_btn_text"
