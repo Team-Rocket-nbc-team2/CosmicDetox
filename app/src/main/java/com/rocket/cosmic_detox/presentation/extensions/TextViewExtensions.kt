@@ -64,6 +64,10 @@ fun Long.fromSecondsToHours(): Long {
     return this / 3600
 }
 
+fun Long.fromMinutesToSeconds(): Long {
+    return this * 60
+}
+
 // ms -> s
 fun BigDecimal.fromMillisecondsToSeconds(): BigDecimal {
     return this.divide(BigDecimal(1000))
