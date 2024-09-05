@@ -76,9 +76,19 @@ class UserRepositoryImpl @Inject constructor(
         val fireStoreRef = fireStore.collection("users")
             .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
 
-        fireStoreRef.update("dailyTime", dailyTime).addOnCompleteListener { task ->
+        fireStoreRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                successCallback()
+                val document = task.result
+                val currentDailyTime = document.getLong("dailyTime") ?: 0L
+                val updatedDailyTime = currentDailyTime + dailyTime
+
+                fireStoreRef.update("dailyTime", updatedDailyTime).addOnCompleteListener { updateTask ->
+                    if (updateTask.isSuccessful) {
+                        successCallback()
+                    } else {
+                        failCallback(updateTask.exception)
+                    }
+                }
             } else {
                 failCallback(task.exception)
             }
