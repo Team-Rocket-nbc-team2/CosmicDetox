@@ -98,21 +98,64 @@ class MyPageViewModel @Inject constructor(
         val user = firebaseAuth.currentUser!!
         val credential = GoogleAuthProvider.getCredential(user.uid, null)
 
-        user.reauthenticate(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    user.delete()
-                        .addOnCompleteListener { deleteTask ->
-                            if (deleteTask.isSuccessful) {
-                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
-                                withdrawUserCoroutine(user)
-                            }
-                        }
-                } else {
-                    _userStatus.value = UiState.SigningFailure(task.exception)
-                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+        // 인증 정보 갱신 (필요한 경우)
+//        user.getIdToken(true)
+//            .addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    val idToken = task.result?.token
+//                    val credential = GoogleAuthProvider.getCredential(idToken!!, null)
+//
+//                    user.reauthenticate(credential)
+//                        .addOnCompleteListener { task ->
+//                            if (task.isSuccessful) {
+//                                user.delete()
+//                                    .addOnCompleteListener { deleteTask ->
+//                                        if (deleteTask.isSuccessful) {
+//                                            Log.d("withdrawal", "User Authentication and data is successfully deleted.")
+//                                            withdrawUserCoroutine(user)
+//                                        }
+//                                    }
+//                            } else {
+//                                _userStatus.value = UiState.SigningFailure(task.exception)
+//                                Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+//                            }
+//                        }
+//                } else {
+//                    // ID 토큰 획득 실패 처리
+//                    Log.e("ID 토큰 획득", "ID 토큰 획득 실패", task.exception)
+//                }
+//            }
+
+        // 갑자기 재인증 안 돼서 우선 회원탈퇴만 하는 방향으로 코드 수정...
+        user.delete()
+            .addOnCompleteListener { deleteTask ->
+                if (deleteTask.isSuccessful) {
+                    Log.d("withdrawal", "User Authentication and data is successfully deleted.")
+                    withdrawUserCoroutine(user)
                 }
             }
+            .addOnFailureListener { e ->
+                _userStatus.value = UiState.SigningFailure(e)
+                Log.e("회원 재인증", "회원 재인증 실패", e)
+            }
+
+//        user.reauthenticate(credential)
+//            .addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    user.delete()
+//                        .addOnCompleteListener { deleteTask ->
+//                            if (deleteTask.isSuccessful) {
+//                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
+//                                withdrawUserCoroutine(user)
+//                            }
+//                        }
+//                } else {
+//                    _userStatus.value = UiState.SigningFailure(task.exception)
+//                    Log.d("credential >>>>>> ", credential.toString())
+//                    Log.d("uID >>>>>> ", user.uid)
+//                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+//                }
+//            }
     }
 
     private fun withdrawUserCoroutine(user: FirebaseUser) = viewModelScope.launch {
