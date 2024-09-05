@@ -33,8 +33,13 @@ class UserViewModel @Inject constructor(
     private val _dailyTimeState = MutableStateFlow<UiState<Long>>(UiState.Init)
     val dailyTimeState: StateFlow<UiState<Long>> get() = _dailyTimeState.asStateFlow()
 
+    private var currentTotalTime: Long = 0L
+    private var currentDailyTime: Long = 0L
 
-
+    init {
+        fetchTotalTime()
+        fetchDailyTime()
+    }
 
     fun fetchUserData() {
         viewModelScope.launch {
@@ -55,6 +60,7 @@ class UserViewModel @Inject constructor(
             _totalTimeState.value = UiState.Loading
             getTotalTimeUseCase(
                 callback = { totalTime ->
+                    currentTotalTime = totalTime
                     _totalTimeState.value = UiState.Success(totalTime)
                 },
                 failCallback = { exception ->
@@ -69,6 +75,7 @@ class UserViewModel @Inject constructor(
             _dailyTimeState.value = UiState.Loading
             getDailyTimeUseCase(
                 callback = { dailyTime ->
+                    currentDailyTime = dailyTime
                     _dailyTimeState.value = UiState.Success(dailyTime)
                 },
                 failCallback = { exception ->
@@ -84,6 +91,7 @@ class UserViewModel @Inject constructor(
             updateTotalTimeUseCase(
                 totalTime,
                 callback = {
+                    currentTotalTime = totalTime
                     _totalTimeState.value = UiState.Success(totalTime)
                 },
                 failCallback = { exception ->
@@ -99,6 +107,7 @@ class UserViewModel @Inject constructor(
             updateDailyTimeUseCase(
                 dailyTime,
                 callback = {
+                    currentDailyTime = dailyTime
                     _dailyTimeState.value = UiState.Success(dailyTime)
                 },
                 failCallback = { exception ->
@@ -108,4 +117,3 @@ class UserViewModel @Inject constructor(
         }
     }
 }
-

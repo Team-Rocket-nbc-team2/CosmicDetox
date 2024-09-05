@@ -92,6 +92,7 @@ class TimerFragment : Fragment() {
         observeViewModel()
 
         userViewModel.fetchTotalTime()
+        userViewModel.fetchDailyTime() // dailyTime도 함께 초기화
         startTimer()
     }
 
@@ -304,8 +305,9 @@ class TimerFragment : Fragment() {
         handler.removeCallbacks(runnable)
         isTimerRunning = false  // 타이머 실행 상태를 false로 설정
 
-        // 타이머가 중지될 때 dailyTime을 Firestore에 저장
-        userViewModel.updateDailyTime(time.toLong()) // dailyTime으로 변경
+        // 타이머가 중지될 때 dailyTime과 totalTime을 Firestore에 저장
+        userViewModel.updateDailyTime(time.toLong()) // dailyTime 업데이트
+        userViewModel.updateTotalTime(time.toLong()) // totalTime 업데이트
     }
 
     private fun updateTime() {

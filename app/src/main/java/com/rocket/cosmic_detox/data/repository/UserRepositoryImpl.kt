@@ -76,21 +76,12 @@ class UserRepositoryImpl @Inject constructor(
         val fireStoreRef = fireStore.collection("users")
             .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
 
-        fireStoreRef.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                val currentDailyTime = document.getLong("dailyTime") ?: 0L
-                val updatedDailyTime = currentDailyTime + dailyTime
-
-                fireStoreRef.update("dailyTime", updatedDailyTime).addOnCompleteListener { updateTask ->
-                    if (updateTask.isSuccessful) {
-                        successCallback()
-                    } else {
-                        failCallback(updateTask.exception)
-                    }
-                }
+        // Firestore에 전달받은 dailyTime 값으로만 업데이트
+        fireStoreRef.update("dailyTime", dailyTime).addOnCompleteListener { updateTask ->
+            if (updateTask.isSuccessful) {
+                successCallback()
             } else {
-                failCallback(task.exception)
+                failCallback(updateTask.exception)
             }
         }
     }
