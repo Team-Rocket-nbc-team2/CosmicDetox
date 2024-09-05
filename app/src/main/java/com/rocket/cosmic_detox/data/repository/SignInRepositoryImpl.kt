@@ -21,7 +21,7 @@ class SignInRepositoryImpl @Inject constructor(
         val rankingUserRef = firestoreDB.collection("season").document("season-2024-08")
 
         return try {
-            val document = userRef.get().await()
+            val document = userRef.get().await() // 유저 문서를 비동기 작업이 완료될 때까지 기다림
 
             if (document.exists()) {
                 Log.d("User Data 존재", "다큐먼트가 있어!!!!")
@@ -29,7 +29,7 @@ class SignInRepositoryImpl @Inject constructor(
 
                 // 재로그인
                 if (userData != null) {
-                    userRef.set(userData).await()
+                    userRef.set(userData).await() // 마찬가지로 비동기 작업이 완료될 때까지 기다림
                     Log.d("User Data 업데이트 성공", "User data is successfully updated!!")
                 }
             } else {
@@ -59,10 +59,10 @@ class SignInRepositoryImpl @Inject constructor(
                 Log.d("User Data 전송 성공", "User data is successfully written!")
             }
 
-            Result.success(true)
+            Result.success(true) // 성공적으로 작업을 마쳤을 때 Result.success()로 성공 결과를 반환
         } catch (e: Exception) {
             Log.e("Firebase Error", "Error: ", e)
-            Result.failure(e)
+            Result.failure(e) // 작업 중 예외가 발생했을 때 Result.failure()로 예외 결과를 반환
         }
     }
 }
