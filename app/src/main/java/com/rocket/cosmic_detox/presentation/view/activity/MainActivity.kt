@@ -1,10 +1,7 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.Manifest
 import android.Manifest.permission.PACKAGE_USAGE_STATS
 import android.Manifest.permission.SYSTEM_ALERT_WINDOW
-import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,7 +9,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
