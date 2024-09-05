@@ -12,6 +12,7 @@ enum class LoginType {
     NONE
 }
 
+//TODO UseCase Refactoring
 class SignInRepositoryImpl @Inject constructor(
     private val firestoreDB: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
@@ -31,10 +32,15 @@ class SignInRepositoryImpl @Inject constructor(
         val userRef = firestoreDB.collection("users").document(uId)
         val rankingUserRef = firestoreDB.collection("season").document("season-2024-08")
 
-        userRef.get().addOnSuccessListener { document ->
-            Log.d("User Data document>>", "${document}")
+        userRef.get().addOnFailureListener {
+            Log.d("debug2323", it.toString())
+        }
 
-            if (document.exists()) {
+        userRef.get().addOnSuccessListener { document -> //컬렉션에 로그인한 유저있음
+            var userUId : String? = null
+            userUId = document.getString("uID")
+            Log.d("User Data document>>", "${document.getString("uID")}")
+            if (userUId != null) {
                 loginType = LoginType.RE_SIGN_IN
                 // 재로그인
                 Log.d("User Data 존재", "다큐먼트가 있어!!!!")
