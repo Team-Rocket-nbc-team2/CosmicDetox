@@ -17,8 +17,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_timer_start"
+        android:id="@+id/btn_timer_finish"
         style="@style/timer_primary_btn"
         android:layout_width="166dp"
         android:layout_height="wrap_content"
@@ -26,26 +28,11 @@
         android:layout_weight="1"
         android:gravity="center"
         android:paddingVertical="12dp"
-        android:text="타이머 시작"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_timer_time" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_timer_finish"
-        style="@style/timer_primary_btn"
-        android:layout_width="166dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:paddingVertical="12dp"
         android:text="@string/timer_finish"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_timer_start" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_timer_time" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_timer_rest"

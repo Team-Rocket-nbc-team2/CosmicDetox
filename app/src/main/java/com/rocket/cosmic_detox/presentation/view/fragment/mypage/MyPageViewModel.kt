@@ -94,8 +94,14 @@ class MyPageViewModel @Inject constructor(
         _updateResult.value = false
     }
 
+//    재인증 오류 로직 gpt 예시 참조
+//    fun withdraw(context: Context) {
     fun withdraw() {
         val user = firebaseAuth.currentUser!!
+//        val googleSignInClient = GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN)
+//        val signInIntent = googleSignInClient.signInIntent
+//        startActivityForResult(,signInIntent, RC_SIGN_IN,)
+
         val credential = GoogleAuthProvider.getCredential(user.uid, null)
 
         user.reauthenticate(credential)
