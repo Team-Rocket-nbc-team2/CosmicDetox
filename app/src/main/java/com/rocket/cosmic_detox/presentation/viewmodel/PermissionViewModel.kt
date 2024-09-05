@@ -6,9 +6,10 @@ import android.os.Build
 import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 @HiltViewModel
-class PermissionViewModel : ViewModel() {
+class PermissionViewModel @Inject constructor() : ViewModel() {
     fun isUsageStatsPermissionGranted(context: Context): Boolean {
         val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(

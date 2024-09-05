@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.extensions
 
 import android.icu.text.DecimalFormat
+import android.util.Log
 import android.widget.TextView
 import com.rocket.cosmic_detox.R
 import org.w3c.dom.Text
@@ -22,24 +23,17 @@ fun TextView.setCurrentLocation(cumulativeTime: BigDecimal) {
     }
 }
 
-fun TextView.setCumulativeTime(time: BigDecimal, home: Boolean = false) {
+fun TextView.setCumulativeTime(time: BigDecimal) {
     val hours = time.toHours()
     val minutes = time.toMinutes()
 
     context.run {
-        text = if(home){
-            when {
-                hours > 1 && minutes == 0L -> hours.toString()
-                else -> minutes.toString()
-            }
-        } else {
-            when {
-                hours > 1 && minutes > 0 -> getString(R.string.race_format_total_time, hours, minutes)
-                hours > 1 && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes, hours)
-                hours == 1L && minutes > 0 -> getString(R.string.race_format_total_time_one_hour, minutes)
-                hours == 1L && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes_one_hour)
-                else -> getString(R.string.race_format_total_time_no_hours, minutes)
-            }
+        text = when {
+            hours > 1 && minutes > 0 -> getString(R.string.race_format_total_time, hours, minutes)
+            hours > 1 && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes, hours)
+            hours == 1L && minutes > 0 -> getString(R.string.race_format_total_time_one_hour, minutes)
+            hours == 1L && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes_one_hour)
+            else -> getString(R.string.race_format_total_time_no_hours, minutes)
         }
     }
 }
@@ -98,6 +92,10 @@ fun TextView.setTravelingTime(time: BigDecimal) {
     val hours = time.toHours()
     val minutes = time.toMinutes()
     val seconds = time.toSeconds()
+
+    Log.d("time >>", time.toString())
+    Log.d("hours >>", hours.toString())
+    Log.d("minutes >>", minutes.toString())
 
     context.run {
         text = getString(R.string.home_traveling_time, hours, minutes)

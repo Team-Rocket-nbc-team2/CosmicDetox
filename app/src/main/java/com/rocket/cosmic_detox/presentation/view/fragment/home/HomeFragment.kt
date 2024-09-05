@@ -82,7 +82,7 @@ class HomeFragment : Fragment() {
         val totalTime = user.totalTime.toBigDecimal()
         ivHomeMyPlanet.loadHomePlanetImage(totalTime)
         tvHomePlanetName.setCurrentLocation(totalTime)
-        tvHomeHoursCount.setCumulativeTime(totalTime, true)
+        tvHomeHoursCount.setCumulativeTime(totalTime)
         tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
     }
 
