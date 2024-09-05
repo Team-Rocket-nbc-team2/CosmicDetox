@@ -1,10 +1,7 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -23,6 +20,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragm
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,6 +29,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val userViewModel: UserViewModel by viewModels()
+    private val permissionViewModel: PermissionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,8 +88,8 @@ class MainActivity : AppCompatActivity() {
 
     //권한 체크 함수
     private fun checkPermissions() {
-        val isUsageStateAllowed = isUsageStatsPermissionGranted(this)
-        val isRequestOverlay = isOverlayPermissionGranted(this)
+        val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
+        val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
         Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
 
 
@@ -122,23 +121,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isUsageStatsPermissionGranted(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            context.packageName
-        )
-        return mode == AppOpsManager.MODE_ALLOWED
-    }
 
-    private fun isOverlayPermissionGranted(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Settings.canDrawOverlays(context)
-        } else {
-            true
-        }
-    }
 
 //    override fun onResume() {
 //        super.onResume()

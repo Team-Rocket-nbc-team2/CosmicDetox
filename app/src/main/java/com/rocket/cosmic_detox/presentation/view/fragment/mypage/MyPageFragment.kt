@@ -1,7 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
-import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -31,16 +29,17 @@ import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
+import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyPageFragment : Fragment() {
-
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private val myPageViewModel by activityViewModels<MyPageViewModel>()
+    private val permissionViewModel: PermissionViewModel by activityViewModels()
     private val myAppUsageAdapter by lazy { MyAppUsageAdapter() }
     private val myTrophyAdapter by lazy {
         MyTrophyAdapter { trophy ->
@@ -190,7 +189,7 @@ class MyPageFragment : Fragment() {
     }
 
     private fun checkAndRequestUsageStatsPermission() {
-        if (!hasUsageStatsPermission(requireContext())) {
+        if (!permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             //requestUsageStatsPermission()
             binding.rvMyAppUsage.visibility = View.GONE
             binding.tvNoAppUsageMessage.visibility = View.VISIBLE
@@ -201,16 +200,6 @@ class MyPageFragment : Fragment() {
             binding.btnAllowAppUsagePermission.visibility = View.GONE
             myPageViewModel.loadMyAppUsage()
         }
-    }
-
-    private fun hasUsageStatsPermission(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            context.packageName
-        )
-        return mode == AppOpsManager.MODE_ALLOWED
     }
 
     private fun requestUsageStatsPermission() {
@@ -225,19 +214,6 @@ class MyPageFragment : Fragment() {
         )
         dialog.isCancelable = false
         dialog.show(getParentFragmentManager(), "ConfirmDialog")
-
-//        AlertDialog.Builder(requireContext())
-//            .setTitle("권한 필요")
-//            .setMessage("앱 사용 통계에 접근하려면 권한이 필요합니다. 설정에서 권한을 부여해주세요.")
-//            .setPositiveButton("설정으로 이동") { dialog, _ ->
-//                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-//                startActivity(intent)
-//                dialog.dismiss()
-//            }
-//            .setNegativeButton("취소") { dialog, _ ->
-//                dialog.dismiss()
-//            }
-//            .show()
     }
 
     private fun setUiState(withdraw: Boolean = true) = lifecycleScope.launch {
@@ -278,7 +254,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (hasUsageStatsPermission(requireContext())) {
+        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             binding.rvMyAppUsage.visibility = View.VISIBLE
             binding.tvNoAppUsageMessage.visibility = View.GONE
             binding.btnAllowAppUsagePermission.visibility = View.GONE
