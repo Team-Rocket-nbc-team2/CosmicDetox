@@ -2,9 +2,12 @@ package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.Manifest.permission.PACKAGE_USAGE_STATS
 import android.Manifest.permission.SYSTEM_ALERT_WINDOW
+import android.app.AppOpsManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -91,67 +94,58 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isUsageStatsPermissionGranted(context: Context): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow(
+            AppOpsManager.OPSTR_GET_USAGE_STATS,
+            android.os.Process.myUid(),
+            context.packageName
+        )
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    private fun isOverlayPermissionGranted(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Settings.canDrawOverlays(context)
+        } else {
+            true
+        }
+    }
+
     //퍼미션 체크 및 권한 요청 함수
     private fun checkPermissions() {
-        val rejectedPermissionList = HashSet<String>()
 
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
-        for (permission in requiredPermissions) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                //만약 권한이 없다면 rejectedPermissionList에 추가
-                rejectedPermissionList.add(permission)
-            }
-        }
+        val isUsageStateAllowed = isUsageStatsPermissionGranted(this)
+        val isRequestOverlay = isOverlayPermissionGranted(this)
+
+        Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
 
         //거절된 퍼미션이 있다면...
-        if (rejectedPermissionList.isNotEmpty()) {
-            Log.i("거절 당함?", "${rejectedPermissionList.size}")
+        if (!isUsageStateAllowed || !isRequestOverlay) {
             //권한 요청!
-            val array = arrayOfNulls<String>(rejectedPermissionList.size)
-
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
                 description = getString(R.string.dialog_permission_desc),
                 onClickConfirm = {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        rejectedPermissionList.toArray(array),
-                        multiplePermissionsCode
-                    )
+                    if(isUsageStateAllowed) {
+                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                        startActivity(intent)
+                    } else {
+                        if (!Settings.canDrawOverlays(this)) {
+                            val intent = Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                Uri.parse("package:${this.packageName}")
+                            )
+                            startActivity(intent)
+                        }
+
+                    }
                 },
                 onClickCancel = { }
             )
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "ConfirmDialog")
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            multiplePermissionsCode -> {
-                if (grantResults.isNotEmpty()) {
-                    for ((i, permission) in permissions.withIndex()) {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            // 특정 권한이 거부되었을 때만 설정 화면으로 이동
-                            if (permission == "android.permission.SYSTEM_ALERT_WINDOW") {
-                                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-                                startActivity(intent)
-                            }
-
-                            if (permission == "android.permission.PACKAGE_USAGE_STATS") {
-                                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                                startActivity(intent)
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
