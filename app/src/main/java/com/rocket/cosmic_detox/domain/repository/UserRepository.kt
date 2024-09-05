@@ -8,4 +8,7 @@ interface UserRepository {
     fun saveUserData(user: User, successCallback: () -> Unit, failCallback: (Exception?) -> Unit)
     fun updateTotalTime(totalTime: Long, successCallback: () -> Unit, failCallback: (Exception?) -> Unit)
     fun getTotalTime(successCallback: (Long) -> Unit, failCallback: (Exception?) -> Unit)
+    fun updateDailyTime(dailyTime: Long, successCallback: () -> Unit, failCallback: (Exception?) -> Unit)
+    fun getDailyTime(successCallback: (Long) -> Unit, failCallback: (Exception?) -> Unit)
 }
+
