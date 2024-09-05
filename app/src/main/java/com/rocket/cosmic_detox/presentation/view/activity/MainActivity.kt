@@ -1,8 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.app.ActivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,14 +10,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
-import com.rocket.cosmic_detox.presentation.view.fragment.timer.TimerFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-//
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
