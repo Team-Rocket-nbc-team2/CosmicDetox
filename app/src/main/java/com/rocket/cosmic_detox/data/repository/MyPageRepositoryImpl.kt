@@ -26,7 +26,7 @@ class MyPageRepositoryImpl @Inject constructor(
         val uid = userDataSource.getUid()
         //val uid = "test2" // TODO: 나중에 uid로 수정
 
-        val userResult = userDataSource.getUserInfo(uid)
+        val userResult = userDataSource.getUserInfo(uid) // TODO: onSuccess, onFailure 처리를 해줘야 하나?
         val appsResult = userDataSource.getUserApps(uid)
         val trophiesResult = userDataSource.getUserTrophies(uid)
 

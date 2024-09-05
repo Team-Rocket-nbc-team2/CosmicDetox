@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentRaceBinding
@@ -56,35 +58,26 @@ class RaceFragment : Fragment(), RankingItemClickListener {
         viewModel.getRanking()
         viewModel.getMyRank()
 
+
         // 내 데이터 받아오는 부분
+        val userUid = Firebase.auth.currentUser?.uid
         val myRanking = db.collection("season")
             .document("season-2024-08")
             .collection("ranking")
-            .document("test1")
+            .document("$userUid")
 
         myRanking.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     val point = document.getLong("point")?: 0
                     val totalTime = document.getLong("totalTime")?: 0
-                    val name = document.getString("name")
-
-                    // TODO() 내 순위도 순위에 반영하는 로직 구현 못하는 중
-
-//                    val myRank = viewModel.uiState.value.let { uiState ->
-//                        if (uiState is MyPageUiState.Success) {
-//                            uiState.data.indexOfFirst { it.uid == document.id } + 1
-//                        } else {
-//                            // 순위를 찾지 못했을 때 아무 것도 반환 x
-//                        }
-//                    }
+                    val name = document.getString("name")?: ""
 
                     layoutMyRanking.apply {
                         root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
                         ivRankingBottomUserProfile.loadRankingPlanetImage(totalTime.toBigDecimal())
-                        tvRankingBottomStats.setStats(point.toBigDecimal(), totalTime.toBigDecimal())
+                        tvRankingBottomStats.setStats(totalTime.toBigDecimal(), point.toBigDecimal())
                         tvRankingBottomUserName.text = "$name"
-//                        tvRankingBottomRank.text = myRank.toString()
                     }
                 } else {
                     Log.d("db", "No Documents")

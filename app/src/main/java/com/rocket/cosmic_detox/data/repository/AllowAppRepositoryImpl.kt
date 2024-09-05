@@ -9,6 +9,7 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
+import com.rocket.cosmic_detox.util.AppCategoryManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -120,7 +121,7 @@ class AllowAppRepositoryImpl @Inject constructor(
 
         // originApps와 updatedApps를 비교하여 없어진 앱을 삭제하고 추가된 앱을 추가
         val deletedApps = originApps.filter { originApp -> updatedApps.none { it.packageId == originApp.packageId } }
-        val addedApps = updatedApps.filter { updatedApp -> originApps.none { it.packageId == updatedApp.packageId } }
+        var addedApps = updatedApps.filter { updatedApp -> originApps.none { it.packageId == updatedApp.packageId } }
 
         // 삭제할 앱이 있는 경우 삭제
         if (deletedApps.isNotEmpty()) {
@@ -130,6 +131,22 @@ class AllowAppRepositoryImpl @Inject constructor(
                 Log.e("AllowAppRepositoryImpl", "허용 앱 삭제 실패", result.exceptionOrNull())
                 return result // 삭제 작업이 실패하면 해당 실패 결과 반환
             }
+        }
+
+        // 추가할 앱의 카테고리 기반으로 제한 시간을 설정
+        addedApps = addedApps.map { addedApp ->
+            val packageInfo = packageManager.getApplicationInfo(addedApp.packageId, 0)
+            val appCategory = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                packageInfo.category
+            } else {
+                ApplicationInfo.CATEGORY_UNDEFINED
+            }
+
+            // 카테고리별 제한 시간을 설정
+            val limitedTime = AppCategoryManager.getCategory(appCategory).toInt()
+
+            // 제한 시간을 설정한 새 객체로 변환
+            addedApp.copy(limitedTime = limitedTime)
         }
 
         // 추가할 앱이 있는 경우 추가

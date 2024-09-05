@@ -23,6 +23,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
+import com.rocket.cosmic_detox.presentation.extensions.setMyDescription
 import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
@@ -131,11 +132,8 @@ class MyPageFragment : Fragment() {
             myInfo
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { uiState ->
+                    binding.groupMyPageProgressBar.isVisible = uiState is MyPageUiState.Loading
                     when (uiState) {
-                        MyPageUiState.Loading -> {
-                            Log.d("MyPageFragment", "MyPageFragment - Loading")
-                        }
-
                         is MyPageUiState.Success -> {
                             setMyInfo(uiState.data)
                             binding.apply {
@@ -145,13 +143,13 @@ class MyPageFragment : Fragment() {
                             myTrophyAdapter.submitList(uiState.data.trophies)
                             allowedApps = uiState.data.apps
                         }
-
                         is MyPageUiState.Error -> {
                             Log.d(
                                 "MyPageFragment",
                                 "MyPageFragment - Error: ${uiState.message}"
                             )
                         }
+                        else -> Unit
                     }
                 }
         }
@@ -164,11 +162,9 @@ class MyPageFragment : Fragment() {
                         MyPageUiState.Loading -> {
                             Log.d("MyPageFragment", "myAppUsageList - Loading")
                         }
-
                         is MyPageUiState.Success -> {
                             myAppUsageAdapter.submitList(uiState.data)
                         }
-
                         is MyPageUiState.Error -> {
                             Log.d(
                                 "MyPageFragment",
@@ -181,11 +177,11 @@ class MyPageFragment : Fragment() {
     }
 
     private fun setMyInfo(user: User) = with(binding) {
-        ivMyProfileImage.loadRankingPlanetImage(user.totalTime.toBigDecimal())
-        tvMyName.text = user.name
-        tvMyDescription.text = "지난 ${user.totalDay}일 동안 ${
-            user.totalTime.toBigDecimal().toHours()
-        }시간 여행하였습니다." // TODO: 리소스로 변경
+        user.apply {
+            ivMyProfileImage.loadRankingPlanetImage(totalTime.toBigDecimal())
+            tvMyName.text = name
+            tvMyDescription.setMyDescription(totalDay, totalTime.toBigDecimal())
+        }
     }
 
     private fun checkAndRequestUsageStatsPermission() {

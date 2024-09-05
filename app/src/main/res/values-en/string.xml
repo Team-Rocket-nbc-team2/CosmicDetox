@@ -61,6 +61,12 @@
     <string name="dialog_sign_out">Are you sure you want to sign out?</string>
     <string name="dialog_withdrawal">Are you sure you want to leave?</string>
     <string name="dialog_withdrawal_desc">After withdrawal, user information will be temporarily stored for 7 days, and will be permanently deleted.</string>
+    <string name="format_my_description">You traveled for %1$d days %2$d hours %3$d minutes.</string>
+    <string name="format_my_description_one_hour">You traveled for %1$d day 1 hour %2$d minutes.</string>
+    <string name="format_my_description_no_hours">You traveled for %1$d days %2$d minutes.</string>
+    <string name="format_my_description_no_minutes">You traveled for %1$d days %2$d hours.</string>
+    <string name="format_my_description_no_minutes_one_hour">You traveled for %1$d day 1 hour.</string>
+    <string name="format_my_description_no_days">You haven\'t started traveling yet.\nStart your journey now!</string>
     <string name="dialog_withdrawal_failure">Leave failed.</string>
     <string name="dialog_withdrawal_logout_title">Please re-certify your account!</string>
     <string name="dialog_withdrawal_logout_desc">Please log out and log back in to proceed with the withdrawal. \n Do you want to log out?</string>
@@ -88,6 +94,7 @@
         <item>6</item>
     </string-array>
     <string-array name="number_picker_minute">
+        <item>00</item>
         <item>05</item>
         <item>10</item>
         <item>15</item>
@@ -112,6 +119,17 @@
     <string name="dialog_timer_start">timer</string>
     <string name="timer_dialog_pin_request">After pinning the app, you can start the timer. Do you want to pin the app?</string>
     <string name="timer_dialog_pinning_request">"You can start a timer by pinning an app. Do you want to pin the app?"</string>
+
+    <!-- Planet -->
+    <string name="earth">Earth</string>
+    <string name="jupiter">Jupiter</string>
+    <string name="mars">Mars</string>
+    <string name="mercury">Mercury</string>
+    <string name="neptune">Neptune</string>
+    <string name="saturn">Saturn</string>
+    <string name="sun">Sun</string>
+    <string name="uranus">Uranus</string>
+    <string name="venus">Venus</string>
 
     <!--  Error  -->
     <string name="error_not_sign_in">User is not signed in</string>

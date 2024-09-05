@@ -3,6 +3,9 @@ package com.rocket.cosmic_detox.presentation.extensions
 import android.content.Context
 import android.widget.ImageView
 import androidx.core.view.setPadding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.R
 import java.math.BigDecimal
 
@@ -42,6 +45,14 @@ fun ImageView.loadRankingPlanetImage(cumulativeTime: BigDecimal) {
         setPadding(paddingValue.dpToPx(context))
     }
     setImageResource(imageResId)
+}
+
+fun ImageView.loadAppIcon(context: Context, packageId: String) {
+    Glide.with(this) // TODO: 확장함수로 관리
+        .load(context.packageManager.getApplicationIcon(packageId))
+        .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+        .placeholder(R.color.blue_grey)
+        .into(this)
 }
 
 // dp 값을 px로 변환

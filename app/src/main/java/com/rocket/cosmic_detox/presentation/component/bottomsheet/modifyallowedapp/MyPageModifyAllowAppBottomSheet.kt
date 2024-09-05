@@ -2,6 +2,8 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowed
 
 import android.app.Dialog
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -149,7 +151,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun updateCheckedApp(updatedApp: CheckedApp) { // TODO: 나중에 삭제
+    private fun updateCheckedApp(updatedApp: CheckedApp) {
         // 만약 체크된 앱이면 체크를 해제하고, 체크되지 않은 앱이면 체크를 함
         val index = checkedApps.indexOfFirst { it.packageId == updatedApp.packageId }
         if (index != -1) {
