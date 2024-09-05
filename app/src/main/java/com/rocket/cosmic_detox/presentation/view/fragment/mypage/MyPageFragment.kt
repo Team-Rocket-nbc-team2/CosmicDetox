@@ -263,11 +263,15 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // 권한이 있을 경우만 앱 사용 통계 로딩
         if (hasUsageStatsPermission(requireContext())) {
             binding.rvMyAppUsage.visibility = View.VISIBLE
             binding.tvNoAppUsageMessage.visibility = View.GONE
             binding.btnAllowAppUsagePermission.visibility = View.GONE
-            myPageViewModel.loadMyAppUsage()
+            // 여기서만 loadMyAppUsage 호출
+            if (_binding?.rvMyAppUsage?.adapter == null) {
+                myPageViewModel.loadMyAppUsage() // onResume에서만 호출
+            }
         }
     }
 
