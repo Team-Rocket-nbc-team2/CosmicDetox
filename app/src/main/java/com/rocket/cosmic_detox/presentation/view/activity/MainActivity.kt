@@ -41,11 +41,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         setBottomNavigation()
-
         userViewModel.fetchUserData()
 
         lifecycleScope.launch {
             val progressDialog = ProgressDialogFragment()
+
             userViewModel.userState.collectLatest { uiState ->
                 when (uiState) {
                     is UiState.Loading -> {

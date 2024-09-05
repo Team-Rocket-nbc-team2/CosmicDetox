@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -54,13 +56,29 @@ class SignInViewModel @Inject constructor(
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    Log.e("로그인 1", "Firebase 인증에 성공. ${task}")
                     _user.value = auth.currentUser
-                    repository.setDataToFireBase()
-                    _status.value = UiState.Success(_user.value!!)
+                    testFunc(task)
+//                    _status.value = UiState.Success(_user.value!!)
                 } else {
-                    _status.value = UiState.Failure(task.exception)
-                    Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${task.exception}")
+//                    _status.value = UiState.Failure(task.exception)
+                    Log.e("로그인 1", "Firebase 인증에 실패했습니다. ${task.exception}")
                 }
             }
+    }
+
+    private fun testFunc(task: Task<AuthResult>) {
+        val result = repository.setDataToFireBase()
+
+        when(result){
+            true -> {
+                Log.d("로그인 1", "여긴가?")
+                _status.value = UiState.Success(_user.value!!)
+            }
+            false -> {
+                Log.d("로그인 1", "여긴가? 11")
+                _status.value = UiState.Failure(task.exception)
+            }
+        }
     }
 }

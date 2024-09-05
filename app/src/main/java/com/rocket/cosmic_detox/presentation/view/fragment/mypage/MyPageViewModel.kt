@@ -1,8 +1,11 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -15,6 +18,7 @@ import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +33,7 @@ class MyPageViewModel @Inject constructor(
     private val repository: MyPageRepository,
     private val firestoreDB: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
+    @ApplicationContext context: Context
 ) : ViewModel() {
     private val _myInfo = MutableStateFlow<MyPageUiState<User>>(MyPageUiState.Loading)
     val myInfo: StateFlow<MyPageUiState<User>> = _myInfo
@@ -127,35 +132,36 @@ class MyPageViewModel @Inject constructor(
 //            }
 
         // 갑자기 재인증 안 돼서 우선 회원탈퇴만 하는 방향으로 코드 수정...
-        user.delete()
-            .addOnCompleteListener { deleteTask ->
-                if (deleteTask.isSuccessful) {
-                    Log.d("withdrawal", "User Authentication and data is successfully deleted.")
-                    withdrawUserCoroutine(user)
-                }
-            }
-            .addOnFailureListener { e ->
-                _userStatus.value = UiState.SigningFailure(e)
-                Log.e("회원 재인증", "회원 재인증 실패", e)
-            }
-
-//        user.reauthenticate(credential)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    user.delete()
-//                        .addOnCompleteListener { deleteTask ->
-//                            if (deleteTask.isSuccessful) {
-//                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
-//                                withdrawUserCoroutine(user)
-//                            }
-//                        }
-//                } else {
-//                    _userStatus.value = UiState.SigningFailure(task.exception)
-//                    Log.d("credential >>>>>> ", credential.toString())
-//                    Log.d("uID >>>>>> ", user.uid)
-//                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+//        user.delete()
+//            .addOnCompleteListener { deleteTask ->
+//                if (deleteTask.isSuccessful) {
+//                    Log.d("withdrawal", "User Authentication and data is successfully deleted.")
+//                    withdrawUserCoroutine(user)
+////                    GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).revokeAccess();
 //                }
 //            }
+//            .addOnFailureListener { e ->
+//                _userStatus.value = UiState.SigningFailure(e)
+//                Log.e("회원 재인증", "회원 재인증 실패", e)
+//            }
+
+        user.reauthenticate(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    user.delete()
+                        .addOnCompleteListener { deleteTask ->
+                            if (deleteTask.isSuccessful) {
+                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
+                                withdrawUserCoroutine(user)
+                            }
+                        }
+                } else {
+                    _userStatus.value = UiState.SigningFailure(task.exception)
+                    Log.d("credential >>>>>> ", credential.toString())
+                    Log.d("uID >>>>>> ", user.uid)
+                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+                }
+            }
     }
 
     private fun withdrawUserCoroutine(user: FirebaseUser) = viewModelScope.launch {
