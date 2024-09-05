@@ -128,7 +128,6 @@ class TimerFragment : Fragment() {
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
             requestOverlayPermission() // 오버레이 권한 요청
         }
-        stopTimer()
     }
 
     private fun requestOverlayPermission() { // 오버레이 권한 요청
@@ -152,9 +151,7 @@ class TimerFragment : Fragment() {
         if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
             removeOverlay() // 오버레이 제거
         }
-        if (!isFinishingTimer && !isTimerRunning) {
-            startTimer()
-        }
+
     }
 
     private fun showOverlay() { // 오버레이 띄우기
