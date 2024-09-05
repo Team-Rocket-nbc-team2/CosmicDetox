@@ -1,11 +1,8 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.Manifest.permission.PACKAGE_USAGE_STATS
-import android.Manifest.permission.SYSTEM_ALERT_WINDOW
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,7 +12,6 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -35,9 +31,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val userViewModel: UserViewModel by viewModels()
-
-    private val multiplePermissionsCode = 100 //퍼미션 응답 처리 코드
-    private val requiredPermissions = arrayOf(PACKAGE_USAGE_STATS, SYSTEM_ALERT_WINDOW)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,32 +87,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isUsageStatsPermissionGranted(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            context.packageName
-        )
-        return mode == AppOpsManager.MODE_ALLOWED
-    }
-
-    private fun isOverlayPermissionGranted(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Settings.canDrawOverlays(context)
-        } else {
-            true
-        }
-    }
-
-    //퍼미션 체크 및 권한 요청 함수
+    //권한 체크 함수
     private fun checkPermissions() {
-
-        //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
         val isUsageStateAllowed = isUsageStatsPermissionGranted(this)
         val isRequestOverlay = isOverlayPermissionGranted(this)
-
         Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
+
 
         //거절된 퍼미션이 있다면...
         if (!isUsageStateAllowed || !isRequestOverlay) {
@@ -146,6 +119,24 @@ class MainActivity : AppCompatActivity() {
             )
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "ConfirmDialog")
+        }
+    }
+
+    private fun isUsageStatsPermissionGranted(context: Context): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow(
+            AppOpsManager.OPSTR_GET_USAGE_STATS,
+            android.os.Process.myUid(),
+            context.packageName
+        )
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    private fun isOverlayPermissionGranted(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Settings.canDrawOverlays(context)
+        } else {
+            true
         }
     }
 
