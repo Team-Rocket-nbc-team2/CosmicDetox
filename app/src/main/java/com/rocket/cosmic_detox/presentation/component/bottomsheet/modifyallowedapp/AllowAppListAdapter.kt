@@ -51,7 +51,7 @@ class AllowAppListAdapter(
                 checkboxAllowApp.setOnClickListener {
                     val isChecked = !checkboxAllowApp.isChecked
                     checkedStates.put(position, isChecked)
-                    onClick(item)
+                    //onClick(item)
                 }
 
                 itemView.setOnClickListener {

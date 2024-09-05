@@ -130,24 +130,19 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun updateAllowApps() {
-        if (checkedApps.isNotEmpty()) {
-            allowAppViewModel.updateAllowApps(args.allowedApps.toList(), checkedApps)
-            modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = true
-            viewLifecycleOwner.lifecycleScope.launch {
-                allowAppViewModel.updateResult.collectLatest { success ->
-                    if (success) {
-                        dismiss()
-                        myPageViewModel.loadMyInfo()
-                        allowAppViewModel.resetUpdateResult() // 상태 초기화
-                    } else {
-                        Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
-                    }
-                    modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = false
+        allowAppViewModel.updateAllowApps(args.allowedApps.toList(), checkedApps)
+        modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = true
+        viewLifecycleOwner.lifecycleScope.launch {
+            allowAppViewModel.updateResult.collectLatest { success ->
+                if (success) {
+                    dismiss()
+                    myPageViewModel.loadMyInfo()
+                    allowAppViewModel.resetUpdateResult() // 상태 초기화
+                } else {
+                    Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
                 }
+                modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = false
             }
-        } else {
-            dismiss()
-            Toast.makeText(requireContext(), "선택된 앱이 없습니다.", Toast.LENGTH_SHORT).show() // TODO: 나중에 삭제
         }
     }
 
