@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
@@ -17,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -55,8 +57,22 @@ class SignInViewModel @Inject constructor(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _user.value = auth.currentUser
-                    repository.setDataToFireBase()
-                    _status.value = UiState.Success(_user.value!!)
+                    // 코루틴 블록 내에서 suspend 함수 호출
+                    viewModelScope.launch {
+                        try {
+                            val result = repository.setDataToFireBase()
+                            if (result.isSuccess) {
+                                _status.value = UiState.Success(_user.value!!)
+                                Log.d("LOGIN-- SUCCESS: firebaseAuthWithGoogle", "Firebase 인증에 성공했습니다.")
+                            } else {
+                                _status.value = UiState.Failure(result.exceptionOrNull())
+                                Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${result.exceptionOrNull()}")
+                            }
+                        } catch (e: Exception) {
+                            _status.value = UiState.Failure(e)
+                            Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${e}")
+                        }
+                    }
                 } else {
                     _status.value = UiState.Failure(task.exception)
                     Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${task.exception}")
