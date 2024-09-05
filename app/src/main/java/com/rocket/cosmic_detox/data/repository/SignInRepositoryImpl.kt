@@ -22,7 +22,7 @@ class SignInRepositoryImpl @Inject constructor(
         userRef.get().addOnSuccessListener { document ->
             Log.d("User Data document>>", "${document}")
 
-            if (document.exists()) {
+            if (document != null) {
                 Log.d("User Data 존재", "다큐먼트가 있어!!!!")
                 val userData = document.data
                 // 재로그인

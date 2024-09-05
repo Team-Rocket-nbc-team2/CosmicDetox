@@ -1,10 +1,7 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
-import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +17,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,8 +29,6 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.AppMonitorService
-import com.rocket.cosmic_detox.presentation.view.activity.DialogActivity
-import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState.isBottomSheetOpen
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -254,7 +248,7 @@ class TimerFragment : Fragment() {
                     }
                     is UiState.Init -> {
                         // 초기 상태 처리코드 추후 작성
-                    }
+                    } else -> {}
                 }
             }
         }

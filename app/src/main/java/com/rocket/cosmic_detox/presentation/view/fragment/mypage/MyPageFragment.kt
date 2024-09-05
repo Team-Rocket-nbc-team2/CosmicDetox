@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
-import android.app.AlertDialog
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
@@ -215,18 +214,30 @@ class MyPageFragment : Fragment() {
     }
 
     private fun requestUsageStatsPermission() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("권한 필요")
-            .setMessage("앱 사용 통계에 접근하려면 권한이 필요합니다. 설정에서 권한을 부여해주세요.")
-            .setPositiveButton("설정으로 이동") { dialog, _ ->
+        val dialog = TwoButtonDialogDescFragment(
+            title = "권한 필요",
+            description = "앱 사용 통계에 접근하려면 권한이 필요합니다. 설정에서 권한을 부여해주세요.",
+            onClickConfirm = {
                 val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                 startActivity(intent)
-                dialog.dismiss()
-            }
-            .setNegativeButton("취소") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+            },
+            onClickCancel = { false }
+        )
+        dialog.isCancelable = false
+        dialog.show(getParentFragmentManager(), "ConfirmDialog")
+
+//        AlertDialog.Builder(requireContext())
+//            .setTitle("권한 필요")
+//            .setMessage("앱 사용 통계에 접근하려면 권한이 필요합니다. 설정에서 권한을 부여해주세요.")
+//            .setPositiveButton("설정으로 이동") { dialog, _ ->
+//                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+//                startActivity(intent)
+//                dialog.dismiss()
+//            }
+//            .setNegativeButton("취소") { dialog, _ ->
+//                dialog.dismiss()
+//            }
+//            .show()
     }
 
     private fun setUiState(withdraw: Boolean = true) = lifecycleScope.launch {
