@@ -93,7 +93,7 @@ class TimerFragment : Fragment() {
 
         userViewModel.fetchTotalTime()
         userViewModel.fetchDailyTime() // dailyTime도 함께 초기화
-        startTimer()
+        //startTimer()
     }
 
     private fun startAppMonitorService() { // 허용 앱 리스트 가져오면 서비스 시작 -> 이해도 안되지만 타이머에서는 필요없는 것 같음. 근데 나중에 허용 앱 실행 중에 뒤로가기나 홈으로 이동하면 이걸 감지하려면 필요할라나
@@ -240,6 +240,7 @@ class TimerFragment : Fragment() {
                     is UiState.Success -> {
                         time = state.data.toInt()
                         updateTime()
+                        startTimer()
                     }
                     is UiState.Failure -> {
                         showError(state.e?.message)
