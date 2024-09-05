@@ -14,7 +14,7 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ItemAppCheckboxListBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
-import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
+import com.rocket.cosmic_detox.presentation.common.ViewHolder
 
 class AllowAppListAdapter(
     private val context: Context,

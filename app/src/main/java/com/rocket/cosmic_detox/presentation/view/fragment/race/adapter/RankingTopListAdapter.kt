@@ -9,26 +9,27 @@ import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.extensions.setPoints
 import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.presentation.common.ViewHolder
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 
 class RankingTopListAdapter(
     private val listener: RankingItemClickListener
-) : ListAdapter<RankingInfo, RankingTopListAdapter.RankingTopViewHolder>(RankingItemDiffCallback()) {
+) : ListAdapter<RankingInfo, ViewHolder<RankingInfo>>(RankingItemDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingTopViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<RankingInfo> {
         return RankingTopViewHolder.from(parent, listener)
     }
 
-    override fun onBindViewHolder(holder: RankingTopViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: ViewHolder<RankingInfo>, position: Int) {
+        holder.onBind(getItem(position))
     }
 
     class RankingTopViewHolder(
         private val binding: ItemRankingTopBinding,
         private val listener: RankingItemClickListener
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewHolder<RankingInfo>(binding.root) {
 
-        fun bind(ranking: RankingInfo) {
+        override fun onBind(ranking: RankingInfo) {
             itemView.setOnClickListener {
                 listener.onRankingItemClick(ranking)
             }

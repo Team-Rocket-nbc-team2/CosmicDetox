@@ -12,7 +12,7 @@ import com.rocket.cosmic_detox.databinding.ItemAppUsageBinding
 import com.rocket.cosmic_detox.presentation.extensions.fromMillisecondsToSeconds
 import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
-import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
+import com.rocket.cosmic_detox.presentation.common.ViewHolder
 
 class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDiffCallback()) {
 
