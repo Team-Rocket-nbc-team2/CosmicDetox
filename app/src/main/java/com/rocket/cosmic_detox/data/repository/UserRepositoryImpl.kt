@@ -71,4 +71,33 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun updateDailyTime(dailyTime: Long, successCallback: () -> Unit, failCallback: (Exception?) -> Unit) {
+        val fireStoreRef = fireStore.collection("users")
+            .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
+
+        // Firestore에 전달받은 dailyTime 값으로만 업데이트
+        fireStoreRef.update("dailyTime", dailyTime).addOnCompleteListener { updateTask ->
+            if (updateTask.isSuccessful) {
+                successCallback()
+            } else {
+                failCallback(updateTask.exception)
+            }
+        }
+    }
+
+    override fun getDailyTime(successCallback: (Long) -> Unit, failCallback: (Exception?) -> Unit) {
+        val fireStoreRef = fireStore.collection("users")
+            .document(firebaseAuth.currentUser?.uid ?: "efDQJ1J14STRprX5W00N3ULhKRz1")
+
+        fireStoreRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val document = task.result
+                val dailyTime = document.getLong("dailyTime") ?: 0L
+                successCallback(dailyTime)
+            } else {
+                failCallback(task.exception)
+            }
+        }
+    }
 }

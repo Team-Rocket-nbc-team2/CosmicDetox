@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.domain.usecase.GetUserDataUseCase
+import com.rocket.cosmic_detox.domain.usecase.timer.GetDailyTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.GetTotalTimeUseCase
+import com.rocket.cosmic_detox.domain.usecase.timer.UpdateDailyTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.UpdateTotalTimeUseCase
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,13 +20,26 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val getUserDataUseCase: GetUserDataUseCase,
     private val getTotalTimeUseCase: GetTotalTimeUseCase,
-    private val updateTotalTimeUseCase: UpdateTotalTimeUseCase
+    private val updateTotalTimeUseCase: UpdateTotalTimeUseCase,
+    private val getDailyTimeUseCase: GetDailyTimeUseCase,
+    private val updateDailyTimeUseCase: UpdateDailyTimeUseCase
 ) : ViewModel() {
     private val _userState = MutableStateFlow<UiState<User>>(UiState.Init)
     val userState: StateFlow<UiState<User>> get() = _userState.asStateFlow()
 
     private val _totalTimeState = MutableStateFlow<UiState<Long>>(UiState.Init)
     val totalTimeState: StateFlow<UiState<Long>> get() = _totalTimeState.asStateFlow()
+
+    private val _dailyTimeState = MutableStateFlow<UiState<Long>>(UiState.Init)
+    val dailyTimeState: StateFlow<UiState<Long>> get() = _dailyTimeState.asStateFlow()
+
+    private var currentTotalTime: Long = 0L
+    private var currentDailyTime: Long = 0L
+
+    init {
+        fetchTotalTime()
+        fetchDailyTime()
+    }
 
     fun fetchUserData() {
         viewModelScope.launch {
@@ -45,10 +60,26 @@ class UserViewModel @Inject constructor(
             _totalTimeState.value = UiState.Loading
             getTotalTimeUseCase(
                 callback = { totalTime ->
+                    currentTotalTime = totalTime
                     _totalTimeState.value = UiState.Success(totalTime)
                 },
                 failCallback = { exception ->
-                    _totalTimeState.value = UiState.Failure(exception ?: Exception("에러 발생 "))
+                    _totalTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
+                }
+            )
+        }
+    }
+
+    fun fetchDailyTime() {
+        viewModelScope.launch {
+            _dailyTimeState.value = UiState.Loading
+            getDailyTimeUseCase(
+                callback = { dailyTime ->
+                    currentDailyTime = dailyTime
+                    _dailyTimeState.value = UiState.Success(dailyTime)
+                },
+                failCallback = { exception ->
+                    _dailyTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
                 }
             )
         }
@@ -60,10 +91,27 @@ class UserViewModel @Inject constructor(
             updateTotalTimeUseCase(
                 totalTime,
                 callback = {
+                    currentTotalTime = totalTime
                     _totalTimeState.value = UiState.Success(totalTime)
                 },
                 failCallback = { exception ->
                     _totalTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
+                }
+            )
+        }
+    }
+
+    fun updateDailyTime(dailyTime: Long) {
+        viewModelScope.launch {
+            _dailyTimeState.value = UiState.Loading
+            updateDailyTimeUseCase(
+                dailyTime,
+                callback = {
+                    currentDailyTime = dailyTime
+                    _dailyTimeState.value = UiState.Success(dailyTime)
+                },
+                failCallback = { exception ->
+                    _dailyTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
                 }
             )
         }
