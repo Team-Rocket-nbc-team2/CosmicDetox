@@ -1,10 +1,7 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
-import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +17,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,8 +29,6 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.AppMonitorService
-import com.rocket.cosmic_detox.presentation.view.activity.DialogActivity
-import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState.isBottomSheetOpen
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -128,7 +122,6 @@ class TimerFragment : Fragment() {
         }
     }
 
-
     override fun onPause() {
         super.onPause()
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
@@ -147,6 +140,7 @@ class TimerFragment : Fragment() {
         } else {
             if (!BottomSheetState.getIsBottomSheetOpen()) { // 바텀시트가 열려있지 않은 경우에만 오버레이 띄우기 -> 바텀시트가 열려있을 때는 오버레이 띄우지 않음
                 // 이걸 안 해주면 바텀시트에서 허용 앱으로 이동할 때 TimerFragment도 살아있어서 이거 같이 호출됨. 중복 호출되는 것을 방지하기 위함.
+
                 showOverlay() // 오버레이 띄우기
             }
         }
@@ -240,7 +234,7 @@ class TimerFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            userViewModel.totalTimeState.collect { state ->
+            userViewModel.dailyTimeState.collect { state -> // 기존 totalTimeState 대신 dailyTimeState 사용
                 when (state) {
                     is UiState.Loading -> {
                         // 추후 작업필요할 떄 활용 로딩 상태 처리 (예: ProgressBar 표시)
@@ -289,7 +283,6 @@ class TimerFragment : Fragment() {
         dialog.show(parentFragmentManager, "ErrorDialog")
     }
 
-
     private fun showTwoButtonDialog() {
         val dialog = OneButtonDialogFragment(
             getString(R.string.dialog_common_focus)
@@ -311,8 +304,8 @@ class TimerFragment : Fragment() {
         handler.removeCallbacks(runnable)
         isTimerRunning = false  // 타이머 실행 상태를 false로 설정
 
-        // 타이머가 중지될 때 totalTime을 Firestore에 저장
-        userViewModel.updateTotalTime(time.toLong())
+        // 타이머가 중지될 때 dailyTime을 Firestore에 저장
+        userViewModel.updateDailyTime(time.toLong()) // dailyTime으로 변경
     }
 
     private fun updateTime() {
