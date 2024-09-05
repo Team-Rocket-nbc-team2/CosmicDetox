@@ -22,6 +22,8 @@
     <string name="home_travel_btn_text">휴대폰 잠시 끄고 우주 여행 가기</string>
     <string name="home_travel_start">여행을 시작하시겠어요?</string>
     <string name="home_traveling_time">오늘 우주 여행한 시간은 %1$d시간 %2$d분 입니다.</string>
+    <string name="dialog_permission_title">코스믹 디톡스 이용을 위해서는 권한이 필요합니다.</string>
+    <string name="dialog_permission_desc">권한 사용을 거부하시면 앱 이용이 종료됩니다.\n허용하신다면 확인을 눌러주세요.</string>
 
     <!--  Race  -->
     <string name="race_description_profile_image">유저 프로필 썸네일 이미지</string>

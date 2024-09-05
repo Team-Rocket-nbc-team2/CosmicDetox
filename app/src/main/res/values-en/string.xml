@@ -32,6 +32,8 @@
     <string name="home_travel_btn_text">Turn off the phone and travel into space.</string>
     <string name="home_travel_start">Would you like to travel into space?</string>
     <string name="home_traveling_time">You traveled for %1$d hours %2$d minutes.</string>
+    <string name="dialog_permission_title">To use Cosmic Detox, you need to allow permissions.</string>
+    <string name="dialog_permission_desc">If you refuse to use the permission, the app will be terminated. \n Please tap Confirm to allow it.</string>
 
     <!--  Timer  -->
     <string name="timer_start">timer start</string>

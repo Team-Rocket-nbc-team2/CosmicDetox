@@ -21,6 +21,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
+import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,21 +90,17 @@ class MainActivity : AppCompatActivity() {
 
     //퍼미션 체크 및 권한 요청 함수
     private fun checkPermissions() {
-        //거절되었거나 아직 수락하지 않은 권한(퍼미션)을 저장할 문자열 배열 리스트
         var rejectedPermissionList = ArrayList<String>()
 
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
         for(permission in requiredPermissions){
-            Log.d("권한체크!", "워킹하는거 맞냐?1")
             if(ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 //만약 권한이 없다면 rejectedPermissionList에 추가
-                Log.d("권한체크!", "워킹하는거 맞냐?2")
                 rejectedPermissionList.add(permission)
             }
         }
         //거절된 퍼미션이 있다면...
         if(rejectedPermissionList.isNotEmpty()){
-            Log.d("권한체크!", "워킹하는거 맞냐?3")
             //권한 요청!
             val array = arrayOfNulls<String>(rejectedPermissionList.size)
             ActivityCompat.requestPermissions(this, rejectedPermissionList.toArray(array), multiplePermissionsCode)
@@ -116,26 +113,36 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             multiplePermissionsCode -> {
                 if(grantResults.isNotEmpty()) {
-                    for((i, permission) in permissions.withIndex()) {
-                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            //권한 획득 실패
-                            Log.i("TAG", "The user has denied to $permission")
-                            // 사용량 통계 권한 확인 및 요청
-                            if (!Settings.canDrawOverlays(this)) {
-                                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                                startActivity(intent)
-                            }
 
-                            // 오버레이 권한 확인 및 요청
-                            if (!Settings.canDrawOverlays(this)) {
-                                val intent = Intent(
-                                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                    Uri.parse("package:$packageName")
-                                )
-                                startActivity(intent)
+                    val dialog = TwoButtonDialogDescFragment(
+                        title = getString(R.string.dialog_withdrawal),
+                        description = getString(R.string.dialog_withdrawal_desc),
+                        onClickConfirm = {
+                            for((i, permission) in permissions.withIndex()) {
+                                if(grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                                    //권한 획득 실패
+                                    Log.i("TAG", "The user has denied to $permission")
+                                    // 사용량 통계 권한 확인 및 요청
+                                    if (!Settings.canDrawOverlays(this)) {
+                                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                                        startActivity(intent)
+                                    }
+
+                                    // 오버레이 권한 확인 및 요청
+                                    if (!Settings.canDrawOverlays(this)) {
+                                        val intent = Intent(
+                                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                            Uri.parse("package:$packageName")
+                                        )
+                                        startActivity(intent)
+                                    }
+                                }
                             }
-                        }
-                    }
+                        },
+                        onClickCancel = { false }
+                    )
+                    dialog.isCancelable = false
+                    dialog.show(supportFragmentManager, "ConfirmDialog")
                 }
             }
         }
