@@ -57,9 +57,11 @@ class MainActivity : AppCompatActivity() {
                         progressDialog.setCancelable(false)
                         progressDialog.show(supportFragmentManager, "ConfirmDialog")
                     }
+
                     is UiState.Success -> {
                         progressDialog.dismiss()
                     }
+
                     else -> {
                         Log.e("HomeFragment get UserData", "유저 정보 불러오기를 실패했습니다.")
                     }
@@ -81,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_race, R.id.navigation_my, R.id.navigation_modify_allow_app_dialog, R.id.navigation_set_limit_app_dialog -> {
                     bottomNavigationMain.visibility = View.VISIBLE
                 }
+
                 else -> {
                     bottomNavigationMain.visibility = View.GONE
                 }
@@ -90,59 +93,63 @@ class MainActivity : AppCompatActivity() {
 
     //퍼미션 체크 및 권한 요청 함수
     private fun checkPermissions() {
-        var rejectedPermissionList = ArrayList<String>()
+        val rejectedPermissionList = HashSet<String>()
 
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
-        for(permission in requiredPermissions){
-            if(ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+        for (permission in requiredPermissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 //만약 권한이 없다면 rejectedPermissionList에 추가
                 rejectedPermissionList.add(permission)
             }
         }
+
         //거절된 퍼미션이 있다면...
-        if(rejectedPermissionList.isNotEmpty()){
+        if (rejectedPermissionList.isNotEmpty()) {
+            Log.i("거절 당함?", "${rejectedPermissionList.size}")
             //권한 요청!
             val array = arrayOfNulls<String>(rejectedPermissionList.size)
-            ActivityCompat.requestPermissions(this, rejectedPermissionList.toArray(array), multiplePermissionsCode)
+
+            val dialog = TwoButtonDialogDescFragment(
+                title = getString(R.string.dialog_permission_title),
+                description = getString(R.string.dialog_permission_desc),
+                onClickConfirm = {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        rejectedPermissionList.toArray(array),
+                        multiplePermissionsCode
+                    )
+                },
+                onClickCancel = { }
+            )
+            dialog.isCancelable = false
+            dialog.show(supportFragmentManager, "ConfirmDialog")
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
             multiplePermissionsCode -> {
-                if(grantResults.isNotEmpty()) {
-
-                    val dialog = TwoButtonDialogDescFragment(
-                        title = getString(R.string.dialog_withdrawal),
-                        description = getString(R.string.dialog_withdrawal_desc),
-                        onClickConfirm = {
-                            for((i, permission) in permissions.withIndex()) {
-                                if(grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                    //권한 획득 실패
-                                    Log.i("TAG", "The user has denied to $permission")
-                                    // 사용량 통계 권한 확인 및 요청
-                                    if (!Settings.canDrawOverlays(this)) {
-                                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                                        startActivity(intent)
-                                    }
-
-                                    // 오버레이 권한 확인 및 요청
-                                    if (!Settings.canDrawOverlays(this)) {
-                                        val intent = Intent(
-                                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                            Uri.parse("package:$packageName")
-                                        )
-                                        startActivity(intent)
-                                    }
-                                }
+                if (grantResults.isNotEmpty()) {
+                    for ((i, permission) in permissions.withIndex()) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            // 특정 권한이 거부되었을 때만 설정 화면으로 이동
+                            if (permission == "android.permission.SYSTEM_ALERT_WINDOW") {
+                                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                                startActivity(intent)
                             }
-                        },
-                        onClickCancel = { false }
-                    )
-                    dialog.isCancelable = false
-                    dialog.show(supportFragmentManager, "ConfirmDialog")
+
+                            if (permission == "android.permission.PACKAGE_USAGE_STATS") {
+                                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                                startActivity(intent)
+                            }
+                        }
+                    }
                 }
             }
         }
