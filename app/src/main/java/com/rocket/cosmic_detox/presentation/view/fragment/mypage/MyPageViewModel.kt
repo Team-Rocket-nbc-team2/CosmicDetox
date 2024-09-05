@@ -15,12 +15,14 @@ import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,7 +46,8 @@ class MyPageViewModel @Inject constructor(
 
     fun loadMyInfo() {
         viewModelScope.launch {
-            repository.getMyInfo()
+            repository.getMyInfo() // 플로우 생성
+                .flowOn(Dispatchers.IO) // IO 스레드(백그라운드 스레드)에서 실행
                 .catch {
                     Log.e("MyPageViewModel", "loadMyInfo: $it")
                     _myInfo.value = MyPageUiState.Error(it.toString())
@@ -59,6 +62,7 @@ class MyPageViewModel @Inject constructor(
     fun loadMyAppUsage() {
         viewModelScope.launch {
             repository.getMyAppUsage()
+                .flowOn(Dispatchers.IO)
                 .catch {
                     _myAppUsageList.value = MyPageUiState.Error(it.toString())
                     Log.e("MyPageViewModel", "loadMyAppUsage: $it")

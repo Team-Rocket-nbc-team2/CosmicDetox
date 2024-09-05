@@ -22,7 +22,7 @@ class MyPageRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
 ) : MyPageRepository {
 
-    override fun getMyInfo(): Flow<User> = flow {
+    override suspend fun getMyInfo(): Flow<User> = flow {
         val uid = userDataSource.getUid()
         //val uid = "test2" // TODO: 나중에 uid로 수정
 
@@ -30,12 +30,12 @@ class MyPageRepositoryImpl @Inject constructor(
         val appsResult = userDataSource.getUserApps(uid)
         val trophiesResult = userDataSource.getUserTrophies(uid)
 
-        val user = userResult.getOrNull() ?: User()
-        val apps = appsResult.getOrNull() ?: emptyList()
-        val trophies = trophiesResult.getOrNull() ?: emptyList()
+        val user = userResult.getOrElse { User() }
+        val apps = appsResult.getOrElse { emptyList() }
+        val trophies = trophiesResult.getOrElse { emptyList() }
 
         emit(user.copy(apps = apps, trophies = trophies))
-    }.flowOn(Dispatchers.IO)
+    }
 
     override fun getMyAppUsage(): Flow<List<AppUsage>> = flow {
         val endTime = System.currentTimeMillis()
@@ -89,7 +89,7 @@ class MyPageRepositoryImpl @Inject constructor(
 
             emit(appUsageList)
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     override suspend fun updateAppUsageLimit(allowedApp: AllowedApp): Result<Boolean> {
         val uid = userDataSource.getUid()

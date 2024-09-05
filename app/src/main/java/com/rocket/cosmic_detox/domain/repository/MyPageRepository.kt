@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MyPageRepository {
 
-    fun getMyInfo(): Flow<User>
+    suspend fun getMyInfo(): Flow<User>
 
     fun getMyAppUsage(): Flow<List<AppUsage>>
 
