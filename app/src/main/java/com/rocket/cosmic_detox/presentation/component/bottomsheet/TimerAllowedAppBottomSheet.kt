@@ -52,7 +52,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
             context?.startActivity(intent)
 
-            initCountDownTimer(packageId, 5) // TODO: limitedTime.toLong()으로 변경, 지금은 임시로 5초로 설정되어있음. 근데 limitedTime으로 바꾸고 허용앱에서 오래 있어도 우리 앱 초기화 안될라나.
+            initCountDownTimer(packageId, limitedTime) // TODO: limitedTime.toLong()으로 변경, 지금은 임시로 5초로 설정되어있음. 근데 limitedTime으로 바꾸고 허용앱에서 오래 있어도 우리 앱 초기화 안될라나.
                                                     // 핸드폰 쓰레기면 램 용량 적어서 다시 로그인 화면으로 이동할 수도 있지 않나.. 일단 작동은 잘됨.
             allowedAppViewModel.setSelectedAllowedAppPackage(packageId)
         }

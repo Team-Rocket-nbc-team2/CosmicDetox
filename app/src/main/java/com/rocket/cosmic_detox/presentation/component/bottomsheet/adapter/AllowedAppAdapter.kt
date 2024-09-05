@@ -16,7 +16,7 @@ import com.rocket.cosmic_detox.databinding.ItemAppTimeListBinding
 
 class AllowedAppAdapter(
     private val context: Context,
-    private val onItemClick: (String, Int) -> Unit
+    private val onItemClick: (String, Long) -> Unit
 ): ListAdapter<AllowedApp, AllowedAppAdapter.ViewHolder>(
     object: DiffUtil.ItemCallback<AllowedApp>() {
         override fun areItemsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
@@ -40,7 +40,7 @@ class AllowedAppAdapter(
     inner class ViewHolder(private val binding: ItemAppTimeListBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(allowedApp: AllowedApp) {
             with(binding) {
-                if (allowedApp.limitedTime == 0) emphasizeDarkerLayout.visibility = View.VISIBLE
+                if (allowedApp.limitedTime == 0L) emphasizeDarkerLayout.visibility = View.VISIBLE
                 else {
                     root.setOnClickListener {
                         onItemClick(allowedApp.packageId, allowedApp.limitedTime)
@@ -57,14 +57,14 @@ class AllowedAppAdapter(
             }
         }
 
-        private fun getTimeString(limitedTime: Int): String {
+        private fun getTimeString(limitedTime: Long): String {
             var remainTime = limitedTime
             val hour = remainTime / 3600
 
             remainTime %= 3600
             val minute = remainTime / 60
 
-            return if (hour == 0) "${minute}분"
+            return if (hour == 0L) "${minute}분"
             else "${hour}시간 ${minute}분"
         }
     }

@@ -143,7 +143,7 @@ class AllowAppRepositoryImpl @Inject constructor(
             }
 
             // 카테고리별 제한 시간을 설정
-            val limitedTime = AppCategoryManager.getCategory(appCategory).toInt()
+            val limitedTime = AppCategoryManager.getCategory(appCategory)
 
             // 제한 시간을 설정한 새 객체로 변환
             addedApp.copy(limitedTime = limitedTime)
