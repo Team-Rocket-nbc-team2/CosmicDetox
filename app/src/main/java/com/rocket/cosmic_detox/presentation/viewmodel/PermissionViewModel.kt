@@ -19,7 +19,7 @@ class PermissionViewModel : ViewModel() {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    fun isOverlayPermissionGranted(context: Context): Boolean {
+    fun isOverlayPermissionGranted(context: Context, timerFragment: Boolean = false): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Settings.canDrawOverlays(context)
         } else {

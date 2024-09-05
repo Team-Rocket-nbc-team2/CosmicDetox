@@ -190,7 +190,6 @@ class MyPageFragment : Fragment() {
 
     private fun checkAndRequestUsageStatsPermission() {
         if (!permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
-            //requestUsageStatsPermission()
             binding.rvMyAppUsage.visibility = View.GONE
             binding.tvNoAppUsageMessage.visibility = View.VISIBLE
             binding.btnAllowAppUsagePermission.visibility = View.VISIBLE
