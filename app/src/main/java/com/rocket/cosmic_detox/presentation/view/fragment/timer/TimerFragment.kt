@@ -62,8 +62,6 @@ class TimerFragment : Fragment() {
     private var isOverlayVisible = false // 오버레이가 보이는지 여부
     private var allowedAppList = mutableListOf<String>()
 
-    private val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -76,6 +74,7 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
 
         if(isRequestOverlay){
             showOverlay()
@@ -118,7 +117,7 @@ class TimerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
-            if(!BottomSheetState.getIsBottomSheetOpen() && isRequestOverlay){
+            if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
                 showOverlay()
             }
         }
