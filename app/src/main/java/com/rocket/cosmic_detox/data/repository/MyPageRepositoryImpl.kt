@@ -6,6 +6,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
+import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
@@ -22,20 +23,39 @@ class MyPageRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
 ) : MyPageRepository {
 
-    override suspend fun getMyInfo(): Flow<User> = flow {
-        val uid = userDataSource.getUid()
-        //val uid = "test2" // TODO: 나중에 uid로 수정
-
-        val userResult = userDataSource.getUserInfo(uid) // TODO: onSuccess, onFailure 처리를 해줘야 하나?
-        val appsResult = userDataSource.getUserApps(uid)
-        val trophiesResult = userDataSource.getUserTrophies(uid)
-
-        val user = userResult.getOrElse { User() }
-        val apps = appsResult.getOrElse { emptyList() }
-        val trophies = trophiesResult.getOrElse { emptyList() }
-
-        emit(user.copy(apps = apps, trophies = trophies))
+    override suspend fun getUid(): String {
+        return userDataSource.getUid()
     }
+
+    override suspend fun getUserInfo(uid: String): Flow<User> = flow {
+        val userResult = userDataSource.getUserInfo(uid)
+        emit(userResult.getOrElse { User() })
+    }
+
+    override suspend fun getUserApps(uid: String): Flow<List<AllowedApp>> = flow {
+        val appsResult = userDataSource.getUserApps(uid)
+        emit(appsResult.getOrElse { emptyList() })
+    }
+
+    override suspend fun getUserTrophies(uid: String): Flow<List<Trophy>> = flow {
+        val trophiesResult = userDataSource.getUserTrophies(uid)
+        emit(trophiesResult.getOrElse { emptyList() })
+    }
+
+//    override suspend fun getMyInfo(): Flow<User> = flow {
+//        val uid = userDataSource.getUid()
+//        //val uid = "test2" // TODO: 나중에 uid로 수정
+//
+//        val userResult = userDataSource.getUserInfo(uid) // TODO: onSuccess, onFailure 처리를 해줘야 하나?
+//        val appsResult = userDataSource.getUserApps(uid)
+//        val trophiesResult = userDataSource.getUserTrophies(uid)
+//
+//        val user = userResult.getOrElse { User() }
+//        val apps = appsResult.getOrElse { emptyList() }
+//        val trophies = trophiesResult.getOrElse { emptyList() }
+//
+//        emit(user.copy(apps = apps, trophies = trophies))
+//    }
 
     override fun getMyAppUsage(): Flow<List<AppUsage>> = flow {
         val endTime = System.currentTimeMillis()

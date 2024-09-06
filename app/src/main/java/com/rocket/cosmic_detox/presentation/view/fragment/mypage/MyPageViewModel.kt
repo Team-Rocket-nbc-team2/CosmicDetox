@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,8 +47,17 @@ class MyPageViewModel @Inject constructor(
 
     fun loadMyInfo() {
         viewModelScope.launch {
-            repository.getMyInfo() // 플로우 생성
-                .flowOn(Dispatchers.IO) // IO 스레드(백그라운드 스레드)에서 실행
+            val uid = repository.getUid()
+
+            // getUserInfo, getUserApps, getUserTrophies를 zip으로 묶어서 한 번에 처리
+            repository.getUserInfo(uid)
+                .zip(repository.getUserApps(uid)) { user, apps ->
+                    user to apps // User와 AllowedApp을 함께 반환
+                }
+                .zip(repository.getUserTrophies(uid)) { (user, apps), trophies ->
+                    user.copy(apps = apps, trophies = trophies) // 세 결과를 조합하여 User 객체 생성, 이렇게 하면 되나..?
+                }
+                .flowOn(Dispatchers.IO)
                 .catch {
                     Log.e("MyPageViewModel", "loadMyInfo: $it")
                     _myInfo.value = MyPageUiState.Error(it.toString())
