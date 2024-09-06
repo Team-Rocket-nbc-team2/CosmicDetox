@@ -107,34 +107,47 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updateTotalTime(totalTime: Long) {
+    fun updateTotalTime(updatedTime: Long) {
         viewModelScope.launch {
             _totalTimeState.value = UiState.Loading
+            val deltaDailyTime = updatedTime - currentDailyTime // 전달된 time과 이전 dailyTime의 차이 계산
+            val updatedTotalTime = currentTotalTime + deltaDailyTime // 차이를 기존 totalTime에 더함
+
+            // 계산된 totalTime을 업데이트
             updateTotalTimeUseCase(
-                totalTime,
+                updatedTotalTime,
                 callback = {
-                    currentTotalTime = totalTime
-                    _totalTimeState.value = UiState.Success(totalTime)
+                    currentTotalTime = updatedTotalTime
+                    currentDailyTime = updatedTime
+                    _totalTimeState.value = UiState.Success(updatedTotalTime)
                 },
                 failCallback = { exception ->
-                    _totalTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
+                    _totalTimeState.value = UiState.Failure(exception ?: Exception("totalTime 업데이트 중 에러 발생"))
                 }
             )
         }
     }
 
 
-    fun updateRankingTotalTime(totalTime: Long) {
+
+    fun updateRankingTotalTime(updatedTime: Long) {
         val uid = currentUserUID
         Log.d("Uid체크", uid.toString())
 
         if (uid != null) {
             viewModelScope.launch {
+                // 이전 dailyTime과 현재 time의 차이
+                val deltaDailyTime = updatedTime - currentDailyTime
+                val updatedTotalTime = currentTotalTime + deltaDailyTime // 차이를 기존 totalTime에 더함
+
                 updateRankingTotalTimeUseCase(
-                    totalTime,
+                    updatedTotalTime,
                     uid,
                     callback = {
                         Log.d("rank", "Ranking totalTime 업데이트 성공")
+
+                        currentTotalTime = updatedTotalTime
+                        currentDailyTime = updatedTime
                     },
                     failCallback = { exception ->
                         Log.e("rank", "Ranking totalTime 업데이트 실패", exception)
