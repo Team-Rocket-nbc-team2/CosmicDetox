@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class CheckedApp(
     val packageId: String,
     val appName: String,
-    val limitedTime: Int,
+    val limitedTime: Long,
     var isChecked: Boolean = false
 ) : Parcelable

@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view
+package com.rocket.cosmic_detox.presentation.service
 
 import android.app.Service
 import android.content.Intent

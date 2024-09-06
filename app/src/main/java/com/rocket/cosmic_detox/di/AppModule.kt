@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.rocket.cosmic_detox.data.repository.RankingRepositoryImpl
 import com.rocket.cosmic_detox.data.repository.UserRepositoryImpl
+import com.rocket.cosmic_detox.domain.repository.RankingRepository
 import com.rocket.cosmic_detox.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -32,6 +34,13 @@ object AppModule {
         auth: FirebaseAuth
     ): UserRepository {
         return UserRepositoryImpl(firestore, auth)
+    }
+    @Provides
+    @Singleton
+    fun provideRankingRepository(
+        firestore: FirebaseFirestore
+    ): RankingRepository {
+        return RankingRepositoryImpl(firestore)
     }
 
 

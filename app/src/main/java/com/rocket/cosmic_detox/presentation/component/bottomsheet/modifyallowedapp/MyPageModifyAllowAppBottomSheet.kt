@@ -42,9 +42,15 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     private val modalBottomSheetBinding by lazy { ModalBottomsheetBinding.inflate(layoutInflater) }
     private lateinit var modalContentModifyAllowAppBinding: ModalContentModifyAllowAppBinding
     private val allowAppListAdapter by lazy {
-        AllowAppListAdapter(requireContext()) { app ->
-            updateCheckedApp(app)
-        }
+        AllowAppListAdapter(
+            context = requireContext(),
+            onClick = { app ->
+                updateCheckedApp(app)
+            },
+            onCheckboxClick = { app ->
+                updateCheckedApp(app) // 체크박스, 아이템뷰 클릭 시 중복되는 문제 때문에 같은 로직을 독립적인 클릭 이벤트로 처리
+            }
+        )
     }
     private val allowAppViewModel by viewModels<AllowAppViewModel>()
     private val myPageViewModel by activityViewModels<MyPageViewModel>() // TODO: 나중에 두 뷰모델을 myPageViewModel로 통합해야하나 고민해보기
@@ -130,24 +136,19 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun updateAllowApps() {
-        if (checkedApps.isNotEmpty()) {
-            allowAppViewModel.updateAllowApps(args.allowedApps.toList(), checkedApps)
-            modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = true
-            viewLifecycleOwner.lifecycleScope.launch {
-                allowAppViewModel.updateResult.collectLatest { success ->
-                    if (success) {
-                        dismiss()
-                        myPageViewModel.loadMyInfo()
-                        allowAppViewModel.resetUpdateResult() // 상태 초기화
-                    } else {
-                        Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
-                    }
-                    modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = false
+        allowAppViewModel.updateAllowApps(args.allowedApps.toList(), checkedApps)
+        modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = true
+        viewLifecycleOwner.lifecycleScope.launch {
+            allowAppViewModel.updateResult.collectLatest { success ->
+                if (success) {
+                    dismiss()
+                    myPageViewModel.loadMyInfo()
+                    allowAppViewModel.resetUpdateResult() // 상태 초기화
+                } else {
+                    Log.e("MyPageSetLimitUseTimeBottomSheet", "업데이트 실패")
                 }
+                modalContentModifyAllowAppBinding.progressBarModifyAllowApp.isVisible = false
             }
-        } else {
-            dismiss()
-            Toast.makeText(requireContext(), "선택된 앱이 없습니다.", Toast.LENGTH_SHORT).show() // TODO: 나중에 삭제
         }
     }
 
