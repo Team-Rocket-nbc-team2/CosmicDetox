@@ -44,35 +44,6 @@ fun TextView.setCumulativeTime(time: BigDecimal, home: Boolean = false) {
     }
 }
 
-fun BigDecimal.toHours(): Long {
-    return this.toLong() / 3600
-}
-
-fun BigDecimal.toMinutes(): Long {
-    return (this.toLong() % 3600) / 60
-}
-
-fun BigDecimal.toSeconds(): Long {
-    return this.toLong() % 60
-}
-
-fun Long.fromSecondsToMinutes(): Long {
-    return this / 60
-}
-
-fun Long.fromSecondsToHours(): Long {
-    return this / 3600
-}
-
-fun Long.fromMinutesToSeconds(): Long {
-    return this * 60
-}
-
-// ms -> s
-fun BigDecimal.fromMillisecondsToSeconds(): BigDecimal {
-    return this.divide(BigDecimal(1000))
-}
-
 fun TextView.setPoints(points: BigDecimal) {
     text = context.getString(R.string.race_format_points, points.convertThreeDigitComma())
 }
