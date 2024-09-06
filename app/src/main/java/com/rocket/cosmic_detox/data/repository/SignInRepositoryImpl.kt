@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 enum class LoginType {
@@ -16,13 +17,7 @@ class SignInRepositoryImpl @Inject constructor(
     private val firestoreDB: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
 ) : SignInRepository {
-    private var isReSignInUser = false
-    private var isSignUpUser = false
-    private var isRankingUser = false
-
-    private var loginType = LoginType.NONE
-
-    override fun setDataToFireBase(): Boolean {
+    override suspend fun setDataToFireBase(): Result<Boolean> {
         val authUser = firebaseAuth.currentUser
         val uId = authUser?.uid.toString()
 
@@ -31,31 +26,22 @@ class SignInRepositoryImpl @Inject constructor(
         val userRef = firestoreDB.collection("users").document(uId)
         val rankingUserRef = firestoreDB.collection("season").document("season-2024-08")
 
-        userRef.get().addOnSuccessListener { document ->
-            Log.d("User Data document>>", "${document}")
+        return try {
+            val document = userRef.get().await() // 유저 문서를 비동기 작업이 완료될 때까지 기다림
 
             if (document.exists()) {
-                loginType = LoginType.RE_SIGN_IN
-                // 재로그인
                 Log.d("User Data 존재", "다큐먼트가 있어!!!!")
                 val userData = document.data
+
+                // 재로그인
                 if (userData != null) {
-                    userRef.set(userData)
-                        .addOnSuccessListener {
-                            // 1
-                            isReSignInUser = true
-                            Log.d("User Data 업데이트 성공", "User data is successfully updated!!")
-                        }
-                        .addOnFailureListener { exception ->
-                            isReSignInUser = false
-                            Log.w("User Data 업데이트 실패", "Error updating document", exception)
-                        }
+                    userRef.set(userData).await() // 마찬가지로 비동기 작업이 완료될 때까지 기다림
+                    Log.d("User Data 업데이트 성공", "User data is successfully updated!!")
                 }
             } else {
-                loginType = LoginType.SIGN_UP
+                Log.d("User Data 존재하지 않음", "다큐먼트가 없어!!!!")
 
                 // 최초 로그인 (회원가입)
-                Log.d("User Data 존재하지 않음", "다큐먼트가 없어!!!!")
                 val firstUser = hashMapOf(
                     "uID" to uId,
                     "name" to authUser?.displayName.toString(),
@@ -72,34 +58,17 @@ class SignInRepositoryImpl @Inject constructor(
                     "totalTime" to 0,
                 )
 
-                rankingUserRef.collection("ranking").document(uId).set(firstRankingUser)
-                    .addOnSuccessListener {
-                        // 2
-                        isSignUpUser = true
-                        Log.d("Ranking User Data 전송 성공", "App document written!")
-                    }
-                    .addOnFailureListener { exception ->
-                        isSignUpUser = false
-                        Log.w("Ranking User Data 전송 실패", "Error adding app document", exception)
-                    }
+                rankingUserRef.collection("ranking").document(uId).set(firstRankingUser).await()
+                Log.d("Ranking User Data 전송 성공", "Ranking user data is successfully written!")
 
-
-                userRef.set(firstUser)
-                    .addOnSuccessListener {
-                        // 3
-                        isRankingUser = true
-                        Log.d("User Data 전송 성공", "User data is successfully written!")
-                    }
-                    .addOnFailureListener { exception ->
-                        isRankingUser = false
-                        Log.w("User Data 전송 실패", "Error writing document", exception) }
+                userRef.set(firstUser).await()
+                Log.d("User Data 전송 성공", "User data is successfully written!")
             }
-        }
 
-        return when(loginType) {
-            LoginType.RE_SIGN_IN -> isReSignInUser
-            LoginType.SIGN_UP -> isSignUpUser && isRankingUser
-            LoginType.NONE -> false
+            Result.success(true) // 성공적으로 작업을 마쳤을 때 Result.success()로 성공 결과를 반환
+        } catch (e: Exception) {
+            Log.e("Firebase Error", "Error: ", e)
+            Result.failure(e) // 작업 중 예외가 발생했을 때 Result.failure()로 예외 결과를 반환
         }
     }
 }

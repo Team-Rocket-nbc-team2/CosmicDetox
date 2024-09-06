@@ -62,7 +62,6 @@
     <string name="dialog_sign_out_failure">로그아웃에 실패했습니다.</string>
 
     <!--  Timer  -->
-    <string name="timer_start">타이머 시작</string>
     <string name="timer_finish">종료</string>
     <string name="timer_rest">잠깐 쉬기</string>
     <string name="timer_dialog_finish">정말로 여행을 종료 하시겠어요?</string>
@@ -70,6 +69,8 @@
     <string name="allowed_app_is_empty">사용할 어플 리스트가 없습니다.\n내정보 화면에서 미리 선택 해보세요!</string>
     <string name="timer_button_pinning">앱 고정하기</string>
     <string name="timer_button_start">타이머 시작하기</string>
+    <string name="timer_focus">여행에 집중하세요!</string>
+    <string name="dialog_back_to_timer">이전 화면으로 돌아가기</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>

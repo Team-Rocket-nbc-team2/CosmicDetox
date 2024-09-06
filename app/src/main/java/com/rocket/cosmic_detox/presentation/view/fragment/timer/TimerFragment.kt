@@ -79,6 +79,7 @@ class TimerFragment : Fragment() {
         observeViewModel()
 
         userViewModel.fetchTotalTime()
+        userViewModel.fetchDailyTime() // dailyTime도 함께 초기화
         startTimer()
     }
 
@@ -105,7 +106,6 @@ class TimerFragment : Fragment() {
             }
 //            requestOverlayPermission() // 오버레이 권한 요청
         }
-        stopTimer()
     }
 
     override fun onResume() {
@@ -113,9 +113,7 @@ class TimerFragment : Fragment() {
         if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
             removeOverlay() // 오버레이 제거
         }
-        if (!isFinishingTimer && !isTimerRunning) {
-            startTimer()
-        }
+
     }
 
     private fun showOverlay() { // 오버레이 띄우기
@@ -196,7 +194,7 @@ class TimerFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            userViewModel.totalTimeState.collect { state ->
+            userViewModel.dailyTimeState.collect { state -> // 기존 totalTimeState 대신 dailyTimeState 사용
                 when (state) {
                     is UiState.Loading -> {
                         // 추후 작업필요할 떄 활용 로딩 상태 처리 (예: ProgressBar 표시)
@@ -266,8 +264,9 @@ class TimerFragment : Fragment() {
         handler.removeCallbacks(runnable)
         isTimerRunning = false  // 타이머 실행 상태를 false로 설정
 
-        // 타이머가 중지될 때 totalTime을 Firestore에 저장
-        userViewModel.updateTotalTime(time.toLong())
+        // 타이머가 중지될 때 dailyTime과 totalTime을 Firestore에 저장
+        userViewModel.updateDailyTime(time.toLong()) // dailyTime 업데이트
+        userViewModel.updateTotalTime(time.toLong()) // totalTime 업데이트
     }
 
     private fun updateTime() {

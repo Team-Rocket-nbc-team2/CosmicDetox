@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
@@ -19,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -58,27 +60,35 @@ class SignInViewModel @Inject constructor(
                 if (task.isSuccessful) {
                     Log.e("로그인 1", "Firebase 인증에 성공. ${task}")
                     _user.value = auth.currentUser
-                    testFunc(task)
-//                    _status.value = UiState.Success(_user.value!!)
+                    // 코루틴 블록 내에서 suspend 함수 호출
+                    viewModelScope.launch { // repository.setDataToFireBase()가 suspend 함수이므로 코루틴 내에서 호출
+                        try {
+//                            val result = repository.setDataToFireBase()
+//                            if (result.isSuccess) {
+//                                _status.value = UiState.Success(_user.value!!)
+//                                Log.d("LOGIN-- SUCCESS: firebaseAuthWithGoogle", "Firebase 인증에 성공했습니다.")
+//                            } else {
+//                                _status.value = UiState.Failure(result.exceptionOrNull())
+//                                Log.e("LOGIN-- FAILURE: firebaseAuthWithGoogle", "Firebase 인증에 실패했습니다. ${result.exceptionOrNull()}")
+//                            }
+                            repository.setDataToFireBase() // TODO: 위와 아래 중에 하나 선택해서 사용. (반환타입이 Result<Boolean>이므로 onSuccess, onFailure 사용할 수 있음)
+                                .onSuccess {
+                                    _status.value = UiState.Success(_user.value!!)
+                                    Log.d("LOGIN-- SUCCESS: firebaseAuthWithGoogle", "Firebase 인증에 성공했습니다.")
+                                }
+                                .onFailure {
+                                    _status.value = UiState.Failure(it)
+                                    Log.e("LOGIN-- FAILURE: setDataToFireBase()", "Firebase 인증에 실패했습니다. ${it}")
+                                }
+                        } catch (e: Exception) {
+                            _status.value = UiState.Failure(e)
+                            Log.e("LOGIN-- FAILURE: setDataToFireBase() catch", "Firebase 인증에 실패했습니다. ${e}")
+                        }
+                    }
                 } else {
-//                    _status.value = UiState.Failure(task.exception)
-                    Log.e("로그인 1", "Firebase 인증에 실패했습니다. ${task.exception}")
+                    _status.value = UiState.Failure(task.exception)
+                    Log.e("LOGIN-- FAILURE: addOnCompleteListener else", "Firebase 인증에 실패했습니다. ${task.exception}")
                 }
             }
-    }
-
-    private fun testFunc(task: Task<AuthResult>) {
-        val result = repository.setDataToFireBase()
-
-        when(result){
-            true -> {
-                Log.d("로그인 1", "여긴가?")
-                _status.value = UiState.Success(_user.value!!)
-            }
-            false -> {
-                Log.d("로그인 1", "여긴가? 11")
-                _status.value = UiState.Failure(task.exception)
-            }
-        }
     }
 }
