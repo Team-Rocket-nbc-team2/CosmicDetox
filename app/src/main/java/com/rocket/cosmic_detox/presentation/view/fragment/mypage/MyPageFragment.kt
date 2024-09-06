@@ -1,8 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
-import android.app.AlertDialog
-import android.app.AppOpsManager
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -11,12 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
@@ -33,6 +36,7 @@ import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
+import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -43,6 +47,7 @@ class MyPageFragment : Fragment() {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private val myPageViewModel by activityViewModels<MyPageViewModel>()
+    private val permissionViewModel: PermissionViewModel by activityViewModels()
     private val myAppUsageAdapter by lazy { MyAppUsageAdapter() }
     private val myTrophyAdapter by lazy {
         MyTrophyAdapter { trophy ->
@@ -50,6 +55,34 @@ class MyPageFragment : Fragment() {
         }
     }
     private lateinit var allowedApps: List<AllowedApp>
+
+    // 구글 로그인 클라이언트 객체
+    private val googleSignInClient by lazy {
+        GoogleSignIn.getClient(
+            requireContext(),
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+        )
+    }
+
+    // 구글 로그인 클라이언트 런처 객체 (registerForActivityResult 사용)
+    private val signInLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    account?.idToken?.let { idToken ->
+                        // Firebase에 Google 인증 자격 증명으로 재인증 시도
+                        myPageViewModel.reAuthenticateWithGoogle(idToken)
+                    }
+                } catch (e: ApiException) {
+                    Log.e("MyPageFragment", "Google SignIn failed", e)
+                }
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,8 +119,7 @@ class MyPageFragment : Fragment() {
                 title = getString(R.string.dialog_withdrawal),
                 description = getString(R.string.dialog_withdrawal_desc),
                 onClickConfirm = {
-                    myPageViewModel.withdraw()
-                    setUiState()
+                    launchGoogleSignInClient()
                 },
                 onClickCancel = { false }
             )
@@ -110,6 +142,12 @@ class MyPageFragment : Fragment() {
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
         }
+    }
+
+    // 구글 로그인 클라이언트를 런칭시키는 함수
+    private fun launchGoogleSignInClient() {
+        val signInIntent = googleSignInClient.signInIntent
+        signInLauncher.launch(signInIntent)
     }
 
     private fun initView() = with(binding) {
@@ -176,6 +214,42 @@ class MyPageFragment : Fragment() {
                     }
                 }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            myPageViewModel.userStatus.collectLatest {
+                when (it) {
+                    is UiState.Success -> {
+                        val intent = Intent(requireContext(), SignInActivity::class.java)
+                        startActivity(intent)
+                        Toast.makeText(requireContext(), getString(R.string.dialog_withdrawal_success), Toast.LENGTH_SHORT).show()
+                        requireActivity().finish() // 로그인 화면으로 이동 후 다시 뒤로가기 방지
+                    }
+                    is UiState.Failure -> {
+                        val dialog = OneButtonDialogFragment(getString(R.string.dialog_withdrawal_failure)) {}
+                        dialog.isCancelable = false
+                        dialog.show(getParentFragmentManager(), "ConfirmDialog")
+                    }
+                    is UiState.SigningFailure -> {
+                        val dialog =
+                            TwoButtonDialogDescFragment(
+                                title = getString(R.string.dialog_withdrawal_logout_title),
+                                description = getString(R.string.dialog_withdrawal_logout_title),
+                                onClickConfirm = {
+                                    FirebaseAuth.getInstance().signOut()
+
+                                    val intent = Intent(requireContext(), SignInActivity::class.java)
+                                    startActivity(intent)
+                                },
+                                onClickCancel = {})
+                        dialog.isCancelable = false
+                        dialog.show(getParentFragmentManager(), "ConfirmDialog")
+                    }
+                    else -> {
+                        // 로딩 중
+                    }
+                }
+            }
+        }
     }
 
     private fun setMyInfo(user: User) = with(binding) {
@@ -187,7 +261,7 @@ class MyPageFragment : Fragment() {
     }
 
     private fun checkAndRequestUsageStatsPermission() {
-        if (!hasUsageStatsPermission(requireContext())) {
+        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             //requestUsageStatsPermission()
             binding.rvMyAppUsage.visibility = View.GONE
             binding.tvNoAppUsageMessage.visibility = View.VISIBLE
@@ -200,78 +274,28 @@ class MyPageFragment : Fragment() {
         }
     }
 
-    private fun hasUsageStatsPermission(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            context.packageName
-        )
-        return mode == AppOpsManager.MODE_ALLOWED
-    }
-
     private fun requestUsageStatsPermission() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("권한 필요")
-            .setMessage("앱 사용 통계에 접근하려면 권한이 필요합니다. 설정에서 권한을 부여해주세요.")
-            .setPositiveButton("설정으로 이동") { dialog, _ ->
+        val dialog = TwoButtonDialogDescFragment(
+            title = getString(R.string.dialog_permission_title),
+            description = getString(R.string.dialog_my_permission_desc),
+            onClickConfirm = {
                 val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                 startActivity(intent)
-                dialog.dismiss()
-            }
-            .setNegativeButton("취소") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun setUiState(withdraw: Boolean = true) = lifecycleScope.launch {
-        myPageViewModel.userStatus.collectLatest {
-            when (it) {
-                is UiState.Success -> {
-                    val intent = Intent(requireContext(), SignInActivity::class.java)
-                    startActivity(intent)
-                }
-                is UiState.Failure -> {
-                    val dialog =
-                        OneButtonDialogFragment(
-                            if(withdraw) getString(R.string.dialog_withdrawal_failure) else getString(R.string.dialog_sign_out_failure)) {}
-                    dialog.isCancelable = false
-                    dialog.show(getParentFragmentManager(), "ConfirmDialog")
-                }
-                is UiState.SigningFailure -> {
-                    val dialog =
-                        TwoButtonDialogDescFragment(
-                            title = getString(R.string.dialog_withdrawal_logout_title),
-                            description = getString(R.string.dialog_withdrawal_logout_title),
-                            onClickConfirm = {
-                                FirebaseAuth.getInstance().signOut()
-
-                                val intent = Intent(requireContext(), SignInActivity::class.java)
-                                startActivity(intent)
-                            },
-                            onClickCancel = {})
-                    dialog.isCancelable = false
-                    dialog.show(getParentFragmentManager(), "ConfirmDialog")
-                }
-                else -> {
-                    // 로딩 중
-                }
-            }
-        }
+            },
+            onClickCancel = { false }
+        )
+        dialog.isCancelable = false
+        dialog.show(getParentFragmentManager(), "ConfirmDialog")
     }
 
     override fun onResume() {
         super.onResume()
         // 권한이 있을 경우만 앱 사용 통계 로딩
-        if (hasUsageStatsPermission(requireContext())) {
+        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             binding.rvMyAppUsage.visibility = View.VISIBLE
             binding.tvNoAppUsageMessage.visibility = View.GONE
             binding.btnAllowAppUsagePermission.visibility = View.GONE
-            // 여기서만 loadMyAppUsage 호출
-            if (_binding?.rvMyAppUsage?.adapter == null) {
-                myPageViewModel.loadMyAppUsage() // onResume에서만 호출
-            }
+            myPageViewModel.loadMyAppUsage()
         }
     }
 
