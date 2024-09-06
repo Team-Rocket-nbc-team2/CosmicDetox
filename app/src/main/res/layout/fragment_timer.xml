@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/timer_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,7 +10,7 @@
         android:id="@+id/tv_timer_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HH:MM:SS"
+        tools:text="HH:MM:SS"
         android:textColor="@color/white20"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"

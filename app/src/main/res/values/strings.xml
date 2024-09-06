@@ -47,7 +47,7 @@
     <string name="my_app_usage">내 사용량 보기</string>
     <string name="my_btn_permission">권한 허용하기</string>
     <string name="my_permission_desc">앱 사용기록을 확인하려면\n권한을 허용해주세요.</string>
-    <string name="my_trophies_none">아직 획득한 트로피가 없습니다. \n     더 열심히 여행 해봅시다!</string>
+    <string name="my_trophies_none">아직 획득한 트로피가 없습니다.\n더 열심히 여행 해봅시다!</string>
     <string name="dialog_sign_out">정말로 로그아웃 하시겠어요?</string>
     <string name="dialog_withdrawal">정말로 탈퇴하시겠어요?</string>
     <string name="dialog_withdrawal_desc">회원탈퇴 후 유저 정보는 7일 동안 임시 보관되며, 이후 영구 삭제됩니다.</string>

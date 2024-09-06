@@ -15,12 +15,15 @@ import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,14 +47,23 @@ class MyPageViewModel @Inject constructor(
 
     fun loadMyInfo() {
         viewModelScope.launch {
-            repository.getMyInfo()
-                .catch {
-                    Log.e("MyPageViewModel", "loadMyInfo: $it")
-                    _myInfo.value = MyPageUiState.Error(it.toString())
+            val uid = repository.getUid()
+            // getUserInfo, getUserApps, getUserTrophies를 zip으로 묶어서 한 번에 처리
+            repository.getUserInfo(uid)
+                .zip(repository.getUserApps(uid)) { user, apps ->
+                    user to apps // User와 AllowedApp을 함께 반환
                 }
-                .collect {
-                    Log.d("MyPageViewModel", "User: $it")
-                    _myInfo.value = MyPageUiState.Success(it)
+                .zip(repository.getUserTrophies(uid)) { (user, apps), trophies ->
+                    return@zip user.copy(apps = apps, trophies = trophies) // 세 결과를 조합하여 User 객체 생성, 이렇게 하면 되나..?
+                }
+                .flowOn(Dispatchers.IO)
+                .catch { exception ->
+                    Log.e("MyPageViewModel", "loadMyInfo: $exception")
+                    _myInfo.value = MyPageUiState.Error(exception.toString())
+                }
+                .collect { myInfo ->
+                    Log.d("MyPageViewModel", "User: $myInfo")
+                    _myInfo.value = MyPageUiState.Success(myInfo)
                 }
         }
     }
@@ -59,12 +71,13 @@ class MyPageViewModel @Inject constructor(
     fun loadMyAppUsage() {
         viewModelScope.launch {
             repository.getMyAppUsage()
-                .catch {
-                    _myAppUsageList.value = MyPageUiState.Error(it.toString())
-                    Log.e("MyPageViewModel", "loadMyAppUsage: $it")
+                .flowOn(Dispatchers.IO)
+                .catch { exception ->
+                    _myAppUsageList.value = MyPageUiState.Error(exception.toString())
+                    Log.e("MyPageViewModel", "loadMyAppUsage: $exception")
                 }
-                .collect {
-                    _myAppUsageList.value = MyPageUiState.Success(it)
+                .collect { apps ->
+                    _myAppUsageList.value = MyPageUiState.Success(apps)
                 }
         }
     }
@@ -72,17 +85,12 @@ class MyPageViewModel @Inject constructor(
     fun setAppUsageLimit(allowedApp: AllowedApp, hour: String, minute: String) {
         viewModelScope.launch {
             //val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
-            val limitedTime = (hour.toInt() * 601 + minute.toInt()) * 60L // 시간과 분을 초로 변환
+            val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 // 시간과 분을 초로 변환
 
-//            val success = repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
-//            _updateResult.value = success
-//            if (success) {
-//                loadMyInfo()
-//            }
-            repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime))
+            repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
                 .onSuccess {
                     // TODO: 나중에 UiState로 변경해보기
-                    _updateResult.value = it
+                    _updateResult.value = true
                     loadMyInfo()
                 }.onFailure {
                     Log.e("MyPageViewModel", "업데이트 실패: $it")
