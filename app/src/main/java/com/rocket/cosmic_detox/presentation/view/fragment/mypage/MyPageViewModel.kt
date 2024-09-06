@@ -73,12 +73,12 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getMyAppUsage()
                 .flowOn(Dispatchers.IO)
-                .catch {
-                    _myAppUsageList.value = MyPageUiState.Error(it.toString())
-                    Log.e("MyPageViewModel", "loadMyAppUsage: $it")
+                .catch { exception ->
+                    _myAppUsageList.value = MyPageUiState.Error(exception.toString())
+                    Log.e("MyPageViewModel", "loadMyAppUsage: $exception")
                 }
-                .collect {
-                    _myAppUsageList.value = MyPageUiState.Success(it)
+                .collect { apps ->
+                    _myAppUsageList.value = MyPageUiState.Success(apps)
                 }
         }
     }
@@ -88,15 +88,10 @@ class MyPageViewModel @Inject constructor(
             //val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
             val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 // 시간과 분을 초로 변환
 
-//            val success = repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
-//            _updateResult.value = success
-//            if (success) {
-//                loadMyInfo()
-//            }
             repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
                 .onSuccess {
                     // TODO: 나중에 UiState로 변경해보기
-                    _updateResult.value = it
+                    _updateResult.value = true
                     loadMyInfo()
                 }.onFailure {
                     Log.e("MyPageViewModel", "업데이트 실패: $it")

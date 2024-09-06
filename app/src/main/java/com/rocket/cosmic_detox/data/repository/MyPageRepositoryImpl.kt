@@ -73,8 +73,7 @@ class MyPageRepositoryImpl @Inject constructor(
         } else {
             val sortedUsageStats = usageStats
                 .filter {
-                    it.totalTimeInForeground > 0 &&
-                            packageManager.getLaunchIntentForPackage(it.packageName) != null // 실행 가능한 앱만 필터링
+                    it.totalTimeInForeground > 0 && packageManager.getLaunchIntentForPackage(it.packageName) != null // 실행 가능한 앱만 필터링
                 }
                 .groupBy { it.packageName }
                 .mapValues { entry ->
@@ -85,7 +84,7 @@ class MyPageRepositoryImpl @Inject constructor(
                 .take(5) // 많이 사용한 앱 5개만 가져옴
 
             // 최대 사용 시간을 기준으로 usagePercentage 계산
-            val maxUsageTime = sortedUsageStats.maxOfOrNull { it.second } ?: 1L
+            val maxUsageTime = sortedUsageStats.maxOfOrNull { it.second } ?: 1L // 0으로 나누는 것을 방지하기 위해 1로 설정
 
             val appUsageList = sortedUsageStats.map { (packageId, usageTime) ->
                 val appName = packageManager.getApplicationLabel(
