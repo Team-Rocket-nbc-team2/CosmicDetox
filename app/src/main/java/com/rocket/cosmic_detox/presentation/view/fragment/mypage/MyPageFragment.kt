@@ -219,16 +219,11 @@ class MyPageFragment : Fragment() {
                     is UiState.Success -> {
                         val intent = Intent(requireContext(), SignInActivity::class.java)
                         startActivity(intent)
-                        Toast.makeText(requireContext(), "회원 탈퇴가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.dialog_withdrawal_success), Toast.LENGTH_SHORT).show()
                         requireActivity().finish() // 로그인 화면으로 이동 후 다시 뒤로가기 방지
                     }
                     is UiState.Failure -> {
-                        val dialog =
-//                            OneButtonDialogFragment(
-//                                if(withdraw) getString(R.string.dialog_withdrawal_failure) else getString(R.string.dialog_sign_out_failure)) {}
-                            OneButtonDialogFragment(
-                                getString(R.string.dialog_withdrawal_failure)
-                            ) {}
+                        val dialog = OneButtonDialogFragment(getString(R.string.dialog_withdrawal_failure)) {}
                         dialog.isCancelable = false
                         dialog.show(getParentFragmentManager(), "ConfirmDialog")
                     }
@@ -279,8 +274,8 @@ class MyPageFragment : Fragment() {
 
     private fun requestUsageStatsPermission() {
         val dialog = TwoButtonDialogDescFragment(
-            title = "권한 필요",
-            description = "앱 사용 통계에 접근하려면 권한이 필요합니다. 설정에서 권한을 부여해주세요.",
+            title = getString(R.string.dialog_permission_title),
+            description = getString(R.string.dialog_my_permission_desc),
             onClickConfirm = {
                 val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                 startActivity(intent)
