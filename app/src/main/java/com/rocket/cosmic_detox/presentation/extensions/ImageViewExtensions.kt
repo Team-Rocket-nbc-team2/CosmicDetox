@@ -54,9 +54,3 @@ fun ImageView.loadAppIcon(context: Context, packageId: String) {
         .placeholder(R.color.blue_grey)
         .into(this)
 }
-
-// dp 값을 px로 변환
-fun Int.dpToPx(context: Context): Int {
-    val density = context.resources.displayMetrics.density
-    return (this * density).toInt()
-}

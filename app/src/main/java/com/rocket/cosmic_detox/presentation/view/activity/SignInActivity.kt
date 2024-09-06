@@ -44,6 +44,7 @@ class SignInActivity() : AppCompatActivity() {
         user?.getIdToken(true)?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val intent = Intent(applicationContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
         }
@@ -75,7 +76,8 @@ class SignInActivity() : AppCompatActivity() {
             signInViewModel.status.collectLatest {
                 when (it) {
                     is UiState.Success -> {
-                        val intent = Intent(context, MainActivity::class.java)
+                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                     }
                     is UiState.Failure -> {

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.databinding.ItemMyTrophyBinding
-import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
+import com.rocket.cosmic_detox.presentation.common.ViewHolder
 
 class MyTrophyAdapter(
     private val onClick: (Trophy) -> Unit

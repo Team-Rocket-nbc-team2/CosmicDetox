@@ -12,7 +12,7 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
-import com.rocket.cosmic_detox.presentation.view.common.ViewHolder
+import com.rocket.cosmic_detox.presentation.common.ViewHolder
 
 class LimitedAppAdapter(
     private val context: Context,

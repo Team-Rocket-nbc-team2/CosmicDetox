@@ -30,6 +30,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDesc
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setMyDescription
+import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
@@ -42,6 +43,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyPageFragment : Fragment() {
+
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
     private val myPageViewModel by activityViewModels<MyPageViewModel>()
@@ -288,6 +290,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // 권한이 있을 경우만 앱 사용 통계 로딩
         if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             binding.rvMyAppUsage.visibility = View.VISIBLE
             binding.tvNoAppUsageMessage.visibility = View.GONE
