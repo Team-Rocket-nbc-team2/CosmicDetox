@@ -48,23 +48,22 @@ class MyPageViewModel @Inject constructor(
     fun loadMyInfo() {
         viewModelScope.launch {
             val uid = repository.getUid()
-
             // getUserInfo, getUserApps, getUserTrophies를 zip으로 묶어서 한 번에 처리
             repository.getUserInfo(uid)
                 .zip(repository.getUserApps(uid)) { user, apps ->
                     user to apps // User와 AllowedApp을 함께 반환
                 }
                 .zip(repository.getUserTrophies(uid)) { (user, apps), trophies ->
-                    user.copy(apps = apps, trophies = trophies) // 세 결과를 조합하여 User 객체 생성, 이렇게 하면 되나..?
+                    return@zip user.copy(apps = apps, trophies = trophies) // 세 결과를 조합하여 User 객체 생성, 이렇게 하면 되나..?
                 }
                 .flowOn(Dispatchers.IO)
-                .catch {
-                    Log.e("MyPageViewModel", "loadMyInfo: $it")
-                    _myInfo.value = MyPageUiState.Error(it.toString())
+                .catch { exception ->
+                    Log.e("MyPageViewModel", "loadMyInfo: $exception")
+                    _myInfo.value = MyPageUiState.Error(exception.toString())
                 }
-                .collect {
-                    Log.d("MyPageViewModel", "User: $it")
-                    _myInfo.value = MyPageUiState.Success(it)
+                .collect { myInfo ->
+                    Log.d("MyPageViewModel", "User: $myInfo")
+                    _myInfo.value = MyPageUiState.Success(myInfo)
                 }
         }
     }
