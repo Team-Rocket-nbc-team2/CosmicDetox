@@ -1,11 +1,8 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -18,7 +15,6 @@ import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +29,6 @@ class MyPageViewModel @Inject constructor(
     private val repository: MyPageRepository,
     private val firestoreDB: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
-    @ApplicationContext context: Context
 ) : ViewModel() {
     private val _myInfo = MutableStateFlow<MyPageUiState<User>>(MyPageUiState.Loading)
     val myInfo: StateFlow<MyPageUiState<User>> = _myInfo

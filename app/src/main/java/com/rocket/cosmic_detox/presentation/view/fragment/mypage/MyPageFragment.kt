@@ -1,8 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
 import android.app.Activity
-import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -266,7 +264,7 @@ class MyPageFragment : Fragment() {
     }
 
     private fun checkAndRequestUsageStatsPermission() {
-        if (!hasUsageStatsPermission(requireContext())) {
+        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             //requestUsageStatsPermission()
             binding.rvMyAppUsage.visibility = View.GONE
             binding.tvNoAppUsageMessage.visibility = View.VISIBLE
@@ -277,16 +275,6 @@ class MyPageFragment : Fragment() {
             binding.btnAllowAppUsagePermission.visibility = View.GONE
             myPageViewModel.loadMyAppUsage()
         }
-    }
-
-    private fun hasUsageStatsPermission(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            context.packageName
-        )
-        return mode == AppOpsManager.MODE_ALLOWED
     }
 
     private fun requestUsageStatsPermission() {
@@ -303,45 +291,9 @@ class MyPageFragment : Fragment() {
         dialog.show(getParentFragmentManager(), "ConfirmDialog")
     }
 
-    private fun setUiState(withdraw: Boolean = true) = lifecycleScope.launch {
-        myPageViewModel.userStatus.collectLatest {
-            when (it) {
-                is UiState.Success -> {
-                    val intent = Intent(requireContext(), SignInActivity::class.java)
-                    startActivity(intent)
-                }
-                is UiState.Failure -> {
-                    val dialog =
-                        OneButtonDialogFragment(
-                            if(withdraw) getString(R.string.dialog_withdrawal_failure) else getString(R.string.dialog_sign_out_failure)) {}
-                    dialog.isCancelable = false
-                    dialog.show(getParentFragmentManager(), "ConfirmDialog")
-                }
-                is UiState.SigningFailure -> {
-                    val dialog =
-                        TwoButtonDialogDescFragment(
-                            title = getString(R.string.dialog_withdrawal_logout_title),
-                            description = getString(R.string.dialog_withdrawal_logout_title),
-                            onClickConfirm = {
-                                FirebaseAuth.getInstance().signOut()
-
-                                val intent = Intent(requireContext(), SignInActivity::class.java)
-                                startActivity(intent)
-                            },
-                            onClickCancel = {})
-                    dialog.isCancelable = false
-                    dialog.show(getParentFragmentManager(), "ConfirmDialog")
-                }
-                else -> {
-                    // 로딩 중
-                }
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        if (hasUsageStatsPermission(requireContext())) {
+        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
             binding.rvMyAppUsage.visibility = View.VISIBLE
             binding.tvNoAppUsageMessage.visibility = View.GONE
             binding.btnAllowAppUsagePermission.visibility = View.GONE

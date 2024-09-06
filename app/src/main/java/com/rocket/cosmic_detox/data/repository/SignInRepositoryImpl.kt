@@ -7,12 +7,7 @@ import com.rocket.cosmic_detox.domain.repository.SignInRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-enum class LoginType {
-    RE_SIGN_IN,
-    SIGN_UP,
-    NONE
-}
-
+// TODO: UseCase로 리팩토링 필요
 class SignInRepositoryImpl @Inject constructor(
     private val firestoreDB: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
