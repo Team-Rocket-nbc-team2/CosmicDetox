@@ -1,9 +1,12 @@
 package com.rocket.cosmic_detox.presentation.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.domain.usecase.GetUserDataUseCase
+import com.rocket.cosmic_detox.domain.usecase.ranking.UpdateRankingTotalTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.GetDailyTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.GetTotalTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.UpdateDailyTimeUseCase
@@ -22,8 +25,11 @@ class UserViewModel @Inject constructor(
     private val getTotalTimeUseCase: GetTotalTimeUseCase,
     private val updateTotalTimeUseCase: UpdateTotalTimeUseCase,
     private val getDailyTimeUseCase: GetDailyTimeUseCase,
-    private val updateDailyTimeUseCase: UpdateDailyTimeUseCase
-) : ViewModel() {
+    private val updateDailyTimeUseCase: UpdateDailyTimeUseCase,
+    private val updateRankingTotalTimeUseCase: UpdateRankingTotalTimeUseCase
+
+
+    ) : ViewModel() {
     private val _userState = MutableStateFlow<UiState<User>>(UiState.Init)
     val userState: StateFlow<UiState<User>> get() = _userState.asStateFlow()
 
@@ -35,6 +41,10 @@ class UserViewModel @Inject constructor(
 
     private var currentTotalTime: Long = 0L
     private var currentDailyTime: Long = 0L
+
+
+    val currentUserUID: String?
+        get() = FirebaseAuth.getInstance().currentUser?.uid
 
     init {
         fetchTotalTime()
@@ -65,6 +75,21 @@ class UserViewModel @Inject constructor(
                 },
                 failCallback = { exception ->
                     _totalTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
+                }
+            )
+        }
+    }
+    fun updateDailyTime(dailyTime: Long) {
+        viewModelScope.launch {
+            _dailyTimeState.value = UiState.Loading
+            updateDailyTimeUseCase(
+                dailyTime,
+                callback = {
+                    currentDailyTime = dailyTime
+                    _dailyTimeState.value = UiState.Success(dailyTime)
+                },
+                failCallback = { exception ->
+                    _dailyTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
                 }
             )
         }
@@ -101,19 +126,26 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun updateDailyTime(dailyTime: Long) {
-        viewModelScope.launch {
-            _dailyTimeState.value = UiState.Loading
-            updateDailyTimeUseCase(
-                dailyTime,
-                callback = {
-                    currentDailyTime = dailyTime
-                    _dailyTimeState.value = UiState.Success(dailyTime)
-                },
-                failCallback = { exception ->
-                    _dailyTimeState.value = UiState.Failure(exception ?: Exception("에러 발생"))
-                }
-            )
+
+    fun updateRankingTotalTime(totalTime: Long) {
+        val uid = currentUserUID
+        Log.d("Uid체크", uid.toString())
+
+        if (uid != null) {
+            viewModelScope.launch {
+                updateRankingTotalTimeUseCase(
+                    totalTime,
+                    uid,
+                    callback = {
+                        Log.d("rank", "Ranking totalTime 업데이트 성공")
+                    },
+                    failCallback = { exception ->
+                        Log.e("rank", "Ranking totalTime 업데이트 실패", exception)
+                    }
+                )
+            }
+        } else {
+            Log.e("UserViewModel", "로그인된 사용자가 없습니다.")
         }
     }
 }
