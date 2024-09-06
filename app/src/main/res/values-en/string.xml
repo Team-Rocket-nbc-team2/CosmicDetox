@@ -58,8 +58,8 @@
     <string name="trophy">My Trophy</string>
     <string name="my_app_usage">My App Usage</string>
     <string name="my_btn_permission">Allow Permission</string>
-    <string name="my_permission_desc">To check your app usage history, \n Please allow me permission.</string>
-    <string name="my_trophies_none">No trophies have been won yet. \n     Let's travel harder!</string>
+    <string name="my_permission_desc">To check your app usage history,\nPlease allow me permission.</string>
+    <string name="my_trophies_none">No trophies have been won yet.\n Let\'s travel harder!</string>
     <string name="dialog_sign_out">Are you sure you want to sign out?</string>
     <string name="dialog_withdrawal">Are you sure you want to leave?</string>
     <string name="dialog_withdrawal_desc">After withdrawal, user information will be temporarily stored for 7 days, and will be permanently deleted.</string>
