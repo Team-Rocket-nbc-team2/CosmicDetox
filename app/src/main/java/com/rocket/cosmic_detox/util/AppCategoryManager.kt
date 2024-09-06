@@ -2,12 +2,10 @@ package com.rocket.cosmic_detox.util
 
 import android.content.pm.ApplicationInfo
 import com.rocket.cosmic_detox.presentation.extensions.fromMinutesToSeconds
-import com.rocket.cosmic_detox.presentation.extensions.fromSecondsToMinutes
-import com.rocket.cosmic_detox.presentation.extensions.toSeconds
 
 object AppCategoryManager {
 
-    fun getCategory(category: Int): Long {
+    fun getLimitedTimeByCategory(category: Int): Long {
         return when(category) {
             ApplicationInfo.CATEGORY_GAME -> 30L.fromMinutesToSeconds()
             ApplicationInfo.CATEGORY_AUDIO -> 60L.fromMinutesToSeconds()

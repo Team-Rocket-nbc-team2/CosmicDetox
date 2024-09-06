@@ -3,10 +3,13 @@ package com.rocket.cosmic_detox.data.remote.firebase.user
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.data.model.User
+import java.util.Date
 
 interface UserDataSource {
 
     suspend fun getUid(): String
+
+    suspend fun getUserCreatedDate(uid: String): Date?
 
     suspend fun getUserInfo(uid: String): Result<User>
 
