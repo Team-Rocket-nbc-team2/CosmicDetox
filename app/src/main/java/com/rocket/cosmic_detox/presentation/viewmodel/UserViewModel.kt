@@ -46,10 +46,7 @@ class UserViewModel @Inject constructor(
     val currentUserUID: String?
         get() = FirebaseAuth.getInstance().currentUser?.uid
 
-    init {
-        fetchTotalTime()
-        fetchDailyTime()
-    }
+
 
     fun fetchUserData() {
         viewModelScope.launch {
