@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.presentation.view.fragment.timer
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -71,9 +74,19 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
 
-        permissionViewModel.isOverlayPermissionGranted(requireContext()) // 오버레이 권한 확인 및 요청
-        if(permissionViewModel.isOverlayPermissionGranted(requireContext())){ showOverlay() }
+        if(isRequestOverlay){
+            showOverlay()
+        } else {
+            if (!Settings.canDrawOverlays(requireContext())) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:${requireContext().packageName}")
+                )
+                overlayPermissionLauncher.launch(intent)
+            }
+        }
 
         initView()
         allowedAppViewModel.getAllAllowedApps() // 허용 앱 리스트 가져오기 -> 서비스에 전달하려고 가져온거긴 한데 지금 당장은 필요없을 듯
@@ -107,7 +120,6 @@ class TimerFragment : Fragment() {
             if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
                 showOverlay()
             }
-//            requestOverlayPermission() // 오버레이 권한 요청
         }
     }
 
@@ -117,6 +129,18 @@ class TimerFragment : Fragment() {
             removeOverlay() // 오버레이 제거
         }
 
+    }
+
+    private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        if (Settings.canDrawOverlays(requireContext())) {
+            // 오버레이 권한이 허용된 경우 수행할 작업
+            showOverlay()
+        } else {
+            // 권한이 거부된 경우 처리
+            Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showOverlay() { // 오버레이 띄우기
@@ -302,18 +326,6 @@ object BottomSheetState { // 바텀시트 상태 저장 -> 이걸 해야 바텀�
 
 
 // 아래 코드 혹시 몰라서 냅둔 코드! 나중에 정상 작동하는 거 확인 되면 삭제 가능
-//private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
-//    ActivityResultContracts.StartActivityForResult()
-//) { result ->
-//    if (Settings.canDrawOverlays(requireContext())) {
-//        // 오버레이 권한이 허용된 경우 수행할 작업
-//        showOverlay()
-//    } else {
-//        // 권한이 거부된 경우 처리
-//        Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-//    }
-//}
-
 //private fun requestOverlayPermission() { // 오버레이 권한 요청
 //    if (!Settings.canDrawOverlays(requireContext())) {
 //        val intent = Intent(
