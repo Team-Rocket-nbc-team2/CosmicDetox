@@ -99,10 +99,13 @@ class MainActivity : AppCompatActivity() {
                 title = getString(R.string.dialog_permission_title),
                 description = getString(R.string.dialog_permission_desc),
                 onClickConfirm = {
-                    if(isUsageStateAllowed) {
+
+                    if(!isUsageStateAllowed) {
                         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                         startActivity(intent)
-                    } else {
+                    }
+
+                    if(!isRequestOverlay) {
                         if (!Settings.canDrawOverlays(this)) {
                             val intent = Intent(
                                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
