@@ -23,9 +23,9 @@ import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
-import com.rocket.cosmic_detox.presentation.service.AppMonitorService
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
+import com.rocket.cosmic_detox.presentation.service.AppMonitorService
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
@@ -268,6 +268,9 @@ class TimerFragment : Fragment() {
         // 타이머가 중지될 때 dailyTime과 totalTime을 Firestore에 저장
         userViewModel.updateDailyTime(time.toLong()) // dailyTime 업데이트
         userViewModel.updateTotalTime(time.toLong()) // totalTime 업데이트
+
+        // 타이머가 중지될 때 Firestore의 ranking에 totalTime 업데이트
+        userViewModel.updateRankingTotalTime(time.toLong())
     }
 
     private fun updateTime() {

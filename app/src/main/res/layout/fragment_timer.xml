@@ -10,7 +10,6 @@
         android:id="@+id/tv_timer_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="HH:MM:SS"
         android:textColor="@color/white20"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
