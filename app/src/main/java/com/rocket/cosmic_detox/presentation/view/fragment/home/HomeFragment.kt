@@ -1,7 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.home
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
-import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.*
 import com.rocket.cosmic_detox.presentation.uistate.UiState
@@ -48,27 +46,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
-        userViewModel.fetchUserData()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            val progressDialog = ProgressDialogFragment()
-            userViewModel.userState.collectLatest { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> {
-                        progressDialog.setCancelable(false)
-                        progressDialog.show(parentFragmentManager, "ConfirmDialog")
-                    }
-                    is UiState.Success -> {
-                        bindingUserData(uiState.data)
-                        progressDialog.dismiss()
-                    }
-                    else -> {
-                        Log.e("HomeFragment get UserData", "유저 정보 불러오기를 실패했습니다.")
-                    }
-                }
-            }
-        }
+        initViewModel()
     }
 
     private fun initView() = with(binding) {
@@ -83,14 +61,28 @@ class HomeFragment : Fragment() {
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
         }
+    }
 
+    private fun initViewModel() = with(userViewModel) {
+        fetchUserData()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            userState.collectLatest { uiState ->
+                when (uiState) {
+                    is UiState.Success -> {
+                        bindingUserData(uiState.data)
+                    }
+                    else -> { }
+                }
+            }
+        }
     }
 
     private fun bindingUserData(user: User) = with(binding) {
         val totalTime = user.totalTime.toBigDecimal()
         ivHomeMyPlanet.loadHomePlanetImage(totalTime)
         tvHomePlanetName.setCurrentLocation(totalTime)
-        tvHomeHoursCount.setCumulativeTime(totalTime, true)
+        tvHomeHoursCount.setCumulativeTime(totalTime)
         tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
     }
 
