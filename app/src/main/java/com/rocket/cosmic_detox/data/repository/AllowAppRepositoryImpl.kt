@@ -3,7 +3,6 @@ package com.rocket.cosmic_detox.data.repository
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.InstallSourceInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -12,11 +11,8 @@ import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.util.AppCategoryManager
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class AllowAppRepositoryImpl @Inject constructor(
@@ -120,7 +116,7 @@ class AllowAppRepositoryImpl @Inject constructor(
             }
 
             // 카테고리별 제한 시간을 설정
-            val limitedTime = AppCategoryManager.getCategory(appCategory)
+            val limitedTime = AppCategoryManager.getLimitedTimeByCategory(appCategory)
 
             // 제한 시간을 설정한 새 객체로 변환
             addedApp.copy(limitedTime = limitedTime)
