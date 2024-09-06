@@ -71,7 +71,10 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         permissionViewModel.isOverlayPermissionGranted(requireContext()) // 오버레이 권한 확인 및 요청
+        if(permissionViewModel.isOverlayPermissionGranted(requireContext())){ showOverlay() }
+
         initView()
         allowedAppViewModel.getAllAllowedApps() // 허용 앱 리스트 가져오기 -> 서비스에 전달하려고 가져온거긴 한데 지금 당장은 필요없을 듯
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
@@ -101,8 +104,8 @@ class TimerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
-            if(!BottomSheetState.getIsBottomSheetOpen()){
-                permissionViewModel.isOverlayPermissionGranted(requireContext()) // 이거 여기서 이렇게 실행해도 실행해도 되나?
+            if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
+                showOverlay()
             }
 //            requestOverlayPermission() // 오버레이 권한 요청
         }
