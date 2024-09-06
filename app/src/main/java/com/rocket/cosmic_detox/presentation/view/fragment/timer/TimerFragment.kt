@@ -25,8 +25,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.view.AppMonitorService
-import com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel.RaceViewModel
+import com.rocket.cosmic_detox.presentation.service.AppMonitorService
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
