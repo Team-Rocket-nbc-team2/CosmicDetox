@@ -92,7 +92,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="38dp"
                 android:gravity="center"
-                android:text="아직 획득한 트로피가 없습니다. \n     더 열심히 여행 해봅시다!"
+                android:text="@string/my_trophies_none"
                 android:textColor="@color/blue_grey"
                 android:textSize="14sp"
                 android:visibility="gone"
@@ -141,7 +141,7 @@
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
-                android:text="앱 사용기록을 확인하려면\n권한을 허용해주세요."
+                android:text="@string/my_permission_desc"
                 android:textColor="@color/blue_grey"
                 android:textSize="14sp"
                 tools:visibility="gone" />
@@ -153,7 +153,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="54dp"
                 android:background="@drawable/btn_primary"
-                android:text="권한 허용하기"
+                android:text="@string/my_btn_permission"
                 android:textColor="@color/white"
                 android:visibility="gone"
                 tools:visibility="gone" />

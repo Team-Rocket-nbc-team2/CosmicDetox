@@ -3,7 +3,6 @@ package com.rocket.cosmic_detox.presentation.view.fragment.timer
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,9 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +29,7 @@ import com.rocket.cosmic_detox.presentation.view.AppMonitorService
 import com.rocket.cosmic_detox.presentation.view.fragment.race.viewmodel.RaceViewModel
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,6 +45,7 @@ class TimerFragment : Fragment() {
     private var isTimerRunning = false // 타이머가 실행 중인지 확인하는 변수
 
     private val userViewModel: UserViewModel by viewModels()
+    private val permissionViewModel: PermissionViewModel by viewModels()
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
 
     private val runnable = object : Runnable {
@@ -59,18 +58,6 @@ class TimerFragment : Fragment() {
     private lateinit var windowManager: WindowManager // 오버레이를 위한 WindowManager
     private var overlayView: View? = null // 오버레이 뷰
     private var isOverlayVisible = false // 오버레이가 보이는지 여부
-
-    private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (Settings.canDrawOverlays(requireContext())) {
-            // 오버레이 권한이 허용된 경우 수행할 작업
-            showOverlay()
-        } else {
-            // 권한이 거부된 경우 처리
-            Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
     private var allowedAppList = mutableListOf<String>()
 
     override fun onCreateView(
@@ -85,7 +72,7 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkAndRequestOverlayPermission() // 오버레이 권한 확인 및 요청
+        permissionViewModel.isOverlayPermissionGranted(requireContext()) // 오버레이 권한 확인 및 요청
         initView()
         allowedAppViewModel.getAllAllowedApps() // 허용 앱 리스트 가져오기 -> 서비스에 전달하려고 가져온거긴 한데 지금 당장은 필요없을 듯
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
@@ -111,39 +98,14 @@ class TimerFragment : Fragment() {
         requireContext().stopService(intent)
     }
 
-    private fun checkAndRequestOverlayPermission() {
-        if (!Settings.canDrawOverlays(requireContext())) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${requireContext().packageName}")
-            )
-            overlayPermissionLauncher.launch(intent)
-        } else {
-            // 이미 권한이 허용된 경우 바로 오버레이를 띄움
-            showOverlay() // 이거는 근데 진짜 왜 있는 거..? 권한 허용되어 있으면 바로 오버레이 띄운다는 의미 아닌가..?
-        }
-    }
 
     override fun onPause() {
         super.onPause()
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
-            requestOverlayPermission() // 오버레이 권한 요청
-        }
-    }
-
-    private fun requestOverlayPermission() { // 오버레이 권한 요청
-        if (!Settings.canDrawOverlays(requireContext())) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${requireContext().packageName}")
-            )
-            overlayPermissionLauncher.launch(intent)
-        } else {
-            if (!BottomSheetState.getIsBottomSheetOpen()) { // 바텀시트가 열려있지 않은 경우에만 오버레이 띄우기 -> 바텀시트가 열려있을 때는 오버레이 띄우지 않음
-                // 이걸 안 해주면 바텀시트에서 허용 앱으로 이동할 때 TimerFragment도 살아있어서 이거 같이 호출됨. 중복 호출되는 것을 방지하기 위함.
-
-                showOverlay() // 오버레이 띄우기
+            if(!BottomSheetState.getIsBottomSheetOpen()){
+                permissionViewModel.isOverlayPermissionGranted(requireContext()) // 이거 여기서 이렇게 실행해도 실행해도 되나?
             }
+//            requestOverlayPermission() // 오버레이 권한 요청
         }
     }
 
@@ -247,11 +209,11 @@ class TimerFragment : Fragment() {
                     }
                     is UiState.Init -> {
                         // 초기 상태 처리코드 추후 작성
-                    }
-                    else -> {}
+                    } else -> {}
                 }
             }
         }
+
         lifecycleScope.launch { // 허용 앱 리스트 가져오기 -> AppMonitorService에 리스트 전달하려고 뷰모델 가져와서 구현하긴 했는데.. Service를 안 써서.. 굳이?
             allowedAppViewModel.allowedAppList.collectLatest {
                 if (it is GetListUiState.Success) {
@@ -334,3 +296,32 @@ object BottomSheetState { // 바텀시트 상태 저장 -> 이걸 해야 바텀�
         return isBottomSheetOpen
     }
 }
+
+
+// 아래 코드 혹시 몰라서 냅둔 코드! 나중에 정상 작동하는 거 확인 되면 삭제 가능
+//private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
+//    ActivityResultContracts.StartActivityForResult()
+//) { result ->
+//    if (Settings.canDrawOverlays(requireContext())) {
+//        // 오버레이 권한이 허용된 경우 수행할 작업
+//        showOverlay()
+//    } else {
+//        // 권한이 거부된 경우 처리
+//        Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+//    }
+//}
+
+//private fun requestOverlayPermission() { // 오버레이 권한 요청
+//    if (!Settings.canDrawOverlays(requireContext())) {
+//        val intent = Intent(
+//            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//            Uri.parse("package:${requireContext().packageName}")
+//        )
+//        overlayPermissionLauncher.launch(intent)
+//    } else {
+//        if (!BottomSheetState.getIsBottomSheetOpen()) { // 바텀시트가 열려있지 않은 경우에만 오버레이 띄우기 -> 바텀시트가 열려있을 때는 오버레이 띄우지 않음
+//            // 이걸 안 해주면 바텀시트에서 허용 앱으로 이동할 때 TimerFragment도 살아있어서 이거 같이 호출됨. 중복 호출되는 것을 방지하기 위함.
+//            showOverlay() // 오버레이 띄우기
+//        }
+//    }
+//}

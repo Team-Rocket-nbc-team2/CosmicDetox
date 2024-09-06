@@ -94,23 +94,41 @@ class MyPageViewModel @Inject constructor(
         _updateResult.value = false
     }
 
-    fun withdraw() {
-        val user = firebaseAuth.currentUser!!
-        val credential = GoogleAuthProvider.getCredential(user.uid, null)
+    // Google ID Token을 사용하여 Firebase에서 재인증하는 함수
+    fun reAuthenticateWithGoogle(idToken: String) {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            _userStatus.value = UiState.Loading
 
-        user.reauthenticate(credential)
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+
+            // 재인증 로직
+            user.reauthenticate(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // 재인증 성공 후 회원 탈퇴 로직 실행
+                        withdraw(user)
+                    } else {
+                        _userStatus.value = UiState.Failure(task.exception)
+                        Log.e("withdrawal", "재인증 실패 XXXXX: ${task.exception}")
+                    }
+                }
+        } else {
+            _userStatus.value = UiState.Failure(Exception("유저가 없음."))
+        }
+    }
+
+    // Firebase 사용자 삭제 로직
+    // Firebase 사용자 삭제 로직 및 Firestore 데이터 삭제 로직
+    private fun withdraw(user: FirebaseUser) {
+        user.delete()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    user.delete()
-                        .addOnCompleteListener { deleteTask ->
-                            if (deleteTask.isSuccessful) {
-                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
-                                withdrawUserCoroutine(user)
-                            }
-                        }
+                    Log.d("withdrawal", "유저 삭제 성공 OOOOO")
+                    withdrawUserCoroutine(user) // Firestore 데이터 삭제
                 } else {
-                    _userStatus.value = UiState.SigningFailure(task.exception)
-                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+                    _userStatus.value = UiState.Failure(task.exception)
+                    Log.e("withdrawal", "유저 삭제 실패 XXXXX: ${task.exception}")
                 }
             }
     }
