@@ -32,7 +32,8 @@ class AllowedAppViewModel @Inject constructor(
     private val _selectedAllowedAppPackage = MutableStateFlow<String?>(null)
     val selectedAllowedAppPackage: StateFlow<String?> = _selectedAllowedAppPackage
 
-    private val _running = MutableStateFlow(true)
+    private val _running = MutableStateFlow(false)
+    val running: StateFlow<Boolean> = _running
 
     fun getAllAllowedApps() {
         viewModelScope.launch {
