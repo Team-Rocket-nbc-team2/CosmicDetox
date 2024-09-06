@@ -20,12 +20,8 @@ class RankingRepositoryImpl @Inject constructor(
         rankingRef.get().addOnSuccessListener { documentSnapshot ->
             if (documentSnapshot.exists()) {
 
-                // 기존 totalTime을 가져옴
-                val existingTotalTime = documentSnapshot.getLong("totalTime") ?: 0L
-
-                val newTotalTime = existingTotalTime + totalTime
-
-                rankingRef.update("totalTime", newTotalTime)
+                // 기존 totalTime을 더하지 않고, 전달된 totalTime을 그대로 업데이트
+                rankingRef.update("totalTime", totalTime)
                     .addOnSuccessListener {
                         successCallback()
                     }
