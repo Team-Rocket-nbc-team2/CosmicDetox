@@ -8,10 +8,12 @@ import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +34,7 @@ class AllowAppViewModel @Inject constructor(
         viewModelScope.launch {
             _installedApps.value = GetListUiState.Loading
             repository.getInstalledApps()
+                .flowOn(Dispatchers.IO)
                 .catch { exception ->
                     _installedApps.value = GetListUiState.Error(exception.toString())
                     Log.e("AllowAppViewModel", "알 수 없는 에러 발생", exception)

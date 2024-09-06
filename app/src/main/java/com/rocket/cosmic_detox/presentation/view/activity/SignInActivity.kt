@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -42,6 +44,7 @@ class SignInActivity() : AppCompatActivity() {
         user?.getIdToken(true)?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val intent = Intent(applicationContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
         }
@@ -51,6 +54,11 @@ class SignInActivity() : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(signInBinding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.sign_in)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         signInBinding.ivGoogle.setOnClickListener {
             signInViewModel.googleLogin(googleSignInClient, launcher)
@@ -68,7 +76,8 @@ class SignInActivity() : AppCompatActivity() {
             signInViewModel.status.collectLatest {
                 when (it) {
                     is UiState.Success -> {
-                        val intent = Intent(context, MainActivity::class.java)
+                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                     }
                     is UiState.Failure -> {

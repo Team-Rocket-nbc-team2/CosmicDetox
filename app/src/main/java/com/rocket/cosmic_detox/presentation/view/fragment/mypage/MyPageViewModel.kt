@@ -15,12 +15,15 @@ import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,14 +47,23 @@ class MyPageViewModel @Inject constructor(
 
     fun loadMyInfo() {
         viewModelScope.launch {
-            repository.getMyInfo()
-                .catch {
-                    Log.e("MyPageViewModel", "loadMyInfo: $it")
-                    _myInfo.value = MyPageUiState.Error(it.toString())
+            val uid = repository.getUid()
+            // getUserInfo, getUserApps, getUserTrophies를 zip으로 묶어서 한 번에 처리
+            repository.getUserInfo(uid)
+                .zip(repository.getUserApps(uid)) { user, apps ->
+                    user to apps // User와 AllowedApp을 함께 반환
                 }
-                .collect {
-                    Log.d("MyPageViewModel", "User: $it")
-                    _myInfo.value = MyPageUiState.Success(it)
+                .zip(repository.getUserTrophies(uid)) { (user, apps), trophies ->
+                    return@zip user.copy(apps = apps, trophies = trophies) // 세 결과를 조합하여 User 객체 생성, 이렇게 하면 되나..?
+                }
+                .flowOn(Dispatchers.IO)
+                .catch { exception ->
+                    Log.e("MyPageViewModel", "loadMyInfo: $exception")
+                    _myInfo.value = MyPageUiState.Error(exception.toString())
+                }
+                .collect { myInfo ->
+                    Log.d("MyPageViewModel", "User: $myInfo")
+                    _myInfo.value = MyPageUiState.Success(myInfo)
                 }
         }
     }
@@ -59,12 +71,13 @@ class MyPageViewModel @Inject constructor(
     fun loadMyAppUsage() {
         viewModelScope.launch {
             repository.getMyAppUsage()
-                .catch {
-                    _myAppUsageList.value = MyPageUiState.Error(it.toString())
-                    Log.e("MyPageViewModel", "loadMyAppUsage: $it")
+                .flowOn(Dispatchers.IO)
+                .catch { exception ->
+                    _myAppUsageList.value = MyPageUiState.Error(exception.toString())
+                    Log.e("MyPageViewModel", "loadMyAppUsage: $exception")
                 }
-                .collect {
-                    _myAppUsageList.value = MyPageUiState.Success(it)
+                .collect { apps ->
+                    _myAppUsageList.value = MyPageUiState.Success(apps)
                 }
         }
     }
@@ -74,15 +87,10 @@ class MyPageViewModel @Inject constructor(
             //val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 * 1000L // 시간과 분을 밀리초로 변환
             val limitedTime = (hour.toInt() * 60 + minute.toInt()) * 60 // 시간과 분을 초로 변환
 
-//            val success = repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
-//            _updateResult.value = success
-//            if (success) {
-//                loadMyInfo()
-//            }
             repository.updateAppUsageLimit(allowedApp.copy(limitedTime = limitedTime.toInt()))
                 .onSuccess {
                     // TODO: 나중에 UiState로 변경해보기
-                    _updateResult.value = it
+                    _updateResult.value = true
                     loadMyInfo()
                 }.onFailure {
                     Log.e("MyPageViewModel", "업데이트 실패: $it")
@@ -94,23 +102,41 @@ class MyPageViewModel @Inject constructor(
         _updateResult.value = false
     }
 
-    fun withdraw() {
-        val user = firebaseAuth.currentUser!!
-        val credential = GoogleAuthProvider.getCredential(user.uid, null)
+    // Google ID Token을 사용하여 Firebase에서 재인증하는 함수
+    fun reAuthenticateWithGoogle(idToken: String) {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            _userStatus.value = UiState.Loading
 
-        user.reauthenticate(credential)
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+
+            // 재인증 로직
+            user.reauthenticate(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // 재인증 성공 후 회원 탈퇴 로직 실행
+                        withdraw(user)
+                    } else {
+                        _userStatus.value = UiState.Failure(task.exception)
+                        Log.e("withdrawal", "재인증 실패 XXXXX: ${task.exception}")
+                    }
+                }
+        } else {
+            _userStatus.value = UiState.Failure(Exception("유저가 없음."))
+        }
+    }
+
+    // Firebase 사용자 삭제 로직
+    // Firebase 사용자 삭제 로직 및 Firestore 데이터 삭제 로직
+    private fun withdraw(user: FirebaseUser) {
+        user.delete()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    user.delete()
-                        .addOnCompleteListener { deleteTask ->
-                            if (deleteTask.isSuccessful) {
-                                Log.d("withdrawal", "User Authentication and data is successfully deleted.")
-                                withdrawUserCoroutine(user)
-                            }
-                        }
+                    Log.d("withdrawal", "유저 삭제 성공 OOOOO")
+                    withdrawUserCoroutine(user) // Firestore 데이터 삭제
                 } else {
-                    _userStatus.value = UiState.SigningFailure(task.exception)
-                    Log.e("회원 재인증", "회원 재인증 실패", task.exception)
+                    _userStatus.value = UiState.Failure(task.exception)
+                    Log.e("withdrawal", "유저 삭제 실패 XXXXX: ${task.exception}")
                 }
             }
     }

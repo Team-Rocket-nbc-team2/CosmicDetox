@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.extensions
 
 import android.icu.text.DecimalFormat
+import android.util.Log
 import android.widget.TextView
 import com.rocket.cosmic_detox.R
 import org.w3c.dom.Text
@@ -22,55 +23,19 @@ fun TextView.setCurrentLocation(cumulativeTime: BigDecimal) {
     }
 }
 
-fun TextView.setCumulativeTime(time: BigDecimal, home: Boolean = false) {
+fun TextView.setCumulativeTime(time: BigDecimal) {
     val hours = time.toHours()
     val minutes = time.toMinutes()
-
-    with(context) {
-        text = if(home){
-            when {
-                hours > 1 && minutes == 0L -> hours.toString()
-                else -> minutes.toString()
-            }
-        } else {
-            when {
-                hours > 1 && minutes > 0 -> getString(R.string.race_format_total_time, hours, minutes)
-                hours > 1 && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes, hours)
-                hours == 1L && minutes > 0 -> getString(R.string.race_format_total_time_one_hour, minutes)
-                hours == 1L && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes_one_hour)
-                else -> getString(R.string.race_format_total_time_no_hours, minutes)
-            }
+    
+    context.run {
+        text = when {
+            hours > 1 && minutes > 0 -> getString(R.string.race_format_total_time, hours, minutes)
+            hours > 1 && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes, hours)
+            hours == 1L && minutes > 0 -> getString(R.string.race_format_total_time_one_hour, minutes)
+            hours == 1L && minutes == 0L -> getString(R.string.race_format_total_time_no_minutes_one_hour)
+            else -> getString(R.string.race_format_total_time_no_hours, minutes)
         }
     }
-}
-
-fun BigDecimal.toHours(): Long {
-    return this.toLong() / 3600
-}
-
-fun BigDecimal.toMinutes(): Long {
-    return (this.toLong() % 3600) / 60
-}
-
-fun BigDecimal.toSeconds(): Long {
-    return this.toLong() % 60
-}
-
-fun Long.fromSecondsToMinutes(): Long {
-    return this / 60
-}
-
-fun Long.fromSecondsToHours(): Long {
-    return this / 3600
-}
-
-fun Long.fromMinutesToSeconds(): Long {
-    return this * 60
-}
-
-// ms -> s
-fun BigDecimal.fromMillisecondsToSeconds(): BigDecimal {
-    return this.divide(BigDecimal(1000))
 }
 
 fun TextView.setPoints(points: BigDecimal) {
@@ -102,8 +67,8 @@ fun TextView.setTravelingTime(time: BigDecimal) {
     val hours = time.toHours()
     val minutes = time.toMinutes()
     val seconds = time.toSeconds()
-
-    with(context) {
+    
+    context.run {
         text = getString(R.string.home_traveling_time, hours, minutes)
     }
 }
