@@ -39,7 +39,8 @@
             android:layout_height="wrap_content"
             android:text="0분"
             android:textColor="@color/primary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <CheckBox
