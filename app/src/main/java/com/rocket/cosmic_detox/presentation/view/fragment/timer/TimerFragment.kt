@@ -77,7 +77,7 @@ class TimerFragment : Fragment() {
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
 
         if(isRequestOverlay){
-            showOverlay()
+            //showOverlay()
         } else {
             if (!Settings.canDrawOverlays(requireContext())) {
                 val intent = Intent(
@@ -116,26 +116,28 @@ class TimerFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        if (isFinishingTimer) return // 타이머 종료 중인 경우에는 오버레이 띄우지 않음
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
             if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
+                Log.d("Overlay디버그", "onPause 실행")
                 showOverlay()
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
-            removeOverlay() // 오버레이 제거
-        }
-
-    }
+//    override fun onResume() { // showOverlay() 에서 버튼 클릭 시 이미 removeOverlay()를 호출하고 있어서 onResume은 없애도 될 것 같음
+//        super.onResume()
+//        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
+//            //removeOverlay() // 오버레이 제거
+//        }
+//    }
 
     private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
         if (Settings.canDrawOverlays(requireContext())) {
             // 오버레이 권한이 허용된 경우 수행할 작업
+            Log.d("Overlay디버그", "overlayPermissionLauncher 실행")
             showOverlay()
         } else {
             // 권한이 거부된 경우 처리
@@ -157,9 +159,11 @@ class TimerFragment : Fragment() {
 
             overlayView?.let {
                 it.findViewById<Button>(R.id.btn_back).setOnClickListener { // "이전화면으로 돌아가기" 버튼 클릭 시
-                    removeOverlay() // 오버레이 제거
                     returnToTimer() // 타이머로 돌아가기
+                    removeOverlay() // 오버레이 제거
                 }
+
+                Log.d("Overlay디버그", "showOverlay 실행")
 
                 windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
                 isOverlayVisible = true // 오버레이가 보이는 상태로 변경
@@ -186,7 +190,7 @@ class TimerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         stopTimer()
-        removeOverlay() // Fragment 종료 시 오버레이 제거
+        //removeOverlay() // Fragment 종료 시 오버레이 제거
         stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료
     }
 

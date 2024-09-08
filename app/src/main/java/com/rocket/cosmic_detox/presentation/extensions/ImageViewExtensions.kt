@@ -48,7 +48,7 @@ fun ImageView.loadRankingPlanetImage(cumulativeTime: BigDecimal) {
 }
 
 fun ImageView.loadAppIcon(context: Context, packageId: String) {
-    Glide.with(this) // TODO: 확장함수로 관리
+    Glide.with(this)
         .load(context.packageManager.getApplicationIcon(packageId))
         .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
         .placeholder(R.color.blue_grey)
