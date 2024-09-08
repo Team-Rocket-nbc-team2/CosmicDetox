@@ -55,6 +55,7 @@ class MyPageFragment : Fragment() {
         }
     }
     private lateinit var allowedApps: List<AllowedApp>
+    private var isPermissionChecked = false
 
     // 구글 로그인 클라이언트 객체
     private val googleSignInClient by lazy {
@@ -261,8 +262,8 @@ class MyPageFragment : Fragment() {
     }
 
     private fun checkAndRequestUsageStatsPermission() {
-        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
-            //requestUsageStatsPermission()
+        if (!permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
+            // 권한이 없을 때만 버튼과 메시지를 보여줍니다.
             binding.rvMyAppUsage.visibility = View.GONE
             binding.tvNoAppUsageMessage.visibility = View.VISIBLE
             binding.btnAllowAppUsagePermission.visibility = View.VISIBLE
@@ -271,6 +272,7 @@ class MyPageFragment : Fragment() {
             binding.tvNoAppUsageMessage.visibility = View.GONE
             binding.btnAllowAppUsagePermission.visibility = View.GONE
             myPageViewModel.loadMyAppUsage()
+            isPermissionChecked = true // 권한이 확인되었음을 기록
         }
     }
 
@@ -291,7 +293,8 @@ class MyPageFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // 권한이 있을 경우만 앱 사용 통계 로딩
-        if (permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
+        if (!isPermissionChecked && permissionViewModel.isUsageStatsPermissionGranted(requireContext())) {
+            isPermissionChecked = true
             binding.rvMyAppUsage.visibility = View.VISIBLE
             binding.tvNoAppUsageMessage.visibility = View.GONE
             binding.btnAllowAppUsagePermission.visibility = View.GONE
