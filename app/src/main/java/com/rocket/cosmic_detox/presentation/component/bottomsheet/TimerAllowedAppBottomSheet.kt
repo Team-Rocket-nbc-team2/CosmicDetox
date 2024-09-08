@@ -201,4 +201,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
         windowManager.removeView(rootView)
         rootView = null
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        BottomSheetState.setIsBottomSheetOpen(false) // 바텀시트에서 뒤로가기 눌렀을 때도 isBottomSheetOpen을 false로 변경
+    }
 }

@@ -49,4 +49,10 @@ object AppModule {
     fun provideUsageStatsManager(@ApplicationContext context: Context): UsageStatsManager {
         return context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     }
+
+    @Singleton
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }
