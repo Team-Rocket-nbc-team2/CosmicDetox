@@ -141,6 +141,7 @@ class TimerFragment : Fragment() {
             showOverlay()
         } else {
             // 권한이 거부된 경우 처리
+            findNavController().popBackStack()
             Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
         }
     }
