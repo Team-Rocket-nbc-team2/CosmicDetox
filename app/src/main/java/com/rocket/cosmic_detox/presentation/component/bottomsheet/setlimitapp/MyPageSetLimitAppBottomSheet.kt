@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -96,9 +97,10 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         rvSetLimitAppList.apply {
             adapter = limitedAppAdapter
             itemAnimator = null
+            isVisible = args.allowedApps.isNotEmpty()
         }
         Log.d("jade", "initView: ${args.allowedApps.toList()}")
-        limitedAppAdapter.submitList(args.allowedApps.toList())
+        tvLimitAppIsEmpty.isVisible = args.allowedApps.isEmpty()
     }
 
     private fun navigateToSetLimitUseTimeBottomSheet(allowedApp: AllowedApp) {

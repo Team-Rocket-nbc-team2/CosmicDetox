@@ -2,6 +2,7 @@ package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -30,13 +31,13 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDesc
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setMyDescription
-import com.rocket.cosmic_detox.presentation.extensions.toHours
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
+import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -165,6 +166,19 @@ class MyPageFragment : Fragment() {
         checkAndRequestUsageStatsPermission()
         btnAllowAppUsagePermission.setOnClickListener {
             requestUsageStatsPermission()
+        }
+        tvPolicy.setOnClickListener {
+            val dialog =
+                TwoButtonDialogDescFragment(
+                    title = getString(R.string.dialog_personal_policy_terms_title),
+                    description = getString(R.string.dialog_personal_policy_terms_desc),
+                    onClickConfirm = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(NOTION_LINK))
+                        startActivity(intent)
+                    },
+                    onClickCancel = {})
+            dialog.isCancelable = false
+            dialog.show(getParentFragmentManager(), "ConfirmDialog")
         }
     }
 
