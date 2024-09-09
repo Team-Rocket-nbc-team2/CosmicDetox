@@ -45,7 +45,10 @@
     <string name="dialog_back_to_timer">Back to the previous screen</string>
 
     <!-- SignIn -->
-    <string name="sign_rules">It can be used using a social account without signing up, \n and is considered to have agreed to the personal information \n processing policy and terms of use at the first login.</string>
+<!--    <string name="sign_rules">It can be used using a social account without signing up, \n and is considered to have agreed to the personal information \n processing policy and terms of use at the first login.</string>-->
+    <string name="sign_rules">You can use the app with a social account without signing up, and at the first login</string>
+    <string name="sign_rules_policy">the Privacy Policy and Terms of Use</string>
+    <string name="sign_rules_policy_agree">are considered agreed to.</string>
     <string name="sign_social">Start right now with your Google account!</string>
     <string name="sign_failure">SignIn failed.</string>
 
@@ -74,6 +77,8 @@
     <string name="dialog_withdrawal_logout_title">Please re-certify your account!</string>
     <string name="dialog_withdrawal_logout_desc">Please log out and log back in to proceed with the withdrawal. \n Do you want to log out?</string>
     <string name="dialog_sign_out_failure">Sign out failed.</string>
+    <string name="dialog_personal_policy_terms_title">Do you want to check the personal information processing policy and terms of use?</string>
+    <string name="dialog_personal_policy_terms_desc">Move to the Notion page.</string>
 
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
