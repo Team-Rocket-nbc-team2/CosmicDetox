@@ -13,6 +13,7 @@ import com.rocket.cosmic_detox.domain.usecase.timer.GetAllowedAppUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.UpdateLimitedTimeAppUseCase
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllowedAppViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getAllowedAppUseCase: GetAllowedAppUseCase,
     private val updateLimitedTimeAppUseCase: UpdateLimitedTimeAppUseCase
 ): ViewModel() {
@@ -74,13 +76,12 @@ class AllowedAppViewModel @Inject constructor(
     }
 
     fun initObserveAppOpenRunnable(
-        context: Context,
         currentOpenAppPackage: String,
         showOverlay: () -> Unit
     ): Runnable {
         return Runnable {
             while (_running.value) {
-                val currentPackageName = getCurrentOpenedAppPackageName(context)
+                val currentPackageName = getCurrentOpenedAppPackageName()
 
                 if (currentPackageName != context.packageName && currentPackageName != currentOpenAppPackage &&
                     currentPackageName != "com.sec.android.app.launcher" && currentPackageName != "com.android.systemui") {
@@ -103,7 +104,7 @@ class AllowedAppViewModel @Inject constructor(
         _running.value = false
     }
 
-    private fun getCurrentOpenedAppPackageName(context: Context): String {
+    private fun getCurrentOpenedAppPackageName(): String {
         val currentTime = System.currentTimeMillis()
         val startTime = currentTime - 1500
         val usageStatsManager: UsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager

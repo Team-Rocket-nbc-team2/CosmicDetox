@@ -52,7 +52,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             initCountDownTimer(limitedTime)
             allowedAppViewModel.setSelectedAllowedAppPackage(packageId)
             allowedAppViewModel.startObserveAppOpenRunnable()
-            val runnable = allowedAppViewModel.initObserveAppOpenRunnable(requireContext(), packageId) {
+            val runnable = allowedAppViewModel.initObserveAppOpenRunnable(packageId) {
                 if (rootView == null) showOverlay()
             }
             val thread = Thread(runnable)
