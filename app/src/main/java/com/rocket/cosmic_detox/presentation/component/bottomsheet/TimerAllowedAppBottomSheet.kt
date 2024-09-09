@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.util.DisplayMetrics
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,11 +53,8 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             initCountDownTimer(limitedTime)
             allowedAppViewModel.setSelectedAllowedAppPackage(packageId)
             allowedAppViewModel.startObserveAppOpenRunnable()
-            val runnable = allowedAppViewModel.initObserveAppOpenRunnable(requireContext(), packageId) {
-                if (rootView == null) {
-                    showOverlay()
-                    allowedAppViewModel.stopObserveAppOpenRunnable()
-                }
+            val runnable = allowedAppViewModel.initObserveAppOpenRunnable(packageId) {
+                if (rootView == null) showOverlay()
             }
             val thread = Thread(runnable)
             thread.start()
@@ -101,6 +99,15 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             allowedAppViewModel.getAllAllowedApps()
 
             countDownTimer?.cancel()
+            allowedAppViewModel.stopObserveAppOpenRunnable()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (!allowedAppViewModel.running.value && BottomSheetState.getIsBottomSheetOpen()) {
+            if (rootView == null) showOverlay()
         }
     }
 
@@ -120,6 +127,15 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) { // 뒤로 가기 버튼(KEYCODE_BACK)이 눌린 순간(ACTION_DOWN), ACTION_UP은 떼어졌을 때 둘다 작동은 하는 듯?
+                BottomSheetState.setIsBottomSheetOpen(false)
+                dismiss()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
 
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
@@ -194,5 +210,10 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private fun removeOverlay() {
         windowManager.removeView(rootView)
         rootView = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        BottomSheetState.setIsBottomSheetOpen(false) // 바텀시트에서 뒤로가기 눌렀을 때도 isBottomSheetOpen을 false로 변경
     }
 }

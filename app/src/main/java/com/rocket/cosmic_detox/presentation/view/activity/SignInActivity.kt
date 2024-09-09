@@ -2,6 +2,7 @@ package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,8 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
+import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
+import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,6 +65,19 @@ class SignInActivity() : AppCompatActivity() {
 
         signInBinding.ivGoogle.setOnClickListener {
             signInViewModel.googleLogin(googleSignInClient, launcher)
+        }
+        signInBinding.tvRulesPolicy.setOnClickListener {
+            val dialog =
+                TwoButtonDialogDescFragment(
+                    title = getString(R.string.dialog_personal_policy_terms_title),
+                    description = getString(R.string.dialog_personal_policy_terms_desc),
+                    onClickConfirm = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(NOTION_LINK))
+                        startActivity(intent)
+                    },
+                    onClickCancel = {})
+            dialog.isCancelable = false
+            dialog.show(supportFragmentManager, "ConfirmDialog")
         }
     }
 

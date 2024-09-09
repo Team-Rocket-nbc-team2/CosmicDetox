@@ -7,6 +7,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -145,7 +148,18 @@ class MyPageViewModel @Inject constructor(
         val userRef = firestoreDB.collection("users").document(user.uid)
         val rankingRef = firestoreDB.collection("season").document("season-2024-08").collection("ranking").document(user.uid)
 
+        // trophies와 apps 서브컬렉션 참조
+        val trophiesRef = userRef.collection("trophies")
+        val appsRef = userRef.collection("apps")
+
         try {
+            // 두 서브컬렉션을 동시에 삭제
+            awaitAll(
+                async { deleteSubCollections(trophiesRef) },
+                async { deleteSubCollections(appsRef) }
+            )
+
+            // 메인 문서 삭제
             awaitAll(
                 async { userRef.delete() },
                 async { rankingRef.delete() }
@@ -158,6 +172,25 @@ class MyPageViewModel @Inject constructor(
             _userStatus.value = UiState.Failure(e)
         } catch (e: Exception) {
             Log.e("회원탈퇴 FireStore DB 삭제", "Error deleting document", e)
+            _userStatus.value = UiState.Failure(e)
+        }
+    }
+
+    // 서브컬렉션을 삭제하는 함수
+    private suspend fun deleteSubCollections(subCollectionRef: CollectionReference) {
+        try {
+            // 서브컬렉션 내 모든 문서를 가져와서 삭제
+            val documents = subCollectionRef.get().await()
+
+            for (doc in documents) {
+                // 서브컬렉션 내 문서를 삭제 (필요시 서브컬렉션 내의 서브컬렉션도 삭제 가능)
+                doc.reference.delete().await()
+            }
+
+            Log.d("서브컬렉션 삭제", "Subcollection data successfully deleted!")
+        } catch (e: Exception) {
+            Log.e("서브컬렉션 삭제 실패", "Error deleting subcollection", e)
+            throw e // 실패 시 예외 발생 -> 위에 withdrawUserCoroutine에서 catch
         }
     }
 }

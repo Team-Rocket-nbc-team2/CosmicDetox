@@ -42,7 +42,7 @@ class SignInRepositoryImpl @Inject constructor(
                     "name" to authUser?.displayName.toString(),
                     "dailyTime" to 0L,
                     "totalTime" to 0L,
-                    "totalDay" to 0,
+                    "totalDay" to 1,
                     "isWithdrawn" to false,
                 )
 

@@ -9,6 +9,7 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.data.model.User
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
@@ -18,6 +19,11 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun getUid(): String {
         return firebaseAuth.currentUser?.uid ?: ""
+    }
+
+    override suspend fun getUserCreatedDate(uid: String): Date? {
+        val creationTimestamp = firebaseAuth.currentUser?.metadata?.creationTimestamp
+        return creationTimestamp?.let { Date(it) }
     }
 
     override suspend fun getUserInfo(uid: String): Result<User> { // Result는 코루틴에서 예외처리를 위한 클래스 (Result.success(true), Result.failure(exception)) -> 성공, 실패 시 로그 출력
