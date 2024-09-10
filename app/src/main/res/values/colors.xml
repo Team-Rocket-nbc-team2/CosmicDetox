@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="black_a25">#40000000</color>
+    <color name="black_a50">#80000000</color>
+    <color name="black_planet_background">#080808</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white20">#FFF5F5F5</color>
+    <color name="transparent">#00FFFFFF</color>
+
+    <color name="primary">#FF855FE8</color>
+    <color name="background">#FF28283B</color>
+    <color name="background_light">#FF37374D</color>
+    <color name="blue_grey">#FF8D8DA9</color>
+
+    <color name="stroke">#FF424242</color>
+    <color name="stroke_dark">#FF2B2C2F</color>
 </resources>

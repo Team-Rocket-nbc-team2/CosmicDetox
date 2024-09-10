@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_timer"
+            app:destination="@id/navigation_timer" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_race"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.race.RaceFragment"
+        android:label="RaceFragment"
+        tools:layout="@layout/fragment_race" />
+    <fragment
+        android:id="@+id/navigation_my"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageFragment"
+        android:label="MyPageFragment"
+        tools:layout="@layout/fragment_my_page" >
+        <action
+            android:id="@+id/action_my_to_modify_allow_app"
+            app:destination="@id/navigation_modify_allow_app_dialog" />
+        <action
+            android:id="@+id/action_my_to_set_limit_app"
+            app:destination="@id/navigation_set_limit_app_dialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_timer"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.timer.TimerFragment"
+        android:label="TimerFragment"
+        tools:layout="@layout/fragment_timer" />
+    <dialog
+        android:id="@+id/navigation_modify_allow_app_dialog"
+        android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowedapp.MyPageModifyAllowAppBottomSheet"
+        android:label="MyPageModifyAllowAppBottomSheet"
+        tools:layout="@layout/modal_content_modify_allow_app">
+        <argument
+            android:name="allowedApps"
+            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/navigation_set_limit_app_dialog"
+        android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.setlimitapp.MyPageSetLimitAppBottomSheet"
+        android:label="MyPageSetLimitAppBottomSheet"
+        tools:layout="@layout/modal_content_set_limit_app">
+        <action
+            android:id="@+id/action_set_limit_app_to_set_limit_use_time"
+            app:destination="@id/navigation_set_limit_use_time_dialog" />
+        <argument
+            android:name="allowedApps"
+            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/navigation_set_limit_use_time_dialog"
+        android:name="com.rocket.cosmic_detox.presentation.component.bottomsheet.MyPageSetLimitUseTimeBottomSheet"
+        android:label="MyPageSetLimitUseTimeBottomSheet"
+        tools:layout="@layout/modal_content_set_use_time">
+        <argument
+            android:name="allowedApp"
+            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp" />
+    </dialog>
+</navigation>

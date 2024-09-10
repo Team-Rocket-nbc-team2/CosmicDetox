@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CosmicDetox</string>
+
+    <!--  Common  -->
+    <string name="terminate_app_alert">Press one more time to terminate the app.</string>
+    <string name="terminate_app">Are you sure to leave?</string>
+
+    <!--  Race  -->
+    <string name="race_description_profile_image">User Profile Thumbnail Image</string>
+    <string name="race_format_total_time">%1$d hours %2$d minutes</string>
+    <string name="race_format_total_time_one_hour">1 hour %d minutes</string>
+    <string name="race_format_total_time_no_minutes">%d hours</string>
+    <string name="race_format_total_time_no_minutes_one_hour">1 hour</string>
+    <string name="race_format_total_time_no_hours">%d minutes</string>
+    <string name="race_format_points">%s points</string>
+    <string name="race_format_stats">%1$d hours %2$d minutes · %3$s points</string>
+    <string name="race_format_stats_time_one_hour">1 hour %1$d minutes · %2$s points</string>
+    <string name="race_format_stats_time_no_minutes">%1$d hours · %2$s points</string>
+    <string name="race_format_stats_time_no_minutes_one_hour">1 hour · %s points</string>
+    <string name="race_format_stats_time_no_hours">%1$d minutes · %2$s points</string>
+
+    <!--  Navigation Menu  -->
+    <string name="label_race">Race</string>
+    <string name="label_home">Home</string>
+    <string name="label_my">My</string>
+
+    <!-- Home -->
+    <string name="home_current_location">Current Location</string>
+    <string name="home_hours">hours</string>
+    <string name="home_total">Total</string>
+    <string name="home_travel_btn_text">Turn off the phone and travel into space.</string>
+    <string name="home_travel_start">Would you like to travel into space?</string>
+    <string name="home_traveling_time">You traveled for %1$d hours %2$d minutes.</string>
+
+    <!--  Timer  -->
+    <string name="timer_finish">Finish</string>
+    <string name="timer_rest">Take a rest</string>
+    <string name="timer_dialog_finish">Are you sure to finish?</string>
+    <string name="timer_bottom_sheet_title">Select the app to use</string>
+    <string name="allowed_app_is_empty">There is no list of applications to use.\nTry selecting in advance from the My screen!</string>
+    <string name="timer_button_pinning">Pin apps</string>
+    <string name="timer_button_start">Timer start</string>
+    <string name="timer_focus">Focus on your trip!</string>
+    <string name="dialog_back_to_timer">Back to the previous screen</string>
+
+    <!-- SignIn -->
+<!--    <string name="sign_rules">It can be used using a social account without signing up, \n and is considered to have agreed to the personal information \n processing policy and terms of use at the first login.</string>-->
+    <string name="sign_rules">You can use the app with a social account without signing up, and at the first login</string>
+    <string name="sign_rules_policy">the Privacy Policy and Terms of Use</string>
+    <string name="sign_rules_policy_agree">are considered agreed to.</string>
+    <string name="sign_social">Start right now with your Google account!</string>
+    <string name="sign_failure">SignIn failed.</string>
+
+    <!-- My Page -->
+    <string name="withdrawal">Withdrawal</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="allow_app_settings">Allow App Settings</string>
+    <string name="limit_app_usage_time">Limit App Usage Time</string>
+    <string name="personal_policy_terms">Personal Policy and Terms</string>
+    <string name="trophy">My Trophy</string>
+    <string name="my_app_usage">My App Usage</string>
+    <string name="my_btn_permission">Allow Permission</string>
+    <string name="my_permission_desc">To check your app usage history,\nPlease allow me permission.</string>
+    <string name="my_trophies_none">No trophies have been won yet.\n Let\'s travel harder!</string>
+    <string name="dialog_sign_out">Are you sure you want to sign out?</string>
+    <string name="dialog_withdrawal">Are you sure you want to leave?</string>
+    <string name="dialog_withdrawal_desc">After withdrawal, user information will be temporarily stored for 7 days, and will be permanently deleted.</string>
+    <string name="format_my_description">You traveled for %1$d days %2$d hours %3$d minutes.</string>
+    <string name="format_my_description_one_hour">You traveled for %1$d day 1 hour %2$d minutes.</string>
+    <string name="format_my_description_no_hours">You traveled for %1$d days %2$d minutes.</string>
+    <string name="format_my_description_no_minutes">You traveled for %1$d days %2$d hours.</string>
+    <string name="format_my_description_no_minutes_one_hour">You traveled for %1$d day 1 hour.</string>
+    <string name="format_my_description_no_days">You haven\'t started traveling yet.\nStart your journey now!</string>
+    <string name="dialog_withdrawal_failure">The withdrawal failed.</string>
+    <string name="dialog_withdrawal_success">The withdrawal has been completed.</string>
+    <string name="dialog_withdrawal_logout_title">Please re-certify your account!</string>
+    <string name="dialog_withdrawal_logout_desc">Please log out and log back in to proceed with the withdrawal. \n Do you want to log out?</string>
+    <string name="dialog_sign_out_failure">Sign out failed.</string>
+    <string name="dialog_personal_policy_terms_title">Do you want to check the personal information processing policy and terms of use?</string>
+    <string name="dialog_personal_policy_terms_desc">Move to the Notion page.</string>
+
+    <!--  Bottom Sheet  -->
+    <string name="bottom_sheet_default">BottomSheet Default Title</string>
+    <string name="bottom_sheet_complete">Completion</string>
+    <string name="allow_app_bottom_sheet_title">Edit app for traveling</string>
+    <string name="limit_app_bottom_sheet_title">Limit app usage time</string>
+    <string name="set_limit_use_time_bottom_sheet_title">time setting</string>
+    <string name="search_edit_text_hint">Please input search text.</string>
+    <string name="allow_app_list">App list</string>
+    <string name="search_allow_app_is_empty">There are no search results.</string>
+    <string name="limit_app_is_empty">There are no apps allowed for use while traveling in space.</string>
+    <string name="number_picker_unit_hour">hr</string>
+    <string name="number_picker_unit_minute">min</string>
+    <string-array name="number_picker_hour">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="number_picker_minute">
+        <item>00</item>
+        <item>05</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+    </string-array>
+
+    <!--  Dialog  -->
+    <string name="dialog_common_focus">Focus on your travel!</string>
+    <string name="dialog_default">Dialog Default Text : Title</string>
+    <string name="dialog_default_desc">Dialog Default Text : description</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_common_error">An error has occurred</string>
+    <string name="dialog_timer_running_warning">Timer is working</string>
+    <string name="dialog_timer_start">timer</string>
+    <string name="timer_dialog_pin_request">After pinning the app, you can start the timer. Do you want to pin the app?</string>
+    <string name="timer_dialog_pinning_request">"You can start a timer by pinning an app. Do you want to pin the app?"</string>
+
+    <string name="dialog_permission_title">To use app, you need to allow permissions.</string>
+    <string name="dialog_permission_desc">If you refuse to use the permission, the app will be terminated. \n Please tap Confirm to allow it.</string>
+    <string name="dialog_my_permission_desc">You need permission to access app usage statistics.\nPlease grant the permission in the settings.</string>
+
+    <!-- Planet -->
+    <string name="earth">Earth</string>
+    <string name="jupiter">Jupiter</string>
+    <string name="mars">Mars</string>
+    <string name="mercury">Mercury</string>
+    <string name="neptune">Neptune</string>
+    <string name="saturn">Saturn</string>
+    <string name="sun">Sun</string>
+    <string name="uranus">Uranus</string>
+    <string name="venus">Venus</string>
+
+    <!--  Error  -->
+    <string name="error_not_sign_in">User is not signed in</string>
+
+</resources>

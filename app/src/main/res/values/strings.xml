@@ -1,3 +1,148 @@
 <resources>
     <string name="app_name">CosmicDetox</string>
+
+    <!--  Common  -->
+    <string name="terminate_app_alert">한 번 더 누르면 앱이 종료됩니다.</string>
+    <string name="terminate_app">정말로 떠나시겠어요?</string>
+
+    <!--  Navigation Menu  -->
+    <string name="label_race">레이스</string>
+    <string name="label_home">홈</string>
+    <string name="label_my">내정보</string>
+
+    <!-- SignIn -->
+<!--    <string name="sign_rules">회원가입 없이 소셜 계정을 사용해 이용할 수 있으며, 첫 로그인시 \n 개인정보처리방침 및 이용약관을 동의한 것으로 간주합니다.</string>-->
+    <string name="sign_rules">회원가입 없이 소셜 계정을 사용해 이용할 수 있으며, 첫 로그인시</string>
+    <string name="sign_rules_policy">개인정보처리방침 및 이용약관</string>
+    <string name="sign_rules_policy_agree">을 동의한 것으로 간주합니다.</string>
+    <string name="sign_social">Google 계정으로 지금 바로 시작해보세요!</string>
+    <string name="sign_failure">로그인에 실패했습니다.</string>
+
+    <!--  Home  -->
+    <string name="home_current_location">현재 위치</string>
+    <string name="home_hours">시간</string>
+    <string name="home_total">누적</string>
+    <string name="home_travel_btn_text">휴대폰 잠시 끄고 우주 여행 가기</string>
+    <string name="home_travel_start">여행을 시작하시겠어요?</string>
+    <string name="home_traveling_time">오늘 우주 여행한 시간은 %1$d시간 %2$d분 입니다.</string>
+
+    <!--  Race  -->
+    <string name="race_description_profile_image">유저 프로필 썸네일 이미지</string>
+    <string name="race_format_total_time">%1$d시간 %2$d분</string>
+    <string name="race_format_total_time_one_hour">1시간 %d분</string>
+    <string name="race_format_total_time_no_hours">%d분</string>
+    <string name="race_format_total_time_no_minutes">%d시간</string>
+    <string name="race_format_total_time_no_minutes_one_hour">1시간</string>
+    <string name="race_format_points">%s 포인트</string>
+    <string name="race_format_stats">%1$d시간 %2$d분 · %3$s 포인트</string>
+    <string name="race_format_stats_time_one_hour">1시간 %1$d분 · %2$s 포인트</string>
+    <string name="race_format_stats_time_no_minutes">%1$d시간 · %2$s 포인트</string>
+    <string name="race_format_stats_time_no_minutes_one_hour">1시간 · %s 포인트</string>
+    <string name="race_format_stats_time_no_hours">%1$d분 · %2$s 포인트</string>
+
+    <!--  My Page  -->
+    <string name="withdrawal">회원탈퇴</string>
+    <string name="sign_out">로그아웃</string>
+    <string name="allow_app_settings">허용 앱 설정</string>
+    <string name="limit_app_usage_time">앱 사용시간 제한</string>
+    <string name="personal_policy_terms">개인정보처리방침 및 이용약관</string>
+    <string name="trophy">내 트로피 보기</string>
+    <string name="my_app_usage">내 사용량 보기</string>
+    <string name="my_btn_permission">권한 허용하기</string>
+    <string name="my_permission_desc">앱 사용기록을 확인하려면\n권한을 허용해주세요.</string>
+    <string name="my_trophies_none">아직 획득한 트로피가 없습니다.\n더 열심히 여행 해봅시다!</string>
+    <string name="dialog_sign_out">정말로 로그아웃 하시겠어요?</string>
+    <string name="dialog_withdrawal">정말로 탈퇴하시겠어요?</string>
+    <string name="dialog_withdrawal_desc">회원탈퇴 후 유저 정보는 7일 동안 임시 보관되며, 이후 영구 삭제됩니다.</string>
+    <string name="format_my_description">지난 %1$d일 동안 %2$d시간 %3$d분 여행했습니다.</string>
+    <string name="format_my_description_one_hour">지난 %1$d일 동안 1시간 %2$d분 여행했습니다.</string>
+    <string name="format_my_description_no_hours">지난 %1$d일 동안 %2$d분 여행했습니다.</string>
+    <string name="format_my_description_no_minutes">지난 %1$d일 동안 %2$d시간 여행했습니다.</string>
+    <string name="format_my_description_no_minutes_one_hour">지난 %1$d일 동안 1시간 여행했습니다.</string>
+    <string name="format_my_description_no_days">아직 여행을 시작하지 않았습니다.\n지금 바로 여행을 시작해보세요!</string>
+    <string name="dialog_withdrawal_failure">탈퇴에 실패했습니다.</string>
+    <string name="dialog_withdrawal_success">탈퇴가 완료 되었습니다.</string>
+    <string name="dialog_withdrawal_logout_title">회원 인증을 다시 해주세요!</string>
+    <string name="dialog_withdrawal_logout_desc">로그아웃 하고 다시 로그인 하여 회원탈퇴를 진행해주세요.\n로그아웃 하시겠어요?</string>
+    <string name="dialog_sign_out_failure">로그아웃에 실패했습니다.</string>
+    <string name="dialog_personal_policy_terms_title">개인정보처리방침 및 이용약관을 확인하시겠어요?</string>
+    <string name="dialog_personal_policy_terms_desc">노션 페이지로 이동합니다.</string>
+
+    <!--  Timer  -->
+    <string name="timer_finish">종료</string>
+    <string name="timer_rest">잠깐 쉬기</string>
+    <string name="timer_dialog_finish">정말로 여행을 종료 하시겠어요?</string>
+    <string name="timer_bottom_sheet_title">사용할 어플 선택</string>
+    <string name="allowed_app_is_empty">사용할 어플 리스트가 없습니다.\n내정보 화면에서 미리 선택 해보세요!</string>
+    <string name="timer_button_pinning">앱 고정하기</string>
+    <string name="timer_button_start">타이머 시작하기</string>
+    <string name="timer_focus">여행에 집중하세요!</string>
+    <string name="dialog_back_to_timer">이전 화면으로 돌아가기</string>
+
+    <!--  Bottom Sheet  -->
+    <string name="bottom_sheet_default">BottomSheet Default Title</string>
+    <string name="bottom_sheet_complete">완료</string>
+    <string name="allow_app_bottom_sheet_title">허용할 어플 편집</string>
+    <string name="limit_app_bottom_sheet_title">앱 사용시간 제한</string>
+    <string name="set_limit_use_time_bottom_sheet_title">사용 설정하기</string>
+    <string name="search_edit_text_hint">검색어를 입력하세요.</string>
+    <string name="allow_app_list">어플리스트</string>
+    <string name="search_allow_app_is_empty">검색 결과가 없습니다.</string>
+    <string name="limit_app_is_empty">우주 여행중 사용을 허용한 어플이 존재하지 않습니다.</string>
+    <string name="number_picker_unit_hour">시간</string>
+    <string name="number_picker_unit_minute">분</string>
+    <string-array name="number_picker_hour">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="number_picker_minute">
+        <item>00</item>
+        <item>05</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+    </string-array>
+
+    <!--  Dialog  -->
+    <string name="dialog_common_focus">여행에 집중하세요!</string>
+    <string name="dialog_common_error">오류가 발생했습니다</string>
+    <string name="dialog_default">Dialog Default Text : Title</string>
+    <string name="dialog_default_desc">Dialog Default Text : description</string>
+    <string name="dialog_cancel">취소</string>
+    <string name="dialog_confirm">확인</string>
+    <string name="dialog_timer_running_warning">타이머가 작동중입니다.</string>
+    <string name="dialog_timer_start">타이머를 시작하시겠습니까?</string>
+    <string name="timer_dialog_pin_request">앱을 고정한 후에만 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?</string>
+    <string name="timer_dialog_pinning_request">"앱을 고정하여 타이머를 시작할 수 있습니다. 앱을 고정하시겠습니까?"</string>
+
+    <string name="dialog_permission_title">앱 이용을 위해서는 권한이 필요합니다.</string>
+    <string name="dialog_permission_desc">권한 사용을 거부하시면 앱 사용이 제한될 수 있습니다.\n허용하신다면 확인을 눌러주세요.</string>
+    <string name="dialog_my_permission_desc">앱 사용 통계에 접근하려면 권한이 필요합니다.\n설정에서 권한을 부여해주세요.</string>
+
+    <!-- Planet -->
+    <string name="earth">지구</string>
+    <string name="jupiter">목성</string>
+    <string name="mars">화성</string>
+    <string name="mercury">수성</string>
+    <string name="neptune">해왕성</string>
+    <string name="saturn">토성</string>
+    <string name="sun">태양</string>
+    <string name="uranus">천왕성</string>
+    <string name="venus">금성</string>
+
+    <!--  Error  -->
+    <string name="error_not_sign_in">로그인이 필요합니다.</string>
+
 </resources>
