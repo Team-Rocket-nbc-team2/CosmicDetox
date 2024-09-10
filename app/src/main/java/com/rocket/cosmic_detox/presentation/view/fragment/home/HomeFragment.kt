@@ -54,7 +54,8 @@ class HomeFragment : Fragment() {
             val dialog = TwoButtonDialogFragment(
                 title = getString(R.string.home_travel_start),
                 onClickConfirm = {
-                    val action = HomeFragmentDirections.actionHomeToTimer()
+                    // actionHomeToTimer2로 임의 명칭 변경
+                    val action = HomeFragmentDirections.actionHomeToTimer2()
                     findNavController().navigate(action) },
                 onClickCancel = { }
             )
