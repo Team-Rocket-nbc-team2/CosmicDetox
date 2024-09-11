@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.auth)
+    implementation(libs.firebase.functions)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
@@ -98,6 +99,9 @@ dependencies {
 
     // glide
     implementation(libs.glide)
+
+    // kakao login
+    implementation(libs.kakao.v2.user)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
