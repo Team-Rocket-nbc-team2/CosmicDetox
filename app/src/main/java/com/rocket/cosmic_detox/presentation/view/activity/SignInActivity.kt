@@ -22,6 +22,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
+import com.rocket.cosmic_detox.util.Authentication
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +50,7 @@ class SignInActivity() : AppCompatActivity() {
 
         user?.getIdToken(true)?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val intent = Intent(applicationContext, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
@@ -84,7 +85,6 @@ class SignInActivity() : AppCompatActivity() {
             dialog.show(supportFragmentManager, "ConfirmDialog")
         }
         signInBinding.ivX.setOnClickListener {
-            // TODO: X(트위터) 로그인 구현
             signInWithTwitter()
         }
     }
@@ -102,6 +102,7 @@ class SignInActivity() : AppCompatActivity() {
                         val intent = Intent(this@SignInActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
+                        Authentication.setCurrentUser(it.data)
                         Log.d("Twitter", "로그인 성공!!!!!!!!!!!!!!")
                     }
                     is UiState.Failure -> {

@@ -1,12 +1,14 @@
 package com.rocket.cosmic_detox.util
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 object Authentication {
 
-    val currentUser = FirebaseAuth.getInstance().currentUser
+    var currentUser: FirebaseUser? = null // TODO: 나중에 로컬 DB에 저장하는 방식으로 변경
+        private set
 
-    fun getAuthPlatform(): String {
-        return currentUser?.providerData?.get(1)?.providerId.toString()
+    fun setCurrentUser(user: FirebaseUser) {
+        currentUser = user
     }
 }

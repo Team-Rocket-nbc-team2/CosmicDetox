@@ -128,13 +128,13 @@ class MyPageFragment : Fragment() {
                     //launchGoogleSignInClient()
                     // Authentication 제공자가 Google, Twitter일 경우
                     // Firebase에 Google, Twitter 인증 자격 증명으로 재인증 시도
-                    val platform = Authentication.getAuthPlatform()
+                    val platform = Authentication.currentUser?.providerData?.get(1)?.providerId
                     when (platform) {
                         PROVIDER_GOOGLE -> {
+                            Toast.makeText(requireContext(), "google", Toast.LENGTH_SHORT).show()
                             launchGoogleSignInClient()
                         }
                         PROVIDER_TWITTER -> {
-                            // TODO: X(트위터) 회원탈퇴 구현
                             reAuthenticationWithTwitter()
                         }
                         else -> {
