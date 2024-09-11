@@ -115,6 +115,7 @@ class TimerFragment2 : Fragment() {
     }
 
     // 통화 상태 콜백
+    // TODO api가 31 아래인 경우는 어떻게 해야? stateLister로? if문으로 SDK_VERSION 감지해서 콜백과 리스너로 분류
     private val telephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
     object : TelephonyCallback(), TelephonyCallback.CallStateListener {
         override fun onCallStateChanged(state: Int) {
@@ -125,6 +126,7 @@ class TimerFragment2 : Fragment() {
                     removeOverlay() // 오버레이 제거
                 }
                 TelephonyManager.CALL_STATE_IDLE -> {  // 전화가 종료될 때
+                    // TODO 통화가 종료됐을 때 다시 오버레이뷰 띄우기 아래 주석으로는 잘 되지 않음
                     isCallActive = false
 //                    showOverlay()  // 통화가 종료되면 다시 오버레이 띄우기
                 }
@@ -153,6 +155,8 @@ class TimerFragment2 : Fragment() {
         if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
             if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
                 Log.d("Overlay디버그", "onPause 실행")
+                Log.d("오버레이뷰",
+                    "isFinishingTimer>> $isFinishingTimer, isOverlayVisible>> $isOverlayVisible, BottomSheetState>> ${BottomSheetState.getIsBottomSheetOpen()}, permissionViewModel>> ${permissionViewModel.isOverlayPermissionGranted(requireContext())}")
                 showOverlay()
             }
         }

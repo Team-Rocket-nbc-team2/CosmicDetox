@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -9,6 +10,8 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -119,11 +122,12 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     if(!isReadPhoneStatePermissionAllowed) {
-                        val intent = Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.parse("pakage:${this.packageName}")
-                        )
-                        startActivity(intent)
+                        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_PHONE_STATE), 1)
+                        } else {
+                            Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
+                        }
                     }
                 },
                 onClickCancel = { }
