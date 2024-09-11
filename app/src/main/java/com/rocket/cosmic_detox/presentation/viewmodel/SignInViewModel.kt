@@ -90,4 +90,25 @@ class SignInViewModel @Inject constructor(
                 }
             }
     }
+
+    fun signInWithX() {
+        _status.value = UiState.Loading
+        _user.value = auth.currentUser
+        viewModelScope.launch {
+            try {
+                repository.setDataToFireBase()
+                    .onSuccess {
+                        _status.value = UiState.Success(_user.value!!)
+                        Log.d("LOGIN-- SUCCESS: setUserToFirestoreWithX() ", "FireStore DB에 데이터 저장을 성공했습니다, ${_user.value}")
+                    }
+                    .onFailure {
+                        _status.value = UiState.Failure(it)
+                        Log.e("LOGIN-- FAILURE: setUserToFirestoreWithX()", "FireStore DB에 데이터 저장을 실패했습니다. ${it}")
+                    }
+            } catch (e: Exception) {
+                _status.value = UiState.Failure(e)
+                Log.e("LOGIN-- FAILURE: setUserToFirestoreWithX() catch", "FireStore DB에 데이터 저장을 실패했습니다. ${e}")
+            }
+        }
+    }
 }

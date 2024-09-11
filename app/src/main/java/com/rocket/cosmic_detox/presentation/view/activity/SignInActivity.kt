@@ -64,6 +64,7 @@ class SignInActivity() : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        signInObserve(this)
 
         signInBinding.ivGoogle.setOnClickListener {
             signInViewModel.googleLogin(googleSignInClient, launcher)
@@ -90,25 +91,28 @@ class SignInActivity() : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             signInViewModel.googleLauncherFunction(result)
-            signInObserve(this)
         }
 
     private fun signInObserve(context: Context) {
         lifecycleScope.launch {
             signInViewModel.status.collectLatest {
+                Log.d("Twitter", "Collected status: $it")
+
                 when (it) {
                     is UiState.Success -> {
                         val intent = Intent(this@SignInActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
+                        Log.d("Twitter", "로그인 성공!!!!!!!!!!!!!!")
                     }
                     is UiState.Failure -> {
-                        val dialog = OneButtonDialogFragment(getString(R.string.sign_failure)){}
+                        val dialog = OneButtonDialogFragment(getString(R.string.sign_failure)) {}
                         dialog.isCancelable = false
                         dialog.show(supportFragmentManager, "ConfirmDialog")
+                        Log.e("Twitter", "로그인 실패!!!!!!!!!!!!!!")
                     }
                     else -> {
-                        // 로딩 중
+                        Log.d("Twitter", "로그인 중!!!!!!!!!!!!!!")
                     }
                 }
             }
@@ -121,12 +125,10 @@ class SignInActivity() : AppCompatActivity() {
         val pendingResultTask = signInViewModel.auth.pendingAuthResult
         if (pendingResultTask != null) {
             pendingResultTask.addOnSuccessListener {
-                val user = signInViewModel.auth.currentUser
-                // 성공
-                Log.d("Twitter", "로그인 성공: 이전에 로그인한 사용자가 있습니다.")
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
+                Log.d("Twitter", "로그인 성공: 이전에 로그인한 사용자가 있습니다.")
 
             }.addOnFailureListener {
                 // 실패
@@ -135,11 +137,8 @@ class SignInActivity() : AppCompatActivity() {
         } else {
             signInViewModel.auth.startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
-                    val user = signInViewModel.auth.currentUser
                     // 성공
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+                    signInViewModel.signInWithX()
                     Log.d("Twitter", "로그인 성공: 새로운 사용자가 로그인했습니다.")
                 }.addOnFailureListener {
                     // 실패
