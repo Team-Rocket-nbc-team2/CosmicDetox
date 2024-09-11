@@ -27,7 +27,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentTimer2Binding
-import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
@@ -44,7 +43,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class TimerFragment2 : Fragment() {
 
-    // FragmentTimer2Binding로 임의 명칭 변경
+    // FragmentTimer2Binding으로 임의 명칭 변경
     private var _binding: FragmentTimer2Binding? = null
     private val binding get() = _binding!!
     private var isFinishingTimer = false
@@ -55,9 +54,6 @@ class TimerFragment2 : Fragment() {
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
-
-    private var telephonyManager: TelephonyManager? = null
-    private var isCallActive = false // 전화가 활성화된 상태인지 확인하는 변수
 
     private val runnable = object : Runnable {
         override fun run() {
@@ -70,6 +66,9 @@ class TimerFragment2 : Fragment() {
     private var overlayView: View? = null // 오버레이 뷰
     private var isOverlayVisible = false // 오버레이가 보이는지 여부
     private var allowedAppList = mutableListOf<String>()
+
+    private lateinit var telephonyManager: TelephonyManager
+    private var isCallActive = false // 전화가 활성화된 상태인지 확인하는 변수
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -127,7 +126,7 @@ class TimerFragment2 : Fragment() {
                 }
                 TelephonyManager.CALL_STATE_IDLE -> {  // 전화가 종료될 때
                     isCallActive = false
-                    showOverlay()  // 통화가 종료되면 다시 오버레이 띄우기
+//                    showOverlay()  // 통화가 종료되면 다시 오버레이 띄우기
                 }
             }
         }
@@ -224,12 +223,12 @@ class TimerFragment2 : Fragment() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onDestroyView() {
         super.onDestroyView()
-        // 콜백 해제
-        telephonyManager?.unregisterTelephonyCallback(telephonyCallback)
         _binding = null
         stopTimer()
         //removeOverlay() // Fragment 종료 시 오버레이 제거
         stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료
+        // 콜백 해제
+        telephonyManager?.unregisterTelephonyCallback(telephonyCallback)
     }
 
     private fun initView() = with(binding) {

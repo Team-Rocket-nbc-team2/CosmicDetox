@@ -90,13 +90,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
-        // TODO readFunState 권한 요청 해서 하기
-        val isReadFunStateAllowed = permissionViewModel
+        val isReadPhoneStatePermissionAllowed = permissionViewModel.isReadPhoneStatePermissionGranted(this)
 
-        Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
+        Log.d("권한 뭔 일이다냐?",
+            "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
 
         //거절된 퍼미션이 있다면...
-        if (!isUsageStateAllowed || !isRequestOverlay) {
+        if (!isUsageStateAllowed || !isRequestOverlay || !isReadPhoneStatePermissionAllowed) {
             //권한 요청!
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
@@ -116,6 +116,14 @@ class MainActivity : AppCompatActivity() {
                             )
                             startActivity(intent)
                         }
+                    }
+
+                    if(!isReadPhoneStatePermissionAllowed) {
+                        val intent = Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.parse("pakage:${this.packageName}")
+                        )
+                        startActivity(intent)
                     }
                 },
                 onClickCancel = { }
