@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.User
@@ -37,7 +38,10 @@ import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
+import com.rocket.cosmic_detox.util.Authentication
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
+import com.rocket.cosmic_detox.util.Constants.PROVIDER_GOOGLE
+import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -121,7 +125,22 @@ class MyPageFragment : Fragment() {
                 title = getString(R.string.dialog_withdrawal),
                 description = getString(R.string.dialog_withdrawal_desc),
                 onClickConfirm = {
-                    launchGoogleSignInClient()
+                    //launchGoogleSignInClient()
+                    // Authentication 제공자가 Google, Twitter일 경우
+                    // Firebase에 Google, Twitter 인증 자격 증명으로 재인증 시도
+                    val platform = Authentication.getAuthPlatform()
+                    when (platform) {
+                        PROVIDER_GOOGLE -> {
+                            launchGoogleSignInClient()
+                        }
+                        PROVIDER_TWITTER -> {
+                            // TODO: X(트위터) 회원탈퇴 구현
+                            reAuthenticationWithTwitter()
+                        }
+                        else -> {
+                            Toast.makeText(requireContext(), "unknown", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
                 onClickCancel = { false }
             )
@@ -272,6 +291,22 @@ class MyPageFragment : Fragment() {
             ivMyProfileImage.loadRankingPlanetImage(totalTime.toBigDecimal())
             tvMyName.text = name
             tvMyDescription.setMyDescription(totalDay, totalTime.toBigDecimal())
+        }
+    }
+
+    private fun reAuthenticationWithTwitter() {
+        val provider = OAuthProvider.newBuilder(PROVIDER_TWITTER)
+        val currentUser = Authentication.currentUser
+
+        currentUser?.let {
+            currentUser.startActivityForReauthenticateWithProvider(requireActivity(), provider.build())
+                .addOnSuccessListener {
+                    // 회원 탈퇴 로직 실행
+                    myPageViewModel.withdraw(currentUser)
+                }
+                .addOnFailureListener {
+                    Log.e("withdrawal", "재인증 실패 XXXXX: $it")
+                }
         }
     }
 

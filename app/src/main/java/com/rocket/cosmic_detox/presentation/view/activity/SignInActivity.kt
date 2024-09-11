@@ -23,6 +23,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDesc
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
+import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -84,7 +85,7 @@ class SignInActivity() : AppCompatActivity() {
         }
         signInBinding.ivX.setOnClickListener {
             // TODO: X(트위터) 로그인 구현
-            signInWithX()
+            signInWithTwitter()
         }
     }
 
@@ -96,8 +97,6 @@ class SignInActivity() : AppCompatActivity() {
     private fun signInObserve(context: Context) {
         lifecycleScope.launch {
             signInViewModel.status.collectLatest {
-                Log.d("Twitter", "Collected status: $it")
-
                 when (it) {
                     is UiState.Success -> {
                         val intent = Intent(this@SignInActivity, MainActivity::class.java)
@@ -119,8 +118,8 @@ class SignInActivity() : AppCompatActivity() {
         }
     }
 
-    private fun signInWithX() {
-        val provider = OAuthProvider.newBuilder("twitter.com")
+    private fun signInWithTwitter() {
+        val provider = OAuthProvider.newBuilder(PROVIDER_TWITTER)
 
         val pendingResultTask = signInViewModel.auth.pendingAuthResult
         if (pendingResultTask != null) {
