@@ -27,23 +27,6 @@ object AppModule {
         return context.packageManager
     }
 
-    @Provides
-    @Singleton
-    fun provideUserRepository(
-        firestore: FirebaseFirestore,
-        auth: FirebaseAuth
-    ): UserRepository {
-        return UserRepositoryImpl(firestore, auth)
-    }
-    @Provides
-    @Singleton
-    fun provideRankingRepository(
-        firestore: FirebaseFirestore
-    ): RankingRepository {
-        return RankingRepositoryImpl(firestore)
-    }
-
-
     @Singleton
     @Provides
     fun provideUsageStatsManager(@ApplicationContext context: Context): UsageStatsManager {
