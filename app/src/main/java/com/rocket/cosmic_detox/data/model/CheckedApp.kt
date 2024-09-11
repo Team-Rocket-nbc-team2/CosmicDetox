@@ -8,5 +8,5 @@ data class CheckedApp(
     val packageId: String,
     val appName: String,
     val limitedTime: Long,
-    var isChecked: Boolean = false
+    val isChecked: Boolean = false
 ) : Parcelable

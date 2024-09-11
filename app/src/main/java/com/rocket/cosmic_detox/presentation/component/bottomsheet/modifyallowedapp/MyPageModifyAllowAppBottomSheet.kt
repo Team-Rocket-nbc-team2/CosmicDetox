@@ -117,13 +117,15 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                             is GetListUiState.Success -> {
                                 // args.allowApps에 포함된 앱은 체크된 상태로 보여줌
                                 // uiState.data에 args.allowedApps의 packageId가 포함되어 있으면 체크된 상태로 보여줌
-                                uiState.data.forEach { app ->
+                                val updatedApps = uiState.data.map { app ->
                                     if (args.allowedApps.any { app has it }) {
-                                        app.isChecked = true
+                                        app.copy(isChecked = true) // copy 메서드로 isChecked 값 수정
+                                    } else {
+                                        app
                                     }
                                 }
-                                Log.d("AllowAppBottomSheet", "uiState.data: ${uiState.data}")
-                                allowAppListAdapter.submitList(uiState.data)
+                                Log.d("AllowAppBottomSheet", "updatedApps: $updatedApps")
+                                allowAppListAdapter.submitList(updatedApps)
                             }
                             is GetListUiState.Error -> {
                                 Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()
