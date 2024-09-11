@@ -14,6 +14,7 @@ plugins {
 val keyPropertiesFile = rootProject.file("./app/key.properties")
 val properties = Properties()
 properties.load(FileInputStream(keyPropertiesFile))
+properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.rocket.cosmic_detox"
@@ -27,6 +28,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
     }
 
     signingConfigs {
@@ -71,6 +74,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
