@@ -90,6 +90,9 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
+        // TODO readFunState 권한 요청 해서 하기
+        val isReadFunStateAllowed = permissionViewModel
+
         Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
 
         //거절된 퍼미션이 있다면...
