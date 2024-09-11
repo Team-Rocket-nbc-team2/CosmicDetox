@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,12 +17,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.functions.functions
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
@@ -103,10 +102,10 @@ class SignInActivity() : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             signInViewModel.googleLauncherFunction(result)
-            signInObserve(this)
+            signInObserve()
         }
 
-    private fun signInObserve(context: Context) {
+    private fun signInObserve() {
         lifecycleScope.launch {
             signInViewModel.status.collectLatest {
                 when (it) {
