@@ -23,6 +23,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
@@ -92,6 +93,10 @@ class SignInActivity() : AppCompatActivity() {
                     onClickCancel = {})
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "ConfirmDialog")
+        }
+        signInBinding.ivX.setOnClickListener {
+            // TODO: X(트위터) 로그인 구현
+            signInWithX()
         }
     }
 
@@ -177,6 +182,39 @@ class SignInActivity() : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun signInWithX() {
+        val provider = OAuthProvider.newBuilder("twitter.com")
+
+        val pendingResultTask = signInViewModel.auth.pendingAuthResult
+        if (pendingResultTask != null) {
+            pendingResultTask.addOnSuccessListener {
+                val user = signInViewModel.auth.currentUser
+                // 성공
+                Log.d("Twitter", "로그인 성공: 이전에 로그인한 사용자가 있습니다.")
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+
+            }.addOnFailureListener {
+                // 실패
+                Log.e("Twitter", "로그인 실패: 이전에 로그인한 사용자가 없습니다.")
+            }
+        } else {
+            signInViewModel.auth.startActivityForSignInWithProvider(this, provider.build())
+                .addOnSuccessListener {
+                    val user = signInViewModel.auth.currentUser
+                    // 성공
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    Log.d("Twitter", "로그인 성공: 새로운 사용자가 로그인했습니다.")
+                }.addOnFailureListener {
+                    // 실패
+                    Log.e("Twitter", "로그인 실패: 사용자가 로그인하지 않았습니다.")
+                }
         }
     }
 }

@@ -117,11 +117,9 @@ class TimerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         if (isFinishingTimer) return // 타이머 종료 중인 경우에는 오버레이 띄우지 않음
-        if (!isOverlayVisible) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
-            if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
-                Log.d("Overlay디버그", "onPause 실행")
-                showOverlay()
-            }
+        if (!isOverlayVisible && !BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
+            Log.d("Overlay디버그", "onPause 실행")
+            showOverlay()
         }
     }
 
