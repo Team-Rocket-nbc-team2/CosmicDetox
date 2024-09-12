@@ -45,6 +45,11 @@
                     android:scheme="@string/KAKAO_OAUTH_HOST"/>
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".presentation.service.TimerService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
