@@ -1,9 +1,9 @@
 package com.rocket.cosmic_detox.di
 
-import com.rocket.cosmic_detox.data.remote.firebase.season.SeasonDataSource
-import com.rocket.cosmic_detox.data.remote.firebase.season.SeasonDataSourceImpl
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSourceImpl
+import com.rocket.cosmic_detox.data.datasource.season.SeasonDataSource
+import com.rocket.cosmic_detox.data.datasource.season.SeasonDataSourceImpl
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSourceImpl
 import com.rocket.cosmic_detox.data.repository.AllowAppRepositoryImpl
 import com.rocket.cosmic_detox.data.repository.AllowedAppRepositoryImpl
 import com.rocket.cosmic_detox.data.repository.KakaoSignInRepositoryImpl

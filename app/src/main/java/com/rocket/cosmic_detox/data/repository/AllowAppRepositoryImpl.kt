@@ -8,7 +8,7 @@ import android.os.Build
 import android.util.Log
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.CheckedApp
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.util.AppCategoryManager
 import kotlinx.coroutines.flow.Flow
