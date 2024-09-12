@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import android.util.Log
@@ -83,7 +84,6 @@ class TimerFragment2 : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
@@ -100,8 +100,12 @@ class TimerFragment2 : Fragment() {
             }
         }
 
-        // 전화 상태 감지 콜백 설정
-        telephonyManager?.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback)
+        // 버전에 따른 전화 상태 감지 콜백과 리스너 분류 설정
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            telephonyManager?.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback)
+        } else {
+            telephonyManager?.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+        }
 
         initView()
         allowedAppViewModel.getAllAllowedApps() // 허용 앱 리스트 가져오기 -> 서비스에 전달하려고 가져온거긴 한데 지금 당장은 필요없을 듯
@@ -114,8 +118,8 @@ class TimerFragment2 : Fragment() {
         //startTimer()
     }
 
-    // 통화 상태 콜백
-    // TODO api가 31 아래인 경우는 어떻게 해야? stateLister로? if문으로 SDK_VERSION 감지해서 콜백과 리스너로 분류
+    // sdk 31 이상 통화 상태 콜백
+    // TODO api가 31 아래인 경우는 어떻게 해야? stateListner로? if문으로 SDK_VERSION 감지해서 콜백과 리스너로 분류
     private val telephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
     object : TelephonyCallback(), TelephonyCallback.CallStateListener {
         override fun onCallStateChanged(state: Int) {
@@ -129,6 +133,22 @@ class TimerFragment2 : Fragment() {
                     // TODO 통화가 종료됐을 때 다시 오버레이뷰 띄우기 아래 주석으로는 잘 되지 않음
                     isCallActive = false
 //                    showOverlay()  // 통화가 종료되면 다시 오버레이 띄우기
+                }
+            }
+        }
+    }
+
+    // sdk 31 미만 통화 상태 리스너 정의
+    private val phoneStateListener = object : PhoneStateListener() {
+        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+            when(state) {
+                TelephonyManager.CALL_STATE_RINGING,
+                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                    isCallActive = true
+                    removeOverlay()
+                }
+                TelephonyManager.CALL_STATE_IDLE -> {
+                    isCallActive = false
                 }
             }
         }
@@ -224,7 +244,6 @@ class TimerFragment2 : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -232,7 +251,11 @@ class TimerFragment2 : Fragment() {
         //removeOverlay() // Fragment 종료 시 오버레이 제거
         stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료
         // 콜백 해제
-        telephonyManager?.unregisterTelephonyCallback(telephonyCallback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            telephonyManager?.unregisterTelephonyCallback(telephonyCallback)
+        } else {
+            telephonyManager?.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
+        }
     }
 
     private fun initView() = with(binding) {
