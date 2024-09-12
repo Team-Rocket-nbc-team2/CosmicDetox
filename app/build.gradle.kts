@@ -94,6 +94,7 @@ dependencies {
 
     // hilt
     implementation (libs.hilt.android)
+    implementation(libs.androidx.lifecycle.service)
     ksp (libs.hilt.android.compiler)
 
     // glide
