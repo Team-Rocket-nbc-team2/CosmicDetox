@@ -1,13 +1,13 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
@@ -33,7 +33,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.service.AppMonitorService
+import com.rocket.cosmic_detox.presentation.service.TimerService
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
@@ -48,23 +48,21 @@ class TimerFragment2 : Fragment() {
     private var _binding: FragmentTimer2Binding? = null
     private val binding get() = _binding!!
     private var isFinishingTimer = false
-    private var time = 0 // 시간
-    private val handler = Handler(Looper.getMainLooper()) // 메인 스레드에서 실행할 핸들러
-    private var isTimerRunning = false // 타이머가 실행 중인지 확인하는 변수
 
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
 
-    private val runnable = object : Runnable {
-        override fun run() {
-            updateTime()
-            handler.postDelayed(this, 1000) // 1초마다 다시 실행
+    private lateinit var windowManager: WindowManager // 오버레이를 위한 WindowManager
+    private var overlayView: View? = null // 오버레이 뷰
+
+    private val timerUpdateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val time = intent?.getLongExtra("time", 0L) ?: 0L
+            updateTime(time)
         }
     }
 
-    private lateinit var windowManager: WindowManager // 오버레이를 위한 WindowManager
-    private var overlayView: View? = null // 오버레이 뷰
     private var isOverlayVisible = false // 오버레이가 보이는지 여부
     private var allowedAppList = mutableListOf<String>()
 
@@ -118,7 +116,7 @@ class TimerFragment2 : Fragment() {
         //startTimer()
     }
 
-    // sdk 31 이상 통화 상태 콜백
+    // api 31 이상 통화 상태 콜백
     // TODO api가 31 아래인 경우는 어떻게 해야? stateListner로? if문으로 SDK_VERSION 감지해서 콜백과 리스너로 분류
     private val telephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
     object : TelephonyCallback(), TelephonyCallback.CallStateListener {
@@ -138,7 +136,7 @@ class TimerFragment2 : Fragment() {
         }
     }
 
-    // sdk 31 미만 통화 상태 리스너 정의
+    // api 31 미만 통화 상태 리스너 정의
     private val phoneStateListener = object : PhoneStateListener() {
         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
             when(state) {
@@ -154,17 +152,25 @@ class TimerFragment2 : Fragment() {
         }
     }
 
-    private fun startAppMonitorService() { // 허용 앱 리스트 가져오면 서비스 시작 -> 이해도 안되지만 타이머에서는 필요없는 것 같음. 근데 나중에 허용 앱 실행 중에 뒤로가기나 홈으로 이동하면 이걸 감지하려면 필요할라나
-        Log.d("AllowedAppList", "startAppMonitorService!!!!!!!!!1 : $allowedAppList")
-        val intent = Intent(requireContext(), AppMonitorService::class.java).apply {
-            putStringArrayListExtra("ALLOWED_APP_LIST", allowedAppList as ArrayList<String>)
-            putExtra("asdf", "asdf")
-        }
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter("com.rocket.cosmic_detox.TIMER_UPDATE")
+        requireContext().registerReceiver(timerUpdateReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireContext().unregisterReceiver(timerUpdateReceiver)
+    }
+
+    private fun startTimerService(dailyTime: Long) {
+        val intent = Intent(requireContext(), TimerService::class.java)
+        intent.putExtra("dailyTime", dailyTime)
         requireContext().startService(intent)
     }
 
-    private fun stopAppMonitorService() { // 타이머 종료 시 앱 모니터링 서비스 종료
-        val intent = Intent(requireContext(), AppMonitorService::class.java)
+    private fun stopTimerService() {
+        val intent = Intent(requireContext(), TimerService::class.java)
         requireContext().stopService(intent)
     }
 
@@ -247,9 +253,8 @@ class TimerFragment2 : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        stopTimer()
         //removeOverlay() // Fragment 종료 시 오버레이 제거
-        stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료
+        stopTimerService() // 서비스 중지
         // 콜백 해제
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             telephonyManager?.unregisterTelephonyCallback(telephonyCallback)
@@ -264,14 +269,13 @@ class TimerFragment2 : Fragment() {
                 title = getString(R.string.timer_dialog_finish),
                 onClickConfirm = {
                     isFinishingTimer = true
-                    stopTimer()
+                    stopTimerService() // 타이머 종료 시 서비스 중지
                     findNavController().popBackStack()
                 },
                 onClickCancel = { false }
             )
             dialog.isCancelable = false
             dialog.show(parentFragmentManager, "ConfirmDialog")
-            stopAppMonitorService() // 타이머 종료 시 앱 모니터링 서비스 종료 -> TODO: 이거 없애도 될 것 같은데.. 일단 올림. 차라리 해도 바텀시트에서 허용앱 갔을 때 서비스 시작하는게 맞나..?
         }
 
         btnTimerRest2.setOnClickListener {
@@ -295,9 +299,11 @@ class TimerFragment2 : Fragment() {
                         // 추후 작업필요할 떄 활용 로딩 상태 처리 (예: ProgressBar 표시)
                     }
                     is UiState.Success -> {
-                        time = state.data.toInt()
-                        updateTime()
-                        startTimer()
+                        // Firebase에서 dailyTime을 받아와 UI에 반영
+                        val dailyTime = state.data
+                        updateTime(dailyTime)
+                        // dailyTime을 인텐트로 TimerService에 전달
+                        startTimerService(dailyTime)
                     }
                     is UiState.Failure -> {
                         showError(state.e?.message)
@@ -317,7 +323,6 @@ class TimerFragment2 : Fragment() {
                         allowedAppList.add(allowedApp.packageId)
                     }
                     Log.d("AllowedAppList", "앱 리스트 가져오기 성공!!!!!!!!!1 : $allowedAppList")
-                    startAppMonitorService() // 허용 앱 리스트 가져오면 서비스 시작
                 } else if (it is GetListUiState.Failure) {
                     Log.e("AllowedAppList", "앱 리스트 가져오기 실패!!!!!!!!!1")
                 } else if (it is GetListUiState.Empty) {
@@ -349,27 +354,7 @@ class TimerFragment2 : Fragment() {
         dialog.show(parentFragmentManager, "ConfirmDialog")
     }
 
-    private fun startTimer() {
-        if (!isTimerRunning) {  // 타이머가 실행 중이 아닌 경우에만 시작
-            handler.post(runnable)
-            isTimerRunning = true  // 타이머 실행 상태를 true로 설정
-        }
-    }
-
-    private fun stopTimer() {
-        handler.removeCallbacks(runnable)
-        isTimerRunning = false  // 타이머 실행 상태를 false로 설정
-
-        // 타이머가 중지될 때 dailyTime과 totalTime을 Firestore에 저장
-        userViewModel.updateDailyTime(time.toLong()) // dailyTime 업데이트
-        userViewModel.updateTotalTime(time.toLong()) // totalTime 업데이트
-
-        // 타이머가 중지될 때 Firestore의 ranking에 totalTime 업데이트
-        userViewModel.updateRankingTotalTime(time.toLong())
-    }
-
-    private fun updateTime() {
-        time++
+    private fun updateTime(time: Long) {
         val hours = time / 3600
         val minutes = (time % 3600) / 60
         val seconds = time % 60
