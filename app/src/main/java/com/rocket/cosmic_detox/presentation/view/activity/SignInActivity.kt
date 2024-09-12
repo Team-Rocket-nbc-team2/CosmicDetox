@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -15,18 +14,13 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
-import com.google.firebase.functions.functions
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
+import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
@@ -53,7 +47,7 @@ class SignInActivity() : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        val user = signInViewModel.auth.currentUser
+        val user = auth.currentUser
 
         user?.getIdToken(true)?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -78,7 +72,7 @@ class SignInActivity() : AppCompatActivity() {
             signInViewModel.googleLogin(googleSignInClient, launcher)
         }
         signInBinding.ivKakao.setOnClickListener {
-            kakaoLogin()
+            signInViewModel.kakaoLogin()
         }
         signInBinding.tvRulesPolicy.setOnClickListener {
             val dialog =
@@ -97,13 +91,14 @@ class SignInActivity() : AppCompatActivity() {
             // TODO: X(트위터) 로그인 구현
             signInWithX()
         }
+
+        observeKakaoLogin()
     }
 
-    private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            signInViewModel.googleLauncherFunction(result)
-            signInObserve()
-        }
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        signInViewModel.googleLauncherFunction(result)
+        signInObserve()
+    }
 
     private fun signInObserve() {
         lifecycleScope.launch {
@@ -127,59 +122,21 @@ class SignInActivity() : AppCompatActivity() {
         }
     }
 
-    private fun kakaoLogin() {
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-                if (error != null) {
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) return@loginWithKakaoTalk
-                } else if (token != null) {
-                    getCustomToken(token.accessToken)
-                }
-            }
-        } else {
-            loginWithKakaoAccount()
-        }
-    }
-
-    private fun loginWithKakaoAccount() {
-        UserApiClient.instance.loginWithKakaoAccount(this) { token: OAuthToken?, error ->
-            if (token != null) {
-                getCustomToken(token.accessToken)
-            }
-        }
-    }
-
-    // firebase functinos에 배포한 kakaoCustomToken 호출
-    // todo :: 테스트 완료되면 ca 적용
-    private fun getCustomToken(accessToken: String) {
-        val functions = Firebase.functions
-        val data = hashMapOf("token" to accessToken)
-
-        functions.getHttpsCallable("kakaoCustomAuth")
-            .call(data)
-            .addOnCompleteListener { task ->
-                try {
-                    val result = task.result.data as HashMap<*, *>
-                    var key: String? = null
-                    for (k in result.keys) {
-                        key = k.toString()
+    private fun observeKakaoLogin() {
+        lifecycleScope.launch {
+            signInViewModel.kakaoLogin.collectLatest {
+                when (it) {
+                    LoginUiState.Init -> {}
+                    LoginUiState.Loading -> {}
+                    LoginUiState.Success -> {
+                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
                     }
-                    val customToken = result[key].toString()
-                    firebaseAuthWithKakao(customToken)
-                } catch (e: Exception) {
-                    // 호출 실패
-                    Log.e("TAG", "getCustomToken: ${e.printStackTrace()}", e.cause)
+                    is LoginUiState.Failure -> {
+                        Log.e("TAG", "observeKakaoLogin failed: ${it.e}", it.e.cause)
+                    }
                 }
-            }
-    }
-
-    private fun firebaseAuthWithKakao(customToken: String) {
-        auth.signInWithCustomToken(customToken).addOnCompleteListener { res ->
-            if (res.isSuccessful) {
-                Toast.makeText(this, "카카오 로그인 성공 ${auth.currentUser?.uid}", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
             }
         }
     }
@@ -187,10 +144,10 @@ class SignInActivity() : AppCompatActivity() {
     private fun signInWithX() {
         val provider = OAuthProvider.newBuilder("twitter.com")
 
-        val pendingResultTask = signInViewModel.auth.pendingAuthResult
+        val pendingResultTask = auth.pendingAuthResult
         if (pendingResultTask != null) {
             pendingResultTask.addOnSuccessListener {
-                val user = signInViewModel.auth.currentUser
+                val user = auth.currentUser
                 // 성공
                 Log.d("Twitter", "로그인 성공: 이전에 로그인한 사용자가 있습니다.")
                 val intent = Intent(this, MainActivity::class.java)
@@ -202,9 +159,9 @@ class SignInActivity() : AppCompatActivity() {
                 Log.e("Twitter", "로그인 실패: 이전에 로그인한 사용자가 없습니다.")
             }
         } else {
-            signInViewModel.auth.startActivityForSignInWithProvider(this, provider.build())
+            auth.startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
-                    val user = signInViewModel.auth.currentUser
+                    val user = auth.currentUser
                     // 성공
                     val intent = Intent(this, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
