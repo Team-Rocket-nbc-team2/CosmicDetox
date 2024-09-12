@@ -1,12 +1,17 @@
 package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.Dialog
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.SystemClock
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.KeyEvent
@@ -26,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
+import com.rocket.cosmic_detox.domain.AlarmReceiver
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
@@ -210,6 +216,23 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private fun removeOverlay() {
         windowManager.removeView(rootView)
         rootView = null
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    private fun sendAlarm() {
+        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(requireActivity(), AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(), 0, intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            SystemClock.elapsedRealtime() + 10000,
+            pendingIntent
+        )
     }
 
     override fun onDestroyView() {
