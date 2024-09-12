@@ -123,12 +123,12 @@ class TimerFragment : Fragment() {
         }
     }
 
-//    override fun onResume() { // showOverlay() 에서 버튼 클릭 시 이미 removeOverlay()를 호출하고 있어서 onResume은 없애도 될 것 같음
-//        super.onResume()
-//        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
-//            //removeOverlay() // 오버레이 제거
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
+            removeOverlay() // 오버레이 제거
+        }
+    }
 
     private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
         ActivityResultContracts.StartActivityForResult()
@@ -159,7 +159,7 @@ class TimerFragment : Fragment() {
             overlayView?.let {
                 it.findViewById<Button>(R.id.btn_back).setOnClickListener { // "이전화면으로 돌아가기" 버튼 클릭 시
                     returnToTimer() // 타이머로 돌아가기
-                    removeOverlay() // 오버레이 제거
+                    //removeOverlay() // 오버레이 제거
                 }
 
                 Log.d("Overlay디버그", "showOverlay 실행")
