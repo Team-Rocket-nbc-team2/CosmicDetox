@@ -107,8 +107,8 @@
         android:layout_marginEnd="3dp"
         android:src="@drawable/google"
         app:layout_constraintBottom_toTopOf="@+id/social_icon_down"
-        app:layout_constraintEnd_toStartOf="@id/iv_x"
-        app:layout_constraintStart_toEndOf="@id/iv_kakao"
+        app:layout_constraintEnd_toStartOf="@+id/iv_x"
+        app:layout_constraintStart_toEndOf="@+id/iv_kakao"
         app:layout_constraintTop_toTopOf="@+id/social_icon_up" />
 
     <ImageView
