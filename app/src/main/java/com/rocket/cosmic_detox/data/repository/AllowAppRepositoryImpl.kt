@@ -75,7 +75,7 @@ class AllowAppRepositoryImpl @Inject constructor(
             val appName = context.getAppNameFromPackageName(packageName)
 
             // 시스템 앱을 필터링
-            if (!context.isSystemPackage(packageName)) {
+            if (!context.isSystemPackage(packageName) && packageName != context.packageName) { // 시스템 앱, 우리 앱은 제외
                 val app = CheckedApp(
                     packageId = packageName,
                     appName = appName,
