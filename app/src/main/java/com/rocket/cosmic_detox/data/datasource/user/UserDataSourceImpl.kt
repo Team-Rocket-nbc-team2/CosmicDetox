@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.data.remote.firebase.user
+package com.rocket.cosmic_detox.data.datasource.user
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth

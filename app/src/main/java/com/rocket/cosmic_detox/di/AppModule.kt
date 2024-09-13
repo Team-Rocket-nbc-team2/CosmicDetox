@@ -3,13 +3,7 @@ package com.rocket.cosmic_detox.di
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.rocket.cosmic_detox.data.repository.RankingRepositoryImpl
-import com.rocket.cosmic_detox.data.repository.UserRepositoryImpl
-import com.rocket.cosmic_detox.domain.repository.RankingRepository
-import com.rocket.cosmic_detox.domain.repository.UserRepository
-import dagger.Binds
+import com.kakao.sdk.user.UserApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +31,12 @@ object AppModule {
     @Provides
     fun provideContext(@ApplicationContext context: Context): Context {
         return context
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideUserApiClient(): UserApiClient {
+        return UserApiClient.instance
     }
 }

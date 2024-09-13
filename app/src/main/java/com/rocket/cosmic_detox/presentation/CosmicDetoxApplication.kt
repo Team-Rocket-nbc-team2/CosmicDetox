@@ -2,6 +2,8 @@ package com.rocket.cosmic_detox.presentation
 
 import android.app.AlarmManager
 import android.app.Application
+import com.kakao.sdk.common.KakaoSdk
+import com.rocket.cosmic_detox.BuildConfig
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -15,6 +17,9 @@ class CosmicDetoxApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        KakaoSdk.init(this, BuildConfig.KAKAO_APP_KEY)
+
         scheduleMidnightAlarm(this)
     }
 
