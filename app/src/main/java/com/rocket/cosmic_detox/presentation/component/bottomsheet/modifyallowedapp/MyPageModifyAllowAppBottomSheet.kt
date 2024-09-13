@@ -2,8 +2,6 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowed
 
 import android.app.Dialog
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -13,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -94,13 +95,33 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             mutableListOf()
         }
         Log.d("AllowAppBottomSheet", "args.allowedApps: ${args.allowedApps}")
-        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
+        modalBottomSheetBinding.tvBottomSheetTitle.text =
+            getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             updateAllowApps()
         }
-        etSearchText.doAfterTextChanged {
-            allowAppViewModel.searchApp(it.toString())
+        ivClearSearchText.setOnClickListener {
+            etSearchText.text.clear()
         }
+        etSearchText.apply {
+            doAfterTextChanged { text ->
+                allowAppViewModel.searchApp(text.toString())
+            }
+            setOnEditorActionListener { _, actionId, _ ->
+                clearFocus()
+                var handled = false
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(this)
+                    handled = true
+                }
+                handled
+            }
+        }
+    }
+
+    private fun hideKeyboard(editText: EditText) {
+        val inputManager: InputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(editText.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     private fun initViewModel() = with(allowAppViewModel) {
