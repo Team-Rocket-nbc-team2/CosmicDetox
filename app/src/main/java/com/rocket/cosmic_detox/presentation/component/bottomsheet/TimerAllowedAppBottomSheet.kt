@@ -179,6 +179,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
         countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
+                // sendAlarm() 300000mills
             }
 
             override fun onFinish() {

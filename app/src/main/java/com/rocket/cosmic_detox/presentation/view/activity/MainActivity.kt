@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -90,15 +92,19 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
+        val isPostNotificationGrantedAllowed = permissionViewModel.isPostNotificationGranted(this)
         Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
 
         //거절된 퍼미션이 있다면...
-        if (!isUsageStateAllowed || !isRequestOverlay) {
+        if (!isUsageStateAllowed || !isRequestOverlay || !isPostNotificationGrantedAllowed) {
             //권한 요청!
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
                 description = getString(R.string.dialog_permission_desc),
                 onClickConfirm = {
+                    if(!isPostNotificationGrantedAllowed){
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+                    }
 
                     if(!isUsageStateAllowed) {
                         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
