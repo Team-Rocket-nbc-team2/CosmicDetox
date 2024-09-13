@@ -3,12 +3,10 @@ package com.rocket.cosmic_detox.data.repository
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.Ranking
 import com.rocket.cosmic_detox.domain.repository.RaceRepository
 import com.rocket.cosmic_detox.data.model.RankingInfo
-import com.rocket.cosmic_detox.data.remote.firebase.season.SeasonDataSource
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.season.SeasonDataSource
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

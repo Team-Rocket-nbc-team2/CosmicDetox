@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
+import com.rocket.cosmic_detox.domain.usecase.kakao.KakaoLoginUseCase
+import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +26,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
     private val repository: SignInRepository,
+    private val kakaoLoginUseCase: KakaoLoginUseCase
 ) : ViewModel() {
     private val _user = MutableStateFlow<FirebaseUser?>(null)
-    val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private val _status =  MutableStateFlow<UiState<FirebaseUser>>(UiState.Init)
     val status: StateFlow<UiState<FirebaseUser>> = _status.asStateFlow()
+
+    private val _kakaoLogin = MutableStateFlow<LoginUiState>(LoginUiState.Init)
+    val kakaoLogin: StateFlow<LoginUiState> = _kakaoLogin.asStateFlow()
 
     fun googleLogin(googleSignInClient: GoogleSignInClient, launcher: ActivityResultLauncher<Intent>) {
         val signInIntent = googleSignInClient.signInIntent
@@ -89,6 +95,19 @@ class SignInViewModel @Inject constructor(
                     Log.e("LOGIN-- FAILURE: addOnCompleteListener else", "Firebase 인증에 실패했습니다. ${task.exception}")
                 }
             }
+    }
+
+    fun kakaoLogin() {
+        viewModelScope.launch {
+            _kakaoLogin.value = LoginUiState.Loading
+
+            kakaoLoginUseCase(
+                onSuccess = { _kakaoLogin.value = LoginUiState.Success },
+                onFailure = { exception ->
+                    _kakaoLogin.value = LoginUiState.Failure(exception)
+                }
+            )
+        }
     }
 
     fun signInWithX() {

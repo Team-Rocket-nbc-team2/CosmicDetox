@@ -34,6 +34,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:host="oauth"
+                    android:scheme="@string/KAKAO_OAUTH_HOST"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".presentation.service.TimerService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

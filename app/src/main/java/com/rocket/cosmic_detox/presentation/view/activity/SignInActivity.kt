@@ -15,11 +15,13 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
+import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import com.rocket.cosmic_detox.util.Authentication
@@ -42,11 +44,13 @@ class SignInActivity() : AppCompatActivity() {
         GoogleSignIn.getClient(this, gso)
     }
 
+    private val auth = FirebaseAuth.getInstance()
+
     // 자동 로그인 로직
     override fun onStart() {
         super.onStart()
 
-        val user = signInViewModel.auth.currentUser
+        val user = auth.currentUser
 
         user?.getIdToken(true)?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -71,6 +75,9 @@ class SignInActivity() : AppCompatActivity() {
         signInBinding.ivGoogle.setOnClickListener {
             signInViewModel.googleLogin(googleSignInClient, launcher)
         }
+        signInBinding.ivKakao.setOnClickListener {
+            signInViewModel.kakaoLogin()
+        }
         signInBinding.tvRulesPolicy.setOnClickListener {
             val dialog =
                 TwoButtonDialogDescFragment(
@@ -87,6 +94,8 @@ class SignInActivity() : AppCompatActivity() {
         signInBinding.ivX.setOnClickListener {
             signInWithTwitter()
         }
+
+        observeKakaoLogin()
     }
 
     private val launcher =
@@ -103,16 +112,35 @@ class SignInActivity() : AppCompatActivity() {
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         Authentication.setCurrentUser(it.data)
-                        Log.d("Twitter", "로그인 성공!!!!!!!!!!!!!!")
                     }
                     is UiState.Failure -> {
-                        val dialog = OneButtonDialogFragment(getString(R.string.sign_failure)) {}
+                        val dialog = OneButtonDialogFragment(getString(R.string.sign_failure)){}
                         dialog.isCancelable = false
                         dialog.show(supportFragmentManager, "ConfirmDialog")
-                        Log.e("Twitter", "로그인 실패!!!!!!!!!!!!!!")
                     }
                     else -> {
-                        Log.d("Twitter", "로그인 중!!!!!!!!!!!!!!")
+                        // 로딩 중
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeKakaoLogin() {
+        lifecycleScope.launch {
+            signInViewModel.kakaoLogin.collectLatest {
+                when (it) {
+                    LoginUiState.Init -> {}
+                    LoginUiState.Loading -> {}
+                    LoginUiState.Success -> {
+                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+
+                    is LoginUiState.Failure -> {
+                        Log.e("TAG", "observeKakaoLogin failed: ${it.e}", it.e.cause)
                     }
                 }
             }
@@ -122,7 +150,7 @@ class SignInActivity() : AppCompatActivity() {
     private fun signInWithTwitter() {
         val provider = OAuthProvider.newBuilder(PROVIDER_TWITTER)
 
-        val pendingResultTask = signInViewModel.auth.pendingAuthResult
+        val pendingResultTask = auth.pendingAuthResult
         if (pendingResultTask != null) {
             pendingResultTask.addOnSuccessListener {
                 val intent = Intent(this, MainActivity::class.java)
@@ -135,8 +163,9 @@ class SignInActivity() : AppCompatActivity() {
                 Log.e("Twitter", "로그인 실패: 이전에 로그인한 사용자가 없습니다.")
             }
         } else {
-            signInViewModel.auth.startActivityForSignInWithProvider(this, provider.build())
+            auth.startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
+                    val user = auth.currentUser
                     // 성공
                     signInViewModel.signInWithX()
                     Log.d("Twitter", "로그인 성공: 새로운 사용자가 로그인했습니다.")

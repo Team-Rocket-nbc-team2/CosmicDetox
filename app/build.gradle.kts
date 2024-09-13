@@ -14,6 +14,7 @@ plugins {
 val keyPropertiesFile = rootProject.file("./app/key.properties")
 val properties = Properties()
 properties.load(FileInputStream(keyPropertiesFile))
+properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.rocket.cosmic_detox"
@@ -27,6 +28,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
+        resValue("string", "KAKAO_OAUTH_HOST", properties.getProperty("KAKAO_OAUTH_HOST"))
     }
 
     signingConfigs {
@@ -71,6 +75,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -87,6 +92,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.auth)
+    implementation(libs.firebase.functions)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
@@ -94,10 +100,14 @@ dependencies {
 
     // hilt
     implementation (libs.hilt.android)
+    implementation(libs.androidx.lifecycle.service)
     ksp (libs.hilt.android.compiler)
 
     // glide
     implementation(libs.glide)
+
+    // kakao login
+    implementation(libs.kakao.v2.user)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

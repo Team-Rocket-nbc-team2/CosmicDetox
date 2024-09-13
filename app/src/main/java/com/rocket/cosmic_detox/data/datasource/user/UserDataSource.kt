@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.data.remote.firebase.user
+package com.rocket.cosmic_detox.data.datasource.user
 
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.Trophy

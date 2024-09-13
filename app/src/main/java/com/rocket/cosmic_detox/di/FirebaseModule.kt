@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.di
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.functions.functions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,4 +17,7 @@ object FirebaseModule {
 
     @Provides
     fun provideFirebaseAuth() = Firebase.auth
+
+    @Provides
+    fun provideFirebaseFunctions() = Firebase.functions
 }
