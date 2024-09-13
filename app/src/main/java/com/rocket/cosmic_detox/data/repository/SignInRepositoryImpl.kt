@@ -19,7 +19,6 @@ import com.rocket.cosmic_detox.domain.repository.SignInRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-// TODO: UseCase로 리팩토링 필요
 class SignInRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userApiClient: UserApiClient,
