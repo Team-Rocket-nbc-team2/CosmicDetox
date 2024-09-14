@@ -8,12 +8,10 @@ import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.data.model.Trophy
 import com.rocket.cosmic_detox.data.model.User
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class MyPageRepositoryImpl @Inject constructor(

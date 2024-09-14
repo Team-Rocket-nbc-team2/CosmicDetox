@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.data.remote.firebase.season
+package com.rocket.cosmic_detox.data.datasource.season
 
 interface SeasonDataSource {
 
