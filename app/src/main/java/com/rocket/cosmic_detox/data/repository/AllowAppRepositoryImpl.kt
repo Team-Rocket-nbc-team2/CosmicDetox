@@ -64,6 +64,12 @@ class AllowAppRepositoryImpl @Inject constructor(
 
     override fun getInstalledApps(): Flow<List<CheckedApp>> = flow {
         val apps = mutableListOf<CheckedApp>()
+
+        // 기본 전화 앱을 찾는 부분
+        val dialIntent = Intent(Intent.ACTION_DIAL)
+        val defaultDialer = context.packageManager.resolveActivity(dialIntent, PackageManager.MATCH_DEFAULT_ONLY)
+        val defaultPhoneAppPackageName = defaultDialer?.activityInfo?.packageName
+
         val intent = Intent(Intent.ACTION_MAIN).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
@@ -75,7 +81,7 @@ class AllowAppRepositoryImpl @Inject constructor(
             val appName = context.getAppNameFromPackageName(packageName)
 
             // 시스템 앱을 필터링
-            if (!context.isSystemPackage(packageName)) {
+            if (!context.isSystemPackage(packageName) || packageName == defaultPhoneAppPackageName) {
                 val app = CheckedApp(
                     packageId = packageName,
                     appName = appName,
