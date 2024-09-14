@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.timer
 
-import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -119,6 +118,8 @@ class TimerFragment2 : Fragment() {
         //startTimer()
     }
 
+    // TODO 통화 중 허용 앱이 아닌 다른 앱들 이동 막아야함.
+
     // api 31 이상 통화 상태 콜백
     private val telephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
     object : TelephonyCallback(), TelephonyCallback.CallStateListener {
@@ -127,23 +128,16 @@ class TimerFragment2 : Fragment() {
                 TelephonyManager.CALL_STATE_RINGING,  // 전화가 걸려올 때
                 TelephonyManager.CALL_STATE_OFFHOOK -> {  // 통화 중일 때
                     isCallActive = true
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        if (isInAllowedApp()) { // 허용된 앱일 경우 오버레이 제거
-                            removeOverlay()
-                        }
-                    }, 1000)
+                    if (!BottomSheetState.getIsBottomSheetOpen()) {
+                        removeOverlay()
+                    }
                 }
                 TelephonyManager.CALL_STATE_IDLE -> {  // 전화가 종료될 때
                     if (isCallActive) { // 이전에 통화 중이었던 경우만 실행
                         isCallActive = false
                         // 통화 종료 후 바로 오버레이 띄우면 앱 꺼지는 현상 발생해서 핸들러로 오버레이를 조금 지연시켜 띄우기
                         Handler(Looper.getMainLooper()).postDelayed({
-                            if (!isInAllowedApp()) {
-                                showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
-                            }
-                            if (isInAllowedApp()) { // 허용된 앱일 경우 오버레이 제거
-                                removeOverlay()
-                            }
+                            showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
                         }, 1000)
                     }
                 }
@@ -158,18 +152,15 @@ class TimerFragment2 : Fragment() {
                 TelephonyManager.CALL_STATE_RINGING,
                 TelephonyManager.CALL_STATE_OFFHOOK -> {
                     isCallActive = true
+                    if (!BottomSheetState.getIsBottomSheetOpen()) {
                     removeOverlay()
+                    }
                 }
                 TelephonyManager.CALL_STATE_IDLE -> {
                     if (isCallActive) {
                         isCallActive = false
                         Handler(Looper.getMainLooper()).postDelayed({
-                            if (!isInAllowedApp()) {
-                                showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
-                            }
-                            if (isInAllowedApp()) {
-                                removeOverlay()
-                            }
+                            showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
                         }, 1000)
                     }
                 }
@@ -206,7 +197,7 @@ class TimerFragment2 : Fragment() {
     override fun onPause() {
         super.onPause()
         if (isFinishingTimer) return // 타이머 종료 중인 경우에는 오버레이 띄우지 않음
-        if (!isOverlayVisible && !isCallActive && !isInAllowedApp()) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
+        if (!isOverlayVisible && !isCallActive) { // 오버레이가 보이지 않는 상태일 때, 통화 상태가 아닐 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
             if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
                 Log.d("Overlay디버그", "onPause 실행")
                 Log.d("오버레이뷰",
@@ -303,17 +294,17 @@ class TimerFragment2 : Fragment() {
         }
     }
 
-    private fun isInAllowedApp(): Boolean {
-        val currentApp = getCurrentForegroundApp()
-        return allowedAppList.contains(currentApp)
-    }
-
-    // 사용자의 현재 실행 중인 앱을 가져오는 메소드
-    private fun getCurrentForegroundApp(): String {
-        val activityManager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val tasks = activityManager.getRunningTasks(1)
-        return tasks[0].topActivity?.packageName ?: ""
-    }
+//    private fun isInAllowedApp(): Boolean {
+//        val currentApp = getCurrentForegroundApp()
+//        return allowedAppList.contains(currentApp)
+//    }
+//
+//    // 사용자의 현재 실행 중인 앱을 가져오는 메소드
+//    private fun getCurrentForegroundApp(): String {
+//        val activityManager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+//        val tasks = activityManager.getRunningTasks(1)
+//        return tasks[0].topActivity?.packageName ?: ""
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
