@@ -14,6 +14,7 @@ import android.os.CountDownTimer
 import android.os.SystemClock
 import android.provider.Settings
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -178,8 +179,13 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private fun initCountDownTimer(initTimer: Long) {
         countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
+                Log.d("What happened? 1>>", millisUntilFinished.toString())
+                // 여기여기
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
-                // sendAlarm() 300000mills
+                if(millisUntilFinished < 450000){ // 원래는 300000
+                    Log.d("Stopped~~~!!!!", millisUntilFinished.toString())
+                     sendAlarm()
+                }
             }
 
             override fun onFinish() {
@@ -223,15 +229,18 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private fun sendAlarm() {
         val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
 
-        val intent = Intent(requireActivity(), AlarmReceiver::class.java)
+        val receiverIntent = Intent(requireActivity(), AlarmReceiver::class.java)
+
         val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(), 0, intent,
+            requireContext(),
+            0,
+            receiverIntent,
             PendingIntent.FLAG_IMMUTABLE
         )
 
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            SystemClock.elapsedRealtime() + 10000,
+            SystemClock.elapsedRealtime(), // 현재 시간으로 설정
             pendingIntent
         )
     }

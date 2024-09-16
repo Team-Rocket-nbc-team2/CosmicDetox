@@ -10,13 +10,15 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
+import com.rocket.cosmic_detox.R
 
 class AlarmReceiver : BroadcastReceiver() {
     private lateinit var notificationManager: NotificationManager
 
-    private val channelId = "one-notification_channel"
-    private val channelName = "Cosmic Detox Alarm"
+    companion object{
+        const val CHANNEL_ID = "one-notification_channel"
+        const val CHANNEL_NAME = "Cosmic Detox Alarm"
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
         notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -26,38 +28,37 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     // Notification 을 띄우기 위한 Channel 등록
-    fun createNotificationChannel(){
+    private fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             val notificationChannel = NotificationChannel(
-                channelId, // 채널의 아이디
-                channelName, // 채널의 이름
+                CHANNEL_ID, // 채널의 아이디
+                CHANNEL_NAME, // 채널의 이름
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.enableLights(true) // 불빛
             notificationChannel.lightColor = Color.RED // 색상
             notificationChannel.enableVibration(true) // 진동 여부
             notificationChannel.description = "채널의 상세정보입니다." // 채널 정보
-            notificationManager.createNotificationChannel(
-                notificationChannel)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 
     // Notification 등록
     private fun deliverNotification(context: Context){
-        val contentIntent = Intent(context, MainActivity::class.java)
-        val contentPendingIntent = PendingIntent.getActivity(
-            context,
-            0, // requestCode
-            contentIntent, // 알림 클릭 시 이동할 인텐트
-            PendingIntent.FLAG_IMMUTABLE
-        )
+        val serviceIntent = Intent(context, AlarmService::class.java)
 
-        val builder = NotificationCompat.Builder(context, channelId)
-//            .setSmallIcon(R.drawable.ic_alert_on) // 아이콘
+        val pendingIntent = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            PendingIntent.getActivity(context, 0, serviceIntent, PendingIntent.FLAG_IMMUTABLE); //Activity를 시작하는 인텐트 생성
+        }else {
+            PendingIntent.getActivity(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_clock) // 아이콘
             .setContentTitle("앱 사용 시간이 5분 밖에 남지 않았어요!") // 제목
             .setContentText("곧 앱 사용 시간이 종료됩니다. 이제 다시 우주 여행 할 준비를 하세요.") // 내용
-//            .setContentIntent(contentPendingIntent)
+            .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
