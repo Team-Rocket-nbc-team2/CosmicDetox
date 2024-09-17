@@ -6,10 +6,4 @@
         <item name="android:colorBackground">@color/background</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialog</item>
     </style>
-
-    <style name="AppTheme.NumberPicker" parent="">
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textSize">24sp</item>
-        <item name="colorControlNormal">@color/white</item>
-    </style>
 </resources>
