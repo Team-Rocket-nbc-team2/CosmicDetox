@@ -9,15 +9,18 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
-import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
+import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
@@ -30,10 +33,14 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
+    private lateinit var splashScreen: SplashScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        splashScreen = installSplashScreen()
+        splashLogic()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -65,6 +72,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkPermissions()
+    }
+
+    private fun splashLogic() {
+        val auth = FirebaseAuth.getInstance()
+        splashScreen.setKeepOnScreenCondition {
+            if (auth.currentUser?.uid == null) {
+                val intent = Intent(this, SignInActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+            false
+        }
     }
 
     private fun setBottomNavigation() = with(binding) {
