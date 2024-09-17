@@ -102,9 +102,9 @@ class TimerFragment2 : Fragment() {
 
         // 버전에 따른 전화 상태 감지 콜백과 리스너 분류 설정
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            telephonyManager?.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback)
+            telephonyManager.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback)
         } else {
-            telephonyManager?.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
         }
 
         initView()
@@ -269,6 +269,28 @@ class TimerFragment2 : Fragment() {
                 windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
                 isOverlayVisible = true // 오버레이가 보이는 상태로 변경
             }
+//            overlayView?.let {
+//                it.findViewById<Button>(R.id.btn_back).setOnClickListener { // "이전화면으로 돌아가기" 버튼 클릭 시
+//                    // 현재 포그라운드 앱 패키지명 가져오기
+//                    val currentAppPackageName = getCurrentForegroundApp()
+//                    if (allowedAppList.contains(currentAppPackageName)) {
+//                        // 허용된 앱이면 해당 앱으로 이동
+//                        val launchIntent = requireContext().packageManager.getLaunchIntentForPackage(currentAppPackageName)
+//                        if (launchIntent != null) {
+//                            launchIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                            requireContext().startActivity(launchIntent)
+//                        }
+//                    } else {
+//                        returnToTimer() // 타이머로 돌아가기
+//                    }
+//                    removeOverlay() // 오버레이 제거
+//                }
+//
+//                Log.d("Overlay디버그", "showOverlay 실행")
+//
+//                windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
+//                isOverlayVisible = true // 오버레이가 보이는 상태로 변경
+//            }
         }
     }
 
@@ -313,9 +335,9 @@ class TimerFragment2 : Fragment() {
         stopTimerService() // 서비스 중지
         // 콜백 해제
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            telephonyManager?.unregisterTelephonyCallback(telephonyCallback)
+            telephonyManager.unregisterTelephonyCallback(telephonyCallback)
         } else {
-            telephonyManager?.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
         }
     }
 
