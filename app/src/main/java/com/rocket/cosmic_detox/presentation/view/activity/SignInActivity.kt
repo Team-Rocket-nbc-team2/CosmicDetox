@@ -9,41 +9,20 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
-import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
     private val signInBinding by lazy { ActivitySignInBinding.inflate(layoutInflater) }
     private val signInViewModel by viewModels<SignInViewModel>()
     private val auth = FirebaseAuth.getInstance()
-
-    // 자동 로그인 로직
-    override fun onStart() {
-        super.onStart()
-
-        val user = auth.currentUser
-
-        user?.getIdToken(true)?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-        }
-
-        observeIsSignIn()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,25 +55,6 @@ class SignInActivity : AppCompatActivity() {
         signInBinding.ivX.setOnClickListener {
             // TODO: X(트위터) 로그인 구현
             signInWithX()
-        }
-    }
-
-    private fun observeIsSignIn() {
-        lifecycleScope.launch {
-            signInViewModel.isSignIn.collectLatest {
-                when (it) {
-                    LoginUiState.Init -> {}
-                    LoginUiState.Loading -> {}
-                    LoginUiState.Success -> {
-                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    }
-                    is LoginUiState.Failure -> {
-                        Log.e("TAG", "observeIsSignIn failed: ${it.e}", it.e.cause)
-                    }
-                }
-            }
         }
     }
 
