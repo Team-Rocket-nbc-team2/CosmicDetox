@@ -13,6 +13,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppTimeListBinding
+import com.rocket.cosmic_detox.presentation.extensions.isAppInstalled
+import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
 
 class AllowedAppAdapter(
     private val context: Context,
@@ -40,7 +42,7 @@ class AllowedAppAdapter(
     inner class ViewHolder(private val binding: ItemAppTimeListBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(allowedApp: AllowedApp) {
             with(binding) {
-                if (allowedApp.limitedTime == 0L) emphasizeDarkerLayout.visibility = View.VISIBLE
+                if (allowedApp.limitedTime == 0L || !context.isAppInstalled(allowedApp.packageId)) emphasizeDarkerLayout.visibility = View.VISIBLE
                 else {
                     root.setOnClickListener {
                         onItemClick(allowedApp.packageId, allowedApp.limitedTime)
@@ -53,10 +55,7 @@ class AllowedAppAdapter(
                         .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
                         .into(appIcon)
                 } else {
-                    Glide.with(context)
-                        .load(context.packageManager.getApplicationIcon(allowedApp.packageId))
-                        .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-                        .into(appIcon)
+                    appIcon.loadAppIcon(context, allowedApp.packageId)
                 }
 
                 appName.text = allowedApp.appName

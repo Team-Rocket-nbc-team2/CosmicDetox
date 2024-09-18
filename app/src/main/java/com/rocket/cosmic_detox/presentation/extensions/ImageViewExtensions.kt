@@ -51,6 +51,6 @@ fun ImageView.loadAppIcon(context: Context, packageId: String) {
     Glide.with(this)
         .load(context.packageManager.getApplicationIcon(packageId))
         .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-        .placeholder(R.color.blue_grey)
+        .placeholder(R.drawable.shape_default_app_icon)
         .into(this)
 }
