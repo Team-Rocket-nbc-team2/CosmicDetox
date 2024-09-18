@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.extensions
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
@@ -47,10 +48,29 @@ fun ImageView.loadRankingPlanetImage(cumulativeTime: BigDecimal) {
     setImageResource(imageResId)
 }
 
-fun ImageView.loadAppIcon(context: Context, packageId: String) {
+fun ImageView.loadAllowedAppIcon(context: Context, packageId: String, appIcon: String) {
+    if (appIcon.isNotEmpty()) {
+        Glide.with(this)
+            .load(appIcon)
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+            .placeholder(R.drawable.shape_default_app_icon)
+            .error(R.drawable.shape_default_app_icon)
+            .into(this)
+    } else {
+        Glide.with(this)
+            .load(context.packageManager.getApplicationIcon(packageId))
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+            .placeholder(R.drawable.shape_default_app_icon)
+            .error(R.drawable.shape_default_app_icon)
+            .into(this)
+    }
+}
+
+fun ImageView.loadInstalledAppIcon(appIconBitmap: Bitmap) {
     Glide.with(this)
-        .load(context.packageManager.getApplicationIcon(packageId))
+        .load(appIconBitmap)
         .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
         .placeholder(R.drawable.shape_default_app_icon)
+        .error(R.drawable.shape_default_app_icon)
         .into(this)
 }
