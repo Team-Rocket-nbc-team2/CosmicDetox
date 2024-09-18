@@ -73,13 +73,13 @@ fun TextView.setTravelingTime(time: BigDecimal) {
     }
 }
 
-fun TextView.setMyDescription(days: Long, time: BigDecimal) {
+fun TextView.setMyDescription(days: Int, time: BigDecimal) {
     val hours = time.toHours()
     val minutes = time.toMinutes()
 
     with(context) {
         text = when {
-            days == 0L -> getString(R.string.format_my_description_no_days)
+            days == 0 -> getString(R.string.format_my_description_no_days)
             hours > 1 && minutes > 0 -> getString(R.string.format_my_description, days, hours, minutes)
             hours > 1 && minutes == 0L -> getString(R.string.format_my_description_no_minutes, days, hours)
             hours == 1L && minutes > 0 -> getString(R.string.format_my_description_one_hour, days, minutes)

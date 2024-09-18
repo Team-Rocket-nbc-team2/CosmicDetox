@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
+import com.rocket.cosmic_detox.util.DateFormatText
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class SignInRepositoryImpl @Inject constructor(
                     "name" to authUser?.displayName.toString(),
                     "dailyTime" to 0L,
                     "totalTime" to 0L,
-                    "totalDay" to 1,
+                    "totalDay" to DateFormatText.getCurrentTime(),
                     "isWithdrawn" to false,
                 )
 

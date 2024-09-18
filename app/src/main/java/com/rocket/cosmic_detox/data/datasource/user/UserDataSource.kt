@@ -9,7 +9,7 @@ interface UserDataSource {
 
     suspend fun getUid(): String
 
-    suspend fun getUserCreatedDate(uid: String): Date?
+    suspend fun getUserCreatedDate(uid: String): Result<Date>
 
     suspend fun getUserInfo(uid: String): Result<User>
 

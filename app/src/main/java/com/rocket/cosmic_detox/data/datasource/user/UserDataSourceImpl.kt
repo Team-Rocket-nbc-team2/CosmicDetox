@@ -36,9 +36,11 @@ class UserDataSourceImpl @Inject constructor(
         return firebaseAuth.currentUser?.uid ?: ""
     }
 
-    override suspend fun getUserCreatedDate(uid: String): Date? {
-        val creationTimestamp = firebaseAuth.currentUser?.metadata?.creationTimestamp
-        return creationTimestamp?.let { Date(it) }
+    override suspend fun getUserCreatedDate(uid: String): Result<Date> {
+        return runCatching {
+            val creationTimestamp = firebaseAuth.currentUser?.metadata?.creationTimestamp
+            Date(creationTimestamp ?: 0)
+        }
     }
 
     override suspend fun getUserInfo(uid: String): Result<User> { // Result는 코루틴에서 예외처리를 위한 클래스 (Result.success(true), Result.failure(exception)) -> 성공, 실패 시 로그 출력

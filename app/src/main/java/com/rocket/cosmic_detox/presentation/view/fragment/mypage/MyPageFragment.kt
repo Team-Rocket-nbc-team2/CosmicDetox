@@ -42,6 +42,7 @@ import com.rocket.cosmic_detox.util.Authentication
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import com.rocket.cosmic_detox.util.Constants.PROVIDER_GOOGLE
 import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
+import com.rocket.cosmic_detox.util.DateFormatText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -290,7 +291,7 @@ class MyPageFragment : Fragment() {
         user.apply {
             ivMyProfileImage.loadRankingPlanetImage(totalTime.toBigDecimal())
             tvMyName.text = name
-            tvMyDescription.setMyDescription(totalDay, totalTime.toBigDecimal())
+            tvMyDescription.setMyDescription(DateFormatText.getTotalDays(totalDay), totalTime.toBigDecimal()) // TODO: totalDay 수정 필요
         }
     }
 

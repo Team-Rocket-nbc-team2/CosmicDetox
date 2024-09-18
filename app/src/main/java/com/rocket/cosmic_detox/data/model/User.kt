@@ -5,7 +5,7 @@ data class User(
     val name: String = "",
     val dailyTime: Long = 0,
     val totalTime: Long = 0,
-    val totalDay: Long = 0,
+    val totalDay: String = "",
     val isWithdrawn: Boolean = false,
     val trophies: List<Trophy> = listOf(),
     val apps: List<AllowedApp> = listOf()
