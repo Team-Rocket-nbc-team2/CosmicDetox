@@ -65,7 +65,11 @@ class AllowAppListAdapter(
                     onClick(item)
                 }
 
-                ivAllowAppIcon.loadAppIcon(context, item.packageId)
+                if (item.appIcon != null) {
+                    ivAllowAppIcon.setImageBitmap(item.appIcon)
+                } else {
+                    ivAllowAppIcon.loadAppIcon(context, item.packageId)
+                }
                 tvAllowAppName.text = item.appName
                 tvAllowAppLimitedTime.text = item.limitedTime.toString()
             }

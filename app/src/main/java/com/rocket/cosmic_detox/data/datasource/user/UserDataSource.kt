@@ -24,4 +24,6 @@ interface UserDataSource {
     suspend fun addAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean>
 
     suspend fun deleteAllowedApps(uid: String, appIds: List<String>): Result<Boolean>
+
+    suspend fun uploadAppIconsInBackground(uid: String, apps: List<AllowedApp>)
 }
