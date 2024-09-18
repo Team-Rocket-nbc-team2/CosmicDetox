@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
@@ -38,7 +39,15 @@ class LimitedAppAdapter(
                 onClick(item)
             }
             with(binding) {
-                ivDepthAppIcon.loadAppIcon(context, item.packageId)
+                if (item.appIcon.isNotEmpty()) {
+                    Glide.with(ivDepthAppIcon)
+                        .load(item.appIcon)
+                        .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+                        .placeholder(R.color.blue_grey)
+                        .into(ivDepthAppIcon)
+                } else {
+                    ivDepthAppIcon.loadAppIcon(context, item.packageId)
+                }
                 tvAppDepthName.text = item.appName
                 tvAppDepthUsageTime.setCumulativeTime(item.limitedTime.toBigDecimal())
             }

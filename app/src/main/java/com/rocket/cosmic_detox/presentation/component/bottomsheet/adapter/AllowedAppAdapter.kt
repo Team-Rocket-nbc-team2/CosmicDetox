@@ -47,10 +47,17 @@ class AllowedAppAdapter(
                     }
                 }
 
-                Glide.with(context)
-                    .load(context.packageManager.getApplicationIcon(allowedApp.packageId))
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-                    .into(appIcon)
+                if (allowedApp.appIcon.isNotEmpty()) {
+                    Glide.with(context)
+                        .load(allowedApp.appIcon)
+                        .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+                        .into(appIcon)
+                } else {
+                    Glide.with(context)
+                        .load(context.packageManager.getApplicationIcon(allowedApp.packageId))
+                        .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+                        .into(appIcon)
+                }
 
                 appName.text = allowedApp.appName
                 appUsageTime.text = getTimeString(allowedApp.limitedTime)

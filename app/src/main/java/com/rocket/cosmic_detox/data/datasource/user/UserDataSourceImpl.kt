@@ -174,7 +174,7 @@ class UserDataSourceImpl @Inject constructor(
     }
 
     override suspend fun uploadAppIconsInBackground(uid: String, apps: List<AllowedApp>) {
-        withContext(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch { // 백그라운드에서 실행 -> withContext는 일시 중단 함수라서 이미지 업로드를 할 때까지 기다려서 사용하면 안 됨.
             try {
                 // 모든 앱에 대한 이미지 업로드 작업을 비동기적으로 처리
                 val uploadTasks = apps.map { app ->
@@ -204,11 +204,11 @@ class UserDataSourceImpl @Inject constructor(
     private suspend fun uploadAppIconToStorage(uid: String, packageId: String, iconBitmap: Bitmap): String {
         return withContext(Dispatchers.IO) {
             val storageRef = FirebaseStorage.getInstance().reference
-            val appIconRef = storageRef.child("users/$uid/apps/$packageId/icon.jpg")
+            val appIconRef = storageRef.child("users/$uid/apps/$packageId/icon.png") // PNG 형식으로 저장
 
-            // 비트맵을 ByteArray로 변환
+            // 비트맵을 ByteArray로 변환 (PNG 형식으로 압축)
             val baos = ByteArrayOutputStream()
-            iconBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos) // PNG 형식으로 변환하여 압축
             val data = baos.toByteArray()
 
             // Firebase Storage에 이미지 업로드
