@@ -166,7 +166,7 @@ class TimerFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val intentFilter = IntentFilter("com.rocket.cosmic_detox.TIMER_UPDATE")
-        requireContext().registerReceiver(timerUpdateReceiver, intentFilter)
+        requireContext().registerReceiver(timerUpdateReceiver, intentFilter, Context.RECEIVER_EXPORTED)
     }
 
     override fun onStop() {
