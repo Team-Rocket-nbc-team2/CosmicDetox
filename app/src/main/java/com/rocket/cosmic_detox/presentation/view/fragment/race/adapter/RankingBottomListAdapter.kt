@@ -36,7 +36,7 @@ class RankingBottomListAdapter(
                 listener.onRankingItemClick(ranking)
             }
             with(binding) {
-                tvRankingBottomRank.text = rank.toString()
+                tvRankingBottomRank.text = ranking.rank.toString()
                 ivRankingBottomUserProfile.loadRankingPlanetImage(ranking.totalTime.toBigDecimal())
                 tvRankingBottomUserName.text = ranking.name
                 tvRankingBottomStats.setStats(ranking.totalTime.toBigDecimal(), ranking.point.toBigDecimal())

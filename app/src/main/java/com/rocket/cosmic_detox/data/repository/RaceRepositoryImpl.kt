@@ -28,8 +28,30 @@ class RaceRepositoryImpl @Inject constructor(
                 val docs = task.result?.documents?.mapNotNull {
                     it.toObject<RankingInfo>()
                 } ?: emptyList()
-                // 추후에 포인트 제도로 변경 시 totalTime point로 변경
-                trySend(docs.sortedByDescending { it.totalTime })
+
+                // totalTime 기준으로 내림차순 정렬, 동일하면 이름 오름차순 정렬, 상위 100명만 가져옴
+                val sortedDocs = docs
+                    .sortedWith(compareByDescending<RankingInfo> { it.totalTime }.thenBy { it.name })
+                    .take(100)
+
+                val rankedDocs = mutableListOf<RankingInfo>()
+                var currentRank = 1
+                var previousTime = -1
+                var sameRankCount = 0
+
+                sortedDocs.forEach { rankingInfo ->
+                    if (rankingInfo.totalTime != previousTime) { // 이전 totalTime과 다르다면 순위 증가
+                        currentRank += sameRankCount // 같은 totalTime을 가진 사람들의 수만큼 순위 증가
+                        sameRankCount = 1 // 초기화
+                        previousTime = rankingInfo.totalTime // 이전 totalTime 갱신
+                    } else {
+                        sameRankCount++ // 같은 totalTime을 가진 사람들의 수 증가
+                    }
+
+                    rankedDocs.add(rankingInfo.copy(rank = currentRank))
+                }
+
+                trySend(rankedDocs)
             } else {
                 Log.e("ggil", "실패")
             }
