@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +27,7 @@ class SignInRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val functions: FirebaseFunctions
 ) : SignInRepository {
-    override suspend fun googleSignIn(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+    override suspend fun googleSignIn(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
         val credentialManager = CredentialManager.create(context)
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
@@ -47,7 +48,8 @@ class SignInRepositoryImpl @Inject constructor(
                 googleSignInWithFirebaseAuth(googleIdTokenCredential.idToken, onSuccess, onFailure)
             }
         } catch (e: Exception) {
-            onFailure(e)
+            if (e is GetCredentialCancellationException) onCancel()
+            else onFailure(e)
         }
     }
 
@@ -68,19 +70,19 @@ class SignInRepositoryImpl @Inject constructor(
 
     // --- google login ---
 
-    override fun kakaoSignIn(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+    override fun kakaoSignIn(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
         if (userApiClient.isKakaoTalkLoginAvailable(context)) {
-            signInWithKakaoTalk(onSuccess, onFailure)
+            signInWithKakaoTalk(onSuccess, onFailure, onCancel)
         } else {
-            signInWithKaKaoAccount(onSuccess, onFailure)
+            signInWithKaKaoAccount(onSuccess, onFailure, onCancel)
         }
     }
 
-    private fun signInWithKakaoTalk(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+    private fun signInWithKakaoTalk(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
         userApiClient.loginWithKakaoTalk(context) { token, error ->
             if (error != null) {
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) onFailure(error)
-                else signInWithKaKaoAccount(onSuccess, onFailure)
+                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) onCancel()
+                else signInWithKaKaoAccount(onSuccess, onFailure, onCancel)
             } else if (token != null) {
                 getCustomToken(token.accessToken, onSuccess, onFailure)
             }
@@ -88,10 +90,11 @@ class SignInRepositoryImpl @Inject constructor(
     }
 
     // 카카오 계정으로 로그인
-    private fun signInWithKaKaoAccount(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+    private fun signInWithKaKaoAccount(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
         userApiClient.loginWithKakaoAccount(context) { token: OAuthToken?, error: Throwable? ->
             if (error != null) {
-                onFailure(error)
+                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) onCancel()
+                else onFailure(error)
             } else if (token != null) {
                 getCustomToken(token.accessToken, onSuccess, onFailure)
             }

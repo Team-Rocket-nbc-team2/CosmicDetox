@@ -5,4 +5,5 @@ sealed interface LoginUiState {
     data object Loading: LoginUiState
     data object Success: LoginUiState
     data class Failure(val e: Throwable): LoginUiState
+    data object Cancel: LoginUiState
 }
