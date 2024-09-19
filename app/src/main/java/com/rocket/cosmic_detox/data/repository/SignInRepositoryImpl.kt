@@ -34,7 +34,7 @@ class SignInRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val functions: FirebaseFunctions
 ) : SignInRepository {
-    override suspend fun googleSignIn(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
+    override suspend fun googleSignIn(activity: Activity, onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
         val credentialManager = CredentialManager.create(context)
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
@@ -47,7 +47,7 @@ class SignInRepositoryImpl @Inject constructor(
         try {
             val googleSignInRequest = credentialManager.getCredential(
                 request = credentialRequest,
-                context = context
+                context = activity
             )
             val credential = googleSignInRequest.credential
             if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {

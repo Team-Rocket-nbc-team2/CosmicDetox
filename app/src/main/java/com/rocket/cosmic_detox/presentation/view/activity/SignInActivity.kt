@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,15 +13,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
-import com.rocket.cosmic_detox.util.Authentication
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
-import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -44,7 +40,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         signInBinding.ivGoogle.setOnClickListener {
-            signInViewModel.googleLogin()
+            signInViewModel.googleLogin(this)
         }
         signInBinding.ivKakao.setOnClickListener {
             signInViewModel.kakaoLogin()
@@ -81,6 +77,7 @@ class SignInActivity : AppCompatActivity() {
                     }
                     is LoginUiState.Failure -> {
                         Toast.makeText(this@SignInActivity, "${getString(R.string.sign_failure)} ${it.e}", Toast.LENGTH_SHORT).show()
+                        Log.e("SignInActivity", "signInViewModel.isSignIn.collectLatest: ${it.e}")
                     }
                     is LoginUiState.Cancel -> {
                         Toast.makeText(this@SignInActivity, getString(R.string.sign_canceled), Toast.LENGTH_SHORT).show()

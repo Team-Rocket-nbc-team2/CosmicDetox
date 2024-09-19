@@ -24,10 +24,11 @@ class SignInViewModel @Inject constructor(
     private val _isSignIn = MutableStateFlow<LoginUiState>(LoginUiState.Init)
     val isSignIn: StateFlow<LoginUiState> = _isSignIn.asStateFlow()
 
-    fun googleLogin() {
+    fun googleLogin(activity: Activity) {
         viewModelScope.launch {
             _isSignIn.value = LoginUiState.Loading
             googleSignInUseCase.invoke(
+                activity = activity,
                 onSuccess = { _isSignIn.value = LoginUiState.Success },
                 onFailure = { exception ->
                     _isSignIn.value = LoginUiState.Failure(exception)
