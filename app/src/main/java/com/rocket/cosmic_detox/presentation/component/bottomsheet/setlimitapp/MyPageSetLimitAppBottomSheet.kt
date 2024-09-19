@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
+import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,6 +64,15 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog =  super.onCreateDialog(savedInstanceState)
 
+        dialog.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) { // 뒤로 가기 버튼(KEYCODE_BACK)이 눌린 순간(ACTION_DOWN), ACTION_UP은 떼어졌을 때 둘다 작동은 하는 듯?
+                myPageViewModel.loadMyInfo()
+                dismiss()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
             setUpRatio(bottomSheetDialog)
@@ -77,6 +88,7 @@ class MyPageSetLimitAppBottomSheet: BottomSheetDialogFragment() {
         modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.limit_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             dismiss()
+            myPageViewModel.loadMyInfo()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.auth)
     implementation(libs.firebase.functions)
+    implementation(libs.firebase.storage)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)

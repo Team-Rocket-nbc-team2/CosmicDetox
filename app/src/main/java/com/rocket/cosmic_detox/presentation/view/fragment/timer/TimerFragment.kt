@@ -70,6 +70,20 @@ class TimerFragment : Fragment() {
     private lateinit var telephonyManager: TelephonyManager
     private var isCallActive = false // 전화가 활성화된 상태인지 확인하는 변수
 
+    private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        if (Settings.canDrawOverlays(requireContext())) {
+            // 오버레이 권한이 허용된 경우 수행할 작업
+            Log.d("Overlay디버그", "overlayPermissionLauncher 실행")
+            //showOverlay()
+        } else {
+            // 권한이 거부된 경우 처리
+            findNavController().popBackStack()
+            Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,19 +98,6 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
-
-        if(isRequestOverlay){
-            //showOverlay()
-        } else {
-            if (!Settings.canDrawOverlays(requireContext())) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:${requireContext().packageName}")
-                )
-                overlayPermissionLauncher.launch(intent)
-            }
-        }
 
         // 버전에 따른 전화 상태 감지 콜백과 리스너 분류 설정
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -167,6 +168,15 @@ class TimerFragment : Fragment() {
         super.onStart()
         val intentFilter = IntentFilter("com.rocket.cosmic_detox.TIMER_UPDATE")
         requireContext().registerReceiver(timerUpdateReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+        val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
+
+        if (!isRequestOverlay && !Settings.canDrawOverlays(requireContext())) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:${requireContext().packageName}")
+            )
+            overlayPermissionLauncher.launch(intent)
+        }
     }
 
     override fun onStop() {
@@ -199,24 +209,10 @@ class TimerFragment : Fragment() {
         }
     }
 
-//    override fun onResume() { // showOverlay() 에서 버튼 클릭 시 이미 removeOverlay()를 호출하고 있어서 onResume은 없애도 될 것 같음
-//        super.onResume()
-//        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
-//            //removeOverlay() // 오버레이 제거
-//        }
-//    }
-
-    private val overlayPermissionLauncher = registerForActivityResult( // 오버레이 권한 요청
-        ActivityResultContracts.StartActivityForResult()
-    ) { _ ->
-        if (Settings.canDrawOverlays(requireContext())) {
-            // 오버레이 권한이 허용된 경우 수행할 작업
-            Log.d("Overlay디버그", "overlayPermissionLauncher 실행")
-            showOverlay()
-        } else {
-            // 권한이 거부된 경우 처리
-            findNavController().popBackStack()
-            Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+    override fun onResume() {
+        super.onResume()
+        if (isOverlayVisible) { // 오버레이가 보이는 상태일 때 ==  다시 타이머 화면으로 돌아왔을 때
+            removeOverlay() // 오버레이 제거
         }
     }
 
@@ -242,7 +238,7 @@ class TimerFragment : Fragment() {
             overlayView?.let {
                 it.findViewById<Button>(R.id.btn_back).setOnClickListener { // "이전화면으로 돌아가기" 버튼 클릭 시
                     returnToTimer() // 타이머로 돌아가기
-                    removeOverlay() // 오버레이 제거
+                    //removeOverlay() // 오버레이 제거
                 }
 
                 Log.d("Overlay디버그", "showOverlay 실행")
