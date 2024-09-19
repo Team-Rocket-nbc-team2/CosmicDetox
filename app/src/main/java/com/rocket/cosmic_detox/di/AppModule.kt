@@ -9,34 +9,16 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Singleton
     @Provides
-    fun providePackageManager(@ApplicationContext context: Context): PackageManager {
-        return context.packageManager
-    }
-
-    @Singleton
-    @Provides
-    fun provideUsageStatsManager(@ApplicationContext context: Context): UsageStatsManager {
-        return context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-    }
-
-    @Singleton
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
-
+    fun providePackageManager(@ApplicationContext context: Context): PackageManager = context.packageManager
 
     @Provides
-    @Singleton
-    fun provideUserApiClient(): UserApiClient {
-        return UserApiClient.instance
-    }
+    fun provideUsageStatsManager(@ApplicationContext context: Context): UsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+    @Provides
+    fun provideUserApiClient(): UserApiClient = UserApiClient.instance
 }
