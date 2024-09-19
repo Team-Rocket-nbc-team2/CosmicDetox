@@ -17,6 +17,7 @@
     <string name="sign_rules_policy_agree">을 동의한 것으로 간주합니다.</string>
     <string name="sign_social">Google 계정으로 지금 바로 시작해보세요!</string>
     <string name="sign_failure">로그인에 실패했습니다.</string>
+    <string name="sign_canceled">로그인을 취소했습니다.</string>
 
     <!--  Home  -->
     <string name="home_current_location">현재 위치</string>
