@@ -1,9 +1,11 @@
 package com.rocket.cosmic_detox.presentation.viewmodel
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rocket.cosmic_detox.domain.usecase.kakao.KakaoLoginUseCase
 import com.rocket.cosmic_detox.domain.usecase.signin.GoogleSignInUseCase
+import com.rocket.cosmic_detox.domain.usecase.twitter.TwitterLoginUseCase
 import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val googleSignInUseCase: GoogleSignInUseCase,
-    private val kakaoLoginUseCase: KakaoLoginUseCase
+    private val kakaoLoginUseCase: KakaoLoginUseCase,
+    private val twitterLoginUseCase: TwitterLoginUseCase
 ) : ViewModel() {
     private val _isSignIn = MutableStateFlow<LoginUiState>(LoginUiState.Init)
     val isSignIn: StateFlow<LoginUiState> = _isSignIn.asStateFlow()
@@ -41,6 +44,23 @@ class SignInViewModel @Inject constructor(
             _isSignIn.value = LoginUiState.Loading
 
             kakaoLoginUseCase(
+                onSuccess = { _isSignIn.value = LoginUiState.Success },
+                onFailure = { exception ->
+                    _isSignIn.value = LoginUiState.Failure(exception)
+                },
+                onCancel = {
+                    _isSignIn.value = LoginUiState.Cancel
+                }
+            )
+        }
+    }
+
+    fun twitterLogin(activity: Activity) {
+        viewModelScope.launch {
+            _isSignIn.value = LoginUiState.Loading
+
+            twitterLoginUseCase(
+                activity = activity,
                 onSuccess = { _isSignIn.value = LoginUiState.Success },
                 onFailure = { exception ->
                     _isSignIn.value = LoginUiState.Failure(exception)

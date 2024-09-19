@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.di
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
+import com.google.firebase.auth.OAuthProvider
 import com.kakao.sdk.user.UserApiClient
 import dagger.Module
 import dagger.Provides

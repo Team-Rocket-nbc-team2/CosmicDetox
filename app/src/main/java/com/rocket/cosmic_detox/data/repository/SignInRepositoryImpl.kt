@@ -1,6 +1,8 @@
 package com.rocket.cosmic_detox.data.repository
 
+import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -9,6 +11,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.kakao.sdk.auth.model.OAuthToken
@@ -17,6 +20,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
+import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
 import com.rocket.cosmic_detox.util.DateFormatText
 import kotlinx.coroutines.tasks.await
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -176,6 +180,27 @@ class SignInRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             onFailure(e)
+        }
+    }
+
+    // --- Twitter Login ---
+    override fun twitterSignIn(activity: Activity, onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
+        val provider = OAuthProvider.newBuilder(PROVIDER_TWITTER)
+
+        val pendingResultTask = auth.pendingAuthResult
+        if (pendingResultTask != null) {
+            pendingResultTask.addOnSuccessListener {
+                onSuccess()
+            }.addOnFailureListener {
+                onFailure(it)
+            }
+        } else {
+            auth.startActivityForSignInWithProvider(activity, provider.build())
+                .addOnSuccessListener {
+                    initUserData(onSuccess, onFailure)
+                }.addOnFailureListener {
+                    onFailure(it)
+                }
         }
     }
 }
