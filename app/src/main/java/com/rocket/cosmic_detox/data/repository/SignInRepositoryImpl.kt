@@ -43,7 +43,8 @@ class SignInRepositoryImpl @Inject constructor(
                     "name" to authUser?.displayName.toString(),
                     "dailyTime" to 0L,
                     "totalTime" to 0L,
-                    "totalDay" to DateFormatText.getCurrentTime(),
+                    "totalDay" to 1,
+                    "createdAt" to DateFormatText.getCurrentTime(),
                     "isWithdrawn" to false,
                 )
 

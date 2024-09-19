@@ -129,7 +129,7 @@ class MyPageFragment : Fragment() {
                     //launchGoogleSignInClient()
                     // Authentication 제공자가 Google, Twitter일 경우
                     // Firebase에 Google, Twitter 인증 자격 증명으로 재인증 시도
-                    val platform = Authentication.currentUser?.providerData?.get(1)?.providerId
+                    val platform = FirebaseAuth.getInstance().currentUser?.providerData?.get(1)?.providerId
                     when (platform) {
                         PROVIDER_GOOGLE -> {
                             Toast.makeText(requireContext(), "google", Toast.LENGTH_SHORT).show()
@@ -291,7 +291,7 @@ class MyPageFragment : Fragment() {
         user.apply {
             ivMyProfileImage.loadRankingPlanetImage(totalTime.toBigDecimal())
             tvMyName.text = name
-            tvMyDescription.setMyDescription(DateFormatText.getTotalDays(totalDay), totalTime.toBigDecimal()) // TODO: totalDay 수정 필요
+            tvMyDescription.setMyDescription(DateFormatText.getTotalDays(createdAt), totalTime.toBigDecimal()) // TODO: totalDay 수정 필요
         }
     }
 
