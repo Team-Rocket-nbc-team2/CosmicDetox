@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.presentation.view.activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -113,12 +114,13 @@ class MainActivity : AppCompatActivity() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
         val isReadPhoneStatePermissionAllowed = permissionViewModel.isReadPhoneStatePermissionGranted(this)
+        val isExactAlarmAllowed = permissionViewModel.isExactAlarmPermissionGranted(this)
 
         Log.d("권한 뭔 일이다냐?",
             "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
 
         //거절된 퍼미션이 있다면...
-        if (!isUsageStateAllowed || !isRequestOverlay || !isReadPhoneStatePermissionAllowed) {
+        if (!isUsageStateAllowed || !isRequestOverlay || !isReadPhoneStatePermissionAllowed || !isExactAlarmAllowed) {
             //권한 요청!
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
@@ -147,6 +149,10 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
                         }
+                    }
+                    if (!isExactAlarmAllowed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                        startActivity(intent)
                     }
                 },
                 onClickCancel = { }
