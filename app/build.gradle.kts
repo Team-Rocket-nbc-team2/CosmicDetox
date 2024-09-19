@@ -109,6 +109,13 @@ dependencies {
     // kakao login
     implementation(libs.kakao.v2.user)
 
+    // google one tap login
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+
+    // splashscreen api
+    implementation(libs.androidx.core.splashscreen)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
