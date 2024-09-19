@@ -38,7 +38,6 @@ import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUsageAdapter
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
-import com.rocket.cosmic_detox.util.Authentication
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import com.rocket.cosmic_detox.util.Constants.PROVIDER_GOOGLE
 import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
@@ -297,7 +296,7 @@ class MyPageFragment : Fragment() {
 
     private fun reAuthenticationWithTwitter() {
         val provider = OAuthProvider.newBuilder(PROVIDER_TWITTER)
-        val currentUser = Authentication.currentUser
+        val currentUser = FirebaseAuth.getInstance().currentUser
 
         currentUser?.let {
             currentUser.startActivityForReauthenticateWithProvider(requireActivity(), provider.build())
