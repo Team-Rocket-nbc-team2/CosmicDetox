@@ -35,8 +35,8 @@ class CosmicDetoxApplication : Application() {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-/*
-// 자정 시간을 설정
+
+        // 자정 시간을 설정
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
             set(Calendar.HOUR_OF_DAY, 0) // 자정(0시) 설정
@@ -56,20 +56,22 @@ class CosmicDetoxApplication : Application() {
             calendar.timeInMillis,
             pendingIntent
         )
-*/
 
-        // 현재 시간을 기준으로 5분 후에 알람 설정
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            add(Calendar.MINUTE, 5) // 5분 후 알람 설정
-        }
+        /*
+                // 테스트 용 5분 단위로 초기화 됨
+                val calendar = Calendar.getInstance().apply {
+                    timeInMillis = System.currentTimeMillis()
+                    add(Calendar.MINUTE, 5) // 5분 후 알람 설정
+                }
 
-        // 정확한 5분 후 알람 설정
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            pendingIntent
-        )
+                // 정확한 5분 후 알람 설정
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+
+         */
 
         Log.d("TimerService", "5분 후에 알람이 설정ㅇ")
     }
