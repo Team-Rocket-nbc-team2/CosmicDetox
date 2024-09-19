@@ -27,6 +27,9 @@ class SignInViewModel @Inject constructor(
                 onSuccess = { _isSignIn.value = LoginUiState.Success },
                 onFailure = { exception ->
                     _isSignIn.value = LoginUiState.Failure(exception)
+                },
+                onCancel = {
+                    _isSignIn.value = LoginUiState.Cancel
                 }
             )
         }
@@ -40,6 +43,9 @@ class SignInViewModel @Inject constructor(
                 onSuccess = { _isSignIn.value = LoginUiState.Success },
                 onFailure = { exception ->
                     _isSignIn.value = LoginUiState.Failure(exception)
+                },
+                onCancel = {
+                    _isSignIn.value = LoginUiState.Cancel
                 }
             )
         }
