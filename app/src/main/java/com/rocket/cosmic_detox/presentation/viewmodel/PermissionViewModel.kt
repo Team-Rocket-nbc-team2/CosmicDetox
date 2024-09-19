@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.presentation.viewmodel
 
+import android.app.AlarmManager
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -35,5 +36,14 @@ class PermissionViewModel @Inject constructor() : ViewModel() {
             context,
             android.Manifest.permission.READ_PHONE_STATE
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // Android 12 이상에서만
+    fun isExactAlarmPermissionGranted(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.getSystemService(AlarmManager::class.java).canScheduleExactAlarms()
+        } else {
+            true
+        }
     }
 }
