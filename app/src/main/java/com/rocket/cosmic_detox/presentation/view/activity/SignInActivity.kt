@@ -4,19 +4,25 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
+import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.viewmodel.SignInViewModel
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
@@ -56,6 +62,8 @@ class SignInActivity : AppCompatActivity() {
             // TODO: X(트위터) 로그인 구현
             signInWithX()
         }
+
+        observeIsSignIn()
     }
 
     private fun signInWithX() {
@@ -88,6 +96,29 @@ class SignInActivity : AppCompatActivity() {
                     // 실패
                     Log.e("Twitter", "로그인 실패: 사용자가 로그인하지 않았습니다.")
                 }
+        }
+    }
+
+    private fun observeIsSignIn() {
+        lifecycleScope.launch {
+            signInViewModel.isSignIn.collectLatest {
+                signInBinding.layoutSignInLoading.isVisible = it is LoginUiState.Loading
+
+                when (it) {
+                    is LoginUiState.Success -> {
+                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+                    is LoginUiState.Failure -> {
+                        Toast.makeText(this@SignInActivity, "${getString(R.string.sign_failure)} ${it.e}", Toast.LENGTH_SHORT).show()
+                    }
+                    is LoginUiState.Cancel -> {
+                        Toast.makeText(this@SignInActivity, getString(R.string.sign_canceled), Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 }
