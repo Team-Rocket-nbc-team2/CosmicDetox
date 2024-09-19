@@ -3,6 +3,7 @@ package com.rocket.cosmic_detox.data.repository
 import android.app.usage.UsageStatsManager
 import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.graphics.drawable.toBitmap
 import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.AppUsage
@@ -88,7 +89,7 @@ class MyPageRepositoryImpl @Inject constructor(
                 val appName = packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(packageId, 0)
                 ).toString()
-                val appIcon = packageManager.getApplicationIcon(packageId)
+                val appIcon = packageManager.getApplicationIcon(packageId).toBitmap()
 
                 // 사용 비율 계산
                 val usagePercentage = (usageTime.toDouble() / maxUsageTime * 100).toInt()

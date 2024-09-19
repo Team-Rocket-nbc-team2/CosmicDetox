@@ -13,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivitySignInBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
@@ -41,10 +40,13 @@ class SignInActivity : AppCompatActivity() {
         }
 
         signInBinding.ivGoogle.setOnClickListener {
-            signInViewModel.googleLogin()
+            signInViewModel.googleLogin(this)
         }
         signInBinding.ivKakao.setOnClickListener {
             signInViewModel.kakaoLogin()
+        }
+        signInBinding.ivX.setOnClickListener {
+            signInViewModel.twitterLogin(this)
         }
         signInBinding.tvRulesPolicy.setOnClickListener {
             val dialog = TwoButtonDialogDescFragment(
@@ -58,45 +60,8 @@ class SignInActivity : AppCompatActivity() {
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "ConfirmDialog")
         }
-        signInBinding.ivX.setOnClickListener {
-            // TODO: X(트위터) 로그인 구현
-            signInWithX()
-        }
 
         observeIsSignIn()
-    }
-
-    private fun signInWithX() {
-        val provider = OAuthProvider.newBuilder("twitter.com")
-
-        val pendingResultTask = auth.pendingAuthResult
-        if (pendingResultTask != null) {
-            pendingResultTask.addOnSuccessListener {
-                val user = auth.currentUser
-                // 성공
-                Log.d("Twitter", "로그인 성공: 이전에 로그인한 사용자가 있습니다.")
-                val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-
-            }.addOnFailureListener {
-                // 실패
-                Log.e("Twitter", "로그인 실패: 이전에 로그인한 사용자가 없습니다.")
-            }
-        } else {
-            auth.startActivityForSignInWithProvider(this, provider.build())
-                .addOnSuccessListener {
-                    val user = auth.currentUser
-                    // 성공
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    Log.d("Twitter", "로그인 성공: 새로운 사용자가 로그인했습니다.")
-                }.addOnFailureListener {
-                    // 실패
-                    Log.e("Twitter", "로그인 실패: 사용자가 로그인하지 않았습니다.")
-                }
-        }
     }
 
     private fun observeIsSignIn() {
@@ -112,6 +77,7 @@ class SignInActivity : AppCompatActivity() {
                     }
                     is LoginUiState.Failure -> {
                         Toast.makeText(this@SignInActivity, "${getString(R.string.sign_failure)} ${it.e}", Toast.LENGTH_SHORT).show()
+                        Log.e("SignInActivity", "signInViewModel.isSignIn.collectLatest: ${it.e}")
                     }
                     is LoginUiState.Cancel -> {
                         Toast.makeText(this@SignInActivity, getString(R.string.sign_canceled), Toast.LENGTH_SHORT).show()
