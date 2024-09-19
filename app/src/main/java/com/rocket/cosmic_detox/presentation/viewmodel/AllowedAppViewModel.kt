@@ -3,6 +3,8 @@ package com.rocket.cosmic_detox.presentation.viewmodel
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -84,13 +86,14 @@ class AllowedAppViewModel @Inject constructor(
                 val currentPackageName = getCurrentOpenedAppPackageName()
 
                 if (currentPackageName != context.packageName && currentPackageName != currentOpenAppPackage &&
-                    currentPackageName != "com.sec.android.app.launcher" && currentPackageName != "com.android.systemui") {
+                    currentPackageName != "com.sec.android.app.launcher" && currentPackageName != "com.android.systemui" &&
+                    currentPackageName != "com.samsung.android.incallui" && currentPackageName != "com.samsumg.android.dialer" &&
+                    currentPackageName != "com.android.incallui") {
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         showOverlay()
                     }, 0)
                 }
-
                 Thread.sleep(1500)
             }
         }

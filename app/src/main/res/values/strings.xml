@@ -11,7 +11,7 @@
     <string name="label_my">내정보</string>
 
     <!-- SignIn -->
-<!--    <string name="sign_rules">회원가입 없이 소셜 계정을 사용해 이용할 수 있으며, 첫 로그인시 \n 개인정보처리방침 및 이용약관을 동의한 것으로 간주합니다.</string>-->
+    <!--    <string name="sign_rules">회원가입 없이 소셜 계정을 사용해 이용할 수 있으며, 첫 로그인시 \n 개인정보처리방침 및 이용약관을 동의한 것으로 간주합니다.</string>-->
     <string name="sign_rules">회원가입 없이 소셜 계정을 사용해 이용할 수 있으며, 첫 로그인시</string>
     <string name="sign_rules_policy">개인정보처리방침 및 이용약관</string>
     <string name="sign_rules_policy_agree">을 동의한 것으로 간주합니다.</string>

@@ -12,6 +12,7 @@ import com.rocket.cosmic_detox.data.model.CheckedApp
 import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.util.AppCategoryManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -19,7 +20,7 @@ import javax.inject.Inject
 class AllowAppRepositoryImpl @Inject constructor(
     private val packageManager: PackageManager,
     private val userDataSource: UserDataSource,
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : AllowAppRepository {
 
 //    override fun getInstalledApps(): Flow<List<CheckedApp>> = flow {
