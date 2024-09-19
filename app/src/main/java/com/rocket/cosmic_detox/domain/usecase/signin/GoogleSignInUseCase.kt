@@ -6,7 +6,7 @@ import javax.inject.Inject
 class GoogleSignInUseCase @Inject constructor(
     private val signInRepository: SignInRepository
 ) {
-    suspend operator fun invoke(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
-        signInRepository.googleSignIn(onSuccess, onFailure)
+    suspend operator fun invoke(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
+        signInRepository.googleSignIn(onSuccess, onFailure, onCancel)
     }
 }
