@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
             val dialog = TwoButtonDialogFragment(
                 title = getString(R.string.home_travel_start),
                 onClickConfirm = {
-                    val action = HomeFragmentDirections.actionHomeToTimer2()
+                    val action = HomeFragmentDirections.actionHomeToTimer()
                     findNavController().navigate(action) },
                 onClickCancel = { }
             )

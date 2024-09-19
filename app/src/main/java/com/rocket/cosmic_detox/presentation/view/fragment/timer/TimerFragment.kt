@@ -6,8 +6,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +23,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -60,6 +67,9 @@ class TimerFragment : Fragment() {
     private var isOverlayVisible = false // 오버레이가 보이는지 여부
     private var allowedAppList = mutableListOf<String>()
 
+    private lateinit var telephonyManager: TelephonyManager
+    private var isCallActive = false // 전화가 활성화된 상태인지 확인하는 변수
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,6 +77,8 @@ class TimerFragment : Fragment() {
     ): View {
         _binding = FragmentTimerBinding.inflate(inflater, container, false)
         windowManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        // TelephonyManager 초기화
+        telephonyManager = requireActivity().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         return binding.root
     }
 
@@ -86,6 +98,13 @@ class TimerFragment : Fragment() {
             }
         }
 
+        // 버전에 따른 전화 상태 감지 콜백과 리스너 분류 설정
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            telephonyManager.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback)
+        } else {
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+        }
+
         initView()
         allowedAppViewModel.getAllAllowedApps() // 허용 앱 리스트 가져오기 -> 서비스에 전달하려고 가져온거긴 한데 지금 당장은 필요없을 듯
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
@@ -94,6 +113,54 @@ class TimerFragment : Fragment() {
 
         userViewModel.fetchTotalTime()
         userViewModel.fetchDailyTime() // dailyTime도 함께 초기화
+    }
+
+    // api 31 이상 통화 상태 콜백
+    private val telephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
+    object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+        override fun onCallStateChanged(state: Int) {
+            when (state) {
+                TelephonyManager.CALL_STATE_RINGING,  // 전화가 걸려올 때
+                TelephonyManager.CALL_STATE_OFFHOOK -> {  // 통화 중일 때
+                    isCallActive = true
+                    if (!BottomSheetState.getIsBottomSheetOpen()) {
+                        removeOverlay()
+                    }
+                }
+                TelephonyManager.CALL_STATE_IDLE -> {  // 전화가 종료될 때
+                    if (isCallActive) { // 이전에 통화 중이었던 경우만 실행
+                        isCallActive = false
+                        // 통화 종료 후 바로 오버레이 띄우면 앱 꺼지는 현상 발생해서 핸들러로 오버레이를 조금 지연시켜 띄우기
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
+                        }, 1000)
+                    }
+                }
+            }
+        }
+    }
+
+    // api 31 미만 통화 상태 리스너 정의
+    private val phoneStateListener = object : PhoneStateListener() {
+        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+            when(state) {
+                TelephonyManager.CALL_STATE_RINGING,
+                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                    isCallActive = true
+                    if (!BottomSheetState.getIsBottomSheetOpen()) {
+                        removeOverlay()
+                    }
+                }
+                TelephonyManager.CALL_STATE_IDLE -> {
+                    if (isCallActive) {
+                        isCallActive = false
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
+                        }, 1000)
+                    }
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -122,9 +189,13 @@ class TimerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         if (isFinishingTimer) return // 타이머 종료 중인 경우에는 오버레이 띄우지 않음
-        if (!isOverlayVisible && !BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())) { // 오버레이가 보이지 않는 상태일 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
-            Log.d("Overlay디버그", "onPause 실행")
-            showOverlay()
+        if (!isOverlayVisible && !isCallActive) { // 오버레이가 보이지 않는 상태일 때, 통화 상태가 아닐 때만 오버레이 권한 요청, 일단 GPT가 하라는 대로 추가한 것
+            if(!BottomSheetState.getIsBottomSheetOpen() && permissionViewModel.isOverlayPermissionGranted(requireContext())){
+                Log.d("Overlay디버그", "onPause 실행")
+                Log.d("오버레이뷰",
+                    "isFinishingTimer>> $isFinishingTimer, isOverlayVisible>> $isOverlayVisible, BottomSheetState>> ${BottomSheetState.getIsBottomSheetOpen()}, permissionViewModel>> ${permissionViewModel.isOverlayPermissionGranted(requireContext())}")
+                showOverlay()
+            }
         }
     }
 
@@ -150,6 +221,13 @@ class TimerFragment : Fragment() {
     }
 
     private fun showOverlay() { // 오버레이 띄우기
+        // 권한이 없을 경우
+        if (!isOverlayVisible && !Settings.canDrawOverlays(requireContext())) {
+            stopTimerService()  // 없으면 타이머 종료 후 시간 저장
+            findNavController().popBackStack()  // 홈으로 이동
+            Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
+
         if (!isOverlayVisible && Settings.canDrawOverlays(requireContext())) {
             val overlayParams = WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -172,6 +250,28 @@ class TimerFragment : Fragment() {
                 windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
                 isOverlayVisible = true // 오버레이가 보이는 상태로 변경
             }
+//            overlayView?.let {
+//                it.findViewById<Button>(R.id.btn_back).setOnClickListener { // "이전화면으로 돌아가기" 버튼 클릭 시
+//                    // 현재 포그라운드 앱 패키지명 가져오기
+//                    val currentAppPackageName = getCurrentForegroundApp()
+//                    if (allowedAppList.contains(currentAppPackageName)) {
+//                        // 허용된 앱이면 해당 앱으로 이동
+//                        val launchIntent = requireContext().packageManager.getLaunchIntentForPackage(currentAppPackageName)
+//                        if (launchIntent != null) {
+//                            launchIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                            requireContext().startActivity(launchIntent)
+//                        }
+//                    } else {
+//                        returnToTimer() // 타이머로 돌아가기
+//                    }
+//                    removeOverlay() // 오버레이 제거
+//                }
+//
+//                Log.d("Overlay디버그", "showOverlay 실행")
+//
+//                windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
+//                isOverlayVisible = true // 오버레이가 보이는 상태로 변경
+//            }
         }
     }
 
@@ -184,17 +284,41 @@ class TimerFragment : Fragment() {
     }
 
     private fun removeOverlay() {
-        overlayView?.let { // 오버레이 제거
-            windowManager.removeView(it)
-            isOverlayVisible = false
+        try {   // try, catch로 통화 시 앱 꺼지는 현상 로그 확인
+            overlayView?.let { // 오버레이 제거
+                if (it.isAttachedToWindow) {
+                    windowManager.removeView(it)
+                    isOverlayVisible = false
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Overlay", "오버레이 제거 중 오류 발생: ${e.message}")
         }
     }
+
+    //    private fun isInAllowedApp(): Boolean {
+//        val currentApp = getCurrentForegroundApp()
+//        return allowedAppList.contains(currentApp)
+//    }
+//
+//    // 사용자의 현재 실행 중인 앱을 가져오는 메소드
+//    private fun getCurrentForegroundApp(): String {
+//        val activityManager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+//        val tasks = activityManager.getRunningTasks(1)
+//        return tasks[0].topActivity?.packageName ?: ""
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         stopTimerService() // 서비스 중지
         //removeOverlay() // Fragment 종료 시 오버레이 제거
+        // 콜백 해제
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            telephonyManager.unregisterTelephonyCallback(telephonyCallback)
+        } else {
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
+        }
     }
 
     private fun initView() = with(binding) {
