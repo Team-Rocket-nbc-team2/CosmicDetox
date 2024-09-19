@@ -6,7 +6,7 @@ import javax.inject.Inject
 class KakaoLoginUseCase @Inject constructor(
     private val signInRepository: SignInRepository
 ) {
-    operator fun invoke(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
-        signInRepository.kakaoSignIn(onSuccess, onFailure)
+    operator fun invoke(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit, onCancel: () -> Unit) {
+        signInRepository.kakaoSignIn(onSuccess, onFailure, onCancel)
     }
 }
