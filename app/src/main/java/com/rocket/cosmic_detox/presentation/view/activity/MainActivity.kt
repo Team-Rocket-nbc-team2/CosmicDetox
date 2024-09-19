@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -9,6 +10,8 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -109,10 +112,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
-        Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay")
+        val isReadPhoneStatePermissionAllowed = permissionViewModel.isReadPhoneStatePermissionGranted(this)
+
+        Log.d("권한 뭔 일이다냐?",
+            "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
 
         //거절된 퍼미션이 있다면...
-        if (!isUsageStateAllowed || !isRequestOverlay) {
+        if (!isUsageStateAllowed || !isRequestOverlay || !isReadPhoneStatePermissionAllowed) {
             //권한 요청!
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
@@ -131,6 +137,15 @@ class MainActivity : AppCompatActivity() {
                                 Uri.parse("package:${this.packageName}")
                             )
                             startActivity(intent)
+                        }
+                    }
+
+                    if(!isReadPhoneStatePermissionAllowed) {
+                        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_PHONE_STATE), 1)
+                        } else {
+                            Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
                         }
                     }
                 },
