@@ -104,12 +104,19 @@ class SignInActivity : AppCompatActivity() {
             signInViewModel.isSignIn.collectLatest {
                 signInBinding.layoutSignInLoading.isVisible = it is LoginUiState.Loading
 
-                if (it is LoginUiState.Success) {
-                    val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                } else if (it is LoginUiState.Failure) {
-                    Toast.makeText(this@SignInActivity, "로그인에 실패했습니다. ${it.e}", Toast.LENGTH_SHORT).show()
+                when (it) {
+                    is LoginUiState.Success -> {
+                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+                    is LoginUiState.Failure -> {
+                        Toast.makeText(this@SignInActivity, "${getString(R.string.sign_failure)} ${it.e}", Toast.LENGTH_SHORT).show()
+                    }
+                    is LoginUiState.Cancel -> {
+                        Toast.makeText(this@SignInActivity, getString(R.string.sign_canceled), Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
                 }
             }
         }
