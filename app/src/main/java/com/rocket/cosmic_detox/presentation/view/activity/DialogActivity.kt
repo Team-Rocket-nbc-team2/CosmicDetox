@@ -25,5 +25,20 @@ class DialogActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
+//        binding.btnBack.setOnClickListener {
+//            val allowedAppPackageName = intent.getStringExtra("allowedAppPackageName")
+//
+//            if (!allowedAppPackageName.isNullOrEmpty()) {
+//                val launchIntent = packageManager.getLaunchIntentForPackage(allowedAppPackageName)
+//                if (launchIntent != null) {
+//                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    startActivity(launchIntent)
+//                } else {
+//                    finish() // 허용된 앱이 없으면 DialogActivity 종료
+//                }
+//            } else {
+//                finish() // 허용된 앱 정보가 없으면 종료
+//            }
+//        }
     }
 }

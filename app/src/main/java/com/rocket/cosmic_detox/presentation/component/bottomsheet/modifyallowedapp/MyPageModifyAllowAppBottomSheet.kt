@@ -2,8 +2,6 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowed
 
 import android.app.Dialog
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -13,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -94,13 +95,33 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
             mutableListOf()
         }
         Log.d("AllowAppBottomSheet", "args.allowedApps: ${args.allowedApps}")
-        modalBottomSheetBinding.tvBottomSheetTitle.text = getString(R.string.allow_app_bottom_sheet_title)
+        modalBottomSheetBinding.tvBottomSheetTitle.text =
+            getString(R.string.allow_app_bottom_sheet_title)
         modalBottomSheetBinding.tvBottomSheetComplete.setOnClickListener {
             updateAllowApps()
         }
-        etSearchText.doAfterTextChanged {
-            allowAppViewModel.searchApp(it.toString())
+        ivClearSearchText.setOnClickListener {
+            etSearchText.text.clear()
         }
+        etSearchText.apply {
+            doAfterTextChanged { text ->
+                allowAppViewModel.searchApp(text.toString())
+            }
+            setOnEditorActionListener { _, actionId, _ ->
+                clearFocus()
+                var handled = false
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard(this)
+                    handled = true
+                }
+                handled
+            }
+        }
+    }
+
+    private fun hideKeyboard(editText: EditText) {
+        val inputManager: InputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(editText.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     private fun initViewModel() = with(allowAppViewModel) {
@@ -117,13 +138,15 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
                             is GetListUiState.Success -> {
                                 // args.allowApps에 포함된 앱은 체크된 상태로 보여줌
                                 // uiState.data에 args.allowedApps의 packageId가 포함되어 있으면 체크된 상태로 보여줌
-                                uiState.data.forEach { app ->
+                                val updatedApps = uiState.data.map { app ->
                                     if (args.allowedApps.any { app has it }) {
-                                        app.isChecked = true
+                                        app.copy(isChecked = true) // copy 메서드로 isChecked 값 수정
+                                    } else {
+                                        app
                                     }
                                 }
-                                Log.d("AllowAppBottomSheet", "uiState.data: ${uiState.data}")
-                                allowAppListAdapter.submitList(uiState.data)
+                                Log.d("AllowAppBottomSheet", "updatedApps: $updatedApps")
+                                allowAppListAdapter.submitList(updatedApps)
                             }
                             is GetListUiState.Error -> {
                                 Toast.makeText(requireContext(), uiState.message, Toast.LENGTH_SHORT).show()

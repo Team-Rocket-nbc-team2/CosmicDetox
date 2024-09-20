@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.data.remote.firebase.user
+package com.rocket.cosmic_detox.data.datasource.user
 
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.Trophy
@@ -9,7 +9,7 @@ interface UserDataSource {
 
     suspend fun getUid(): String
 
-    suspend fun getUserCreatedDate(uid: String): Date?
+    suspend fun getUserCreatedDate(uid: String): Result<Date>
 
     suspend fun getUserInfo(uid: String): Result<User>
 
@@ -24,4 +24,6 @@ interface UserDataSource {
     suspend fun addAllowedApps(uid: String, apps: List<AllowedApp>): Result<Boolean>
 
     suspend fun deleteAllowedApps(uid: String, appIds: List<String>): Result<Boolean>
+
+    suspend fun uploadAppIconsInBackground(uid: String, apps: List<AllowedApp>)
 }

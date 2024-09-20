@@ -3,16 +3,15 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.setlimitapp
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
-import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
+import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.common.ViewHolder
+import com.rocket.cosmic_detox.presentation.extensions.isAppInstalled
 
 class LimitedAppAdapter(
     private val context: Context,
@@ -38,9 +37,10 @@ class LimitedAppAdapter(
                 onClick(item)
             }
             with(binding) {
-                ivDepthAppIcon.loadAppIcon(context, item.packageId)
+                ivDepthAppIcon.loadAllowedAppIcon(context, item.packageId, item.appIcon)
                 tvAppDepthName.text = item.appName
                 tvAppDepthUsageTime.setCumulativeTime(item.limitedTime.toBigDecimal())
+                emphasizeDarkerLayoutDepth.isVisible = !context.isAppInstalled(item.packageId)
             }
         }
 

@@ -53,6 +53,7 @@
     <string name="sign_rules_policy_agree">are considered agreed to.</string>
     <string name="sign_social">Start right now with your Google account!</string>
     <string name="sign_failure">SignIn failed.</string>
+    <string name="sign_canceled">SignIn canceled.</string>
 
     <!-- My Page -->
     <string name="withdrawal">Withdrawal</string>

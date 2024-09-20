@@ -131,7 +131,7 @@ class MyPageViewModel @Inject constructor(
 
     // Firebase 사용자 삭제 로직
     // Firebase 사용자 삭제 로직 및 Firestore 데이터 삭제 로직
-    private fun withdraw(user: FirebaseUser) {
+    fun withdraw(user: FirebaseUser) {
         user.delete()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

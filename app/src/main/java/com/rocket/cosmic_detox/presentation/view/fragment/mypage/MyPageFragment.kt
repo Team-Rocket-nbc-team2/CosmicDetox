@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.User
@@ -38,6 +39,9 @@ import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyAppUs
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.adapter.MyTrophyAdapter
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import com.rocket.cosmic_detox.util.Constants.NOTION_LINK
+import com.rocket.cosmic_detox.util.Constants.PROVIDER_GOOGLE
+import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
+import com.rocket.cosmic_detox.util.DateFormatText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -121,7 +125,22 @@ class MyPageFragment : Fragment() {
                 title = getString(R.string.dialog_withdrawal),
                 description = getString(R.string.dialog_withdrawal_desc),
                 onClickConfirm = {
-                    launchGoogleSignInClient()
+                    //launchGoogleSignInClient()
+                    // Authentication 제공자가 Google, Twitter일 경우
+                    // Firebase에 Google, Twitter 인증 자격 증명으로 재인증 시도
+                    val platform = FirebaseAuth.getInstance().currentUser?.providerData?.get(1)?.providerId
+                    when (platform) {
+                        PROVIDER_GOOGLE -> {
+                            Toast.makeText(requireContext(), "google", Toast.LENGTH_SHORT).show()
+                            launchGoogleSignInClient()
+                        }
+                        PROVIDER_TWITTER -> {
+                            reAuthenticationWithTwitter()
+                        }
+                        else -> {
+                            Toast.makeText(requireContext(), "unknown", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
                 onClickCancel = { false }
             )
@@ -271,7 +290,23 @@ class MyPageFragment : Fragment() {
         user.apply {
             ivMyProfileImage.loadRankingPlanetImage(totalTime.toBigDecimal())
             tvMyName.text = name
-            tvMyDescription.setMyDescription(totalDay, totalTime.toBigDecimal())
+            tvMyDescription.setMyDescription(DateFormatText.getTotalDays(createdAt), totalTime.toBigDecimal()) // TODO: totalDay 수정 필요
+        }
+    }
+
+    private fun reAuthenticationWithTwitter() {
+        val provider = OAuthProvider.newBuilder(PROVIDER_TWITTER)
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        currentUser?.let {
+            currentUser.startActivityForReauthenticateWithProvider(requireActivity(), provider.build())
+                .addOnSuccessListener {
+                    // 회원 탈퇴 로직 실행
+                    myPageViewModel.withdraw(currentUser)
+                }
+                .addOnFailureListener {
+                    Log.e("withdrawal", "재인증 실패 XXXXX: $it")
+                }
         }
     }
 
