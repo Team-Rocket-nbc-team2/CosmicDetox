@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.domain
+package com.rocket.cosmic_detox.presentation.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -20,11 +20,6 @@ class AlarmService() : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotification()
-    }
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
-        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun createNotification() {

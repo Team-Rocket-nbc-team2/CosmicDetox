@@ -29,7 +29,7 @@
         android:theme="@style/Base.Theme.CosmicDetox"
         tools:targetApi="31">
         <service
-            android:name=".domain.AlarmService"
+            android:name=".presentation.service.AlarmService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="shortService" />
