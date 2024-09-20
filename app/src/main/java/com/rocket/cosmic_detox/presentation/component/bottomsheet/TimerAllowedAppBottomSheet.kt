@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -173,11 +172,13 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun initCountDownTimer(initTimer: Long) {
+        var state = false
         countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 // 여기여기
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
-                if(millisUntilFinished < 300000){ // 원래는 300000
+                if(millisUntilFinished < 300000 && !state){ // 원래는 300000
+                    state = true
                     val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
                     requireActivity().startService(serviceIntent)
                     Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()

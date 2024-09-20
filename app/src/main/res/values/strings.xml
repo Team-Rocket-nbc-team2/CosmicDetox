@@ -4,6 +4,8 @@
     <!--  Common  -->
     <string name="terminate_app_alert">한 번 더 누르면 앱이 종료됩니다.</string>
     <string name="terminate_app">정말로 떠나시겠어요?</string>
+    <string name="limit_5min_alarm_title">앱 사용 시간이 5분 밖에 남지 않았어요!</string>
+    <string name="limit_5min_alarm_desc">곧 앱 사용 시간이 종료됩니다. 이제 다시 우주 여행 할 준비를 하세요.</string>
 
     <!--  Navigation Menu  -->
     <string name="label_race">레이스</string>
