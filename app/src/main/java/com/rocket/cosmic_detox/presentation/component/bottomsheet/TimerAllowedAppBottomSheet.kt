@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +34,7 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
 import com.rocket.cosmic_detox.domain.AlarmReceiver
+import com.rocket.cosmic_detox.domain.AlarmService
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
@@ -184,7 +186,11 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
                 if(millisUntilFinished < 450000){ // 원래는 300000
                     Log.d("Stopped~~~!!!!", millisUntilFinished.toString())
-                     sendAlarm()
+//                    sendAlarm()
+
+                    val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
+                    requireActivity().startService(serviceIntent)
+                    Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -227,22 +233,26 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
     @SuppressLint("ScheduleExactAlarm")
     private fun sendAlarm() {
-        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+        val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
+        requireActivity().startService(serviceIntent)
+        Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
 
-        val receiverIntent = Intent(requireActivity(), AlarmReceiver::class.java)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(),
-            0,
-            receiverIntent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            SystemClock.elapsedRealtime(), // 현재 시간으로 설정
-            pendingIntent
-        )
+//        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+//
+//        val receiverIntent = Intent(requireActivity(), AlarmReceiver::class.java)
+//
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            requireContext(),
+//            0,
+//            receiverIntent,
+//            PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//        alarmManager.setExactAndAllowWhileIdle(
+//            AlarmManager.RTC_WAKEUP,
+//            SystemClock.elapsedRealtime(), // 현재 시간으로 설정
+//            pendingIntent
+//        )
     }
 
     override fun onDestroyView() {
