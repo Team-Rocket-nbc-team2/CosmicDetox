@@ -1,17 +1,12 @@
 package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
-import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.app.Dialog
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.SystemClock
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
@@ -33,7 +28,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
-import com.rocket.cosmic_detox.domain.AlarmReceiver
 import com.rocket.cosmic_detox.domain.AlarmService
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
@@ -181,13 +175,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private fun initCountDownTimer(initTimer: Long) {
         countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                Log.d("What happened? 1>>", millisUntilFinished.toString())
                 // 여기여기
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
-                if(millisUntilFinished < 450000){ // 원래는 300000
-                    Log.d("Stopped~~~!!!!", millisUntilFinished.toString())
-//                    sendAlarm()
-
+                if(millisUntilFinished < 300000){ // 원래는 300000
                     val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
                     requireActivity().startService(serviceIntent)
                     Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
@@ -229,30 +219,6 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private fun removeOverlay() {
         windowManager.removeView(rootView)
         rootView = null
-    }
-
-    @SuppressLint("ScheduleExactAlarm")
-    private fun sendAlarm() {
-        val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
-        requireActivity().startService(serviceIntent)
-        Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
-
-//        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
-//
-//        val receiverIntent = Intent(requireActivity(), AlarmReceiver::class.java)
-//
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            requireContext(),
-//            0,
-//            receiverIntent,
-//            PendingIntent.FLAG_IMMUTABLE
-//        )
-//
-//        alarmManager.setExactAndAllowWhileIdle(
-//            AlarmManager.RTC_WAKEUP,
-//            SystemClock.elapsedRealtime(), // 현재 시간으로 설정
-//            pendingIntent
-//        )
     }
 
     override fun onDestroyView() {

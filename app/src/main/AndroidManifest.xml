@@ -29,12 +29,7 @@
             android:name=".domain.AlarmService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="shortService"/>
-
-        <receiver
-            android:name=".domain.AlarmReceiver"
-            android:enabled="true"
-            android:exported="true" />
+            android:foregroundServiceType="shortService" />
 
         <activity
             android:name=".presentation.view.activity.MainActivity"
