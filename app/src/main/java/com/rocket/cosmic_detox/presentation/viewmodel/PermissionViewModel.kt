@@ -2,6 +2,7 @@ package com.rocket.cosmic_detox.presentation.viewmodel
 
 import android.app.AlarmManager
 import android.app.AppOpsManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -23,11 +24,24 @@ class PermissionViewModel @Inject constructor() : ViewModel() {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    fun isOverlayPermissionGranted(context: Context, timerFragment: Boolean = false): Boolean {
+    fun isOverlayPermissionGranted(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Settings.canDrawOverlays(context)
         } else {
             true
+        }
+    }
+
+
+    fun isPostNotificationGranted(context: Context): Boolean {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Android 버전별 처리
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = notificationManager.importance
+            importance == NotificationManager.IMPORTANCE_HIGH || importance == NotificationManager.IMPORTANCE_DEFAULT
+        } else {
+            true // 권한 확인 필요 없음
         }
     }
 

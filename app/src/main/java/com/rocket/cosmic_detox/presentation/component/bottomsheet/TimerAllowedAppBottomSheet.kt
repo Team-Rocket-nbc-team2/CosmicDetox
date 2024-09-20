@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
+import com.rocket.cosmic_detox.presentation.service.AlarmService
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
@@ -170,9 +172,17 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun initCountDownTimer(initTimer: Long) {
+        var state = false
         countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
+                // 여기여기
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
+                if(millisUntilFinished < 300000 && !state){ // 원래는 300000
+                    state = true
+                    val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
+                    requireActivity().startService(serviceIntent)
+                    Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onFinish() {

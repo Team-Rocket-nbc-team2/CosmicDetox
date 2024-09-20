@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.activity
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -113,6 +114,8 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
+
+        val isPostNotificationGrantedAllowed = permissionViewModel.isPostNotificationGranted(this)
         val isReadPhoneStatePermissionAllowed = permissionViewModel.isReadPhoneStatePermissionGranted(this)
         val isExactAlarmAllowed = permissionViewModel.isExactAlarmPermissionGranted(this)
 
@@ -120,12 +123,16 @@ class MainActivity : AppCompatActivity() {
             "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
 
         //거절된 퍼미션이 있다면...
-        if (!isUsageStateAllowed || !isRequestOverlay || !isReadPhoneStatePermissionAllowed || !isExactAlarmAllowed) {
+        if (!isUsageStateAllowed || !isRequestOverlay || !isPostNotificationGrantedAllowed || !isReadPhoneStatePermissionAllowed || !isExactAlarmAllowed) {
+
             //권한 요청!
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
                 description = getString(R.string.dialog_permission_desc),
                 onClickConfirm = {
+                    if(!isPostNotificationGrantedAllowed){
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+                    }
 
                     if(!isUsageStateAllowed) {
                         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
@@ -150,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                             Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
                         }
                     }
+                    
                     if (!isExactAlarmAllowed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                         startActivity(intent)

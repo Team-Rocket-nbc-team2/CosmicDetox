@@ -5,6 +5,8 @@
     <!--  Common  -->
     <string name="terminate_app_alert">Press one more time to terminate the app.</string>
     <string name="terminate_app">Are you sure to leave?</string>
+    <string name="limit_5min_alarm_title">You only have five minutes to use the app!</string>
+    <string name="limit_5min_alarm_desc">App usage time is about to end. Now get ready to travel to space again.</string>
 
     <!--  Race  -->
     <string name="race_description_profile_image">User Profile Thumbnail Image</string>
