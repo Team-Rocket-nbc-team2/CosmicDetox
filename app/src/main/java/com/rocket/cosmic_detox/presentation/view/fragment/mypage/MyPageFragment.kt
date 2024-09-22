@@ -114,13 +114,13 @@ class MyPageFragment : Fragment() {
                 MyPageFragmentDirections.actionMyToModifyAllowApp(allowedApps.toTypedArray())
             findNavController().navigate(action)
         }
-        // 개인정보보호정책 및 이용약관
-//        binding.tvPolicy.setOnClickListener {
-//        노션에 개인정보보호정책 및 이용약관 작업 후 move to notion 작업
-//        }
+
+        binding.ivSettings.setOnClickListener {
+            findNavController().navigate(MyPageFragmentDirections.actionNavigationMyToNavigationSetting())
+        }
 
         // 회원 탈퇴 기능 구현
-        binding.tvWithdrawal.setOnClickListener {
+        /*binding.tvWithdrawal.setOnClickListener {
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_withdrawal),
                 description = getString(R.string.dialog_withdrawal_desc),
@@ -146,10 +146,10 @@ class MyPageFragment : Fragment() {
             )
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
-        }
+        }*/
 
         // 로그아웃 기능 구현
-        binding.tvSignOut.setOnClickListener {
+        /*binding.tvSignOut.setOnClickListener {
             val dialog = TwoButtonDialogFragment(
                 title = getString(R.string.dialog_sign_out),
                 onClickConfirm = {
@@ -162,7 +162,7 @@ class MyPageFragment : Fragment() {
             )
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
-        }
+        }*/
     }
 
     // 구글 로그인 클라이언트를 런칭시키는 함수
@@ -186,7 +186,7 @@ class MyPageFragment : Fragment() {
         btnAllowAppUsagePermission.setOnClickListener {
             requestUsageStatsPermission()
         }
-        tvPolicy.setOnClickListener {
+        /*tvPolicy.setOnClickListener {
             val dialog =
                 TwoButtonDialogDescFragment(
                     title = getString(R.string.dialog_personal_policy_terms_title),
@@ -198,7 +198,7 @@ class MyPageFragment : Fragment() {
                     onClickCancel = {})
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
-        }
+        }*/
     }
 
     private fun initViewModel() = with(myPageViewModel) {
