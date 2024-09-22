@@ -51,6 +51,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".presentation.receiver.BootCompletedReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+
         <activity
             android:name=".presentation.view.activity.SignInActivity"
             android:exported="false"
