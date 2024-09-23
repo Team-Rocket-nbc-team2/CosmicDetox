@@ -14,14 +14,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.splashscreen.SplashScreen
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
@@ -38,14 +35,10 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
-    private lateinit var splashScreen: SplashScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        splashScreen = installSplashScreen()
-        splashLogic()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -77,18 +70,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkPermissions()
-    }
-
-    private fun splashLogic() {
-        val auth = FirebaseAuth.getInstance()
-        splashScreen.setKeepOnScreenCondition {
-            if (auth.currentUser?.uid == null) {
-                val intent = Intent(this, SignInActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-            false
-        }
     }
 
     private fun setBottomNavigation() = with(binding) {
@@ -157,10 +138,18 @@ class MainActivity : AppCompatActivity() {
                             Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
                         }
                     }
-                    
-                    if (!isExactAlarmAllowed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                        startActivity(intent)
+
+                    // 안드로이드 자체에서 권한을 부여하는 듯 isExactAlarmAllowed 초기값 true 임, 혹여 기기마다 다를 수 있으므로 코드 유지
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Log.d("ExactAlarm", "권한 상태 --> $isExactAlarmAllowed")
+
+                        // 권한이 자동으로 부여되면 별도의 처리 불필요
+                        if (!isExactAlarmAllowed) {
+                            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                            startActivity(intent)
+                        } else {
+                            Log.d("ExactAlarm", "정확한 알람 권한이 이미 자동으로 부여되었습니다.")
+                        }
                     }
                 },
                 onClickCancel = { }
