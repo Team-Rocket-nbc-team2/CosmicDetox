@@ -101,8 +101,14 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun signOut() {
-        firebaseAuth.signOut()
+    override fun signOut(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+        runCatching {
+            firebaseAuth.signOut()
+        }.onSuccess {
+            onSuccess()
+        }.onFailure {
+            onFailure(it)
+        }
     }
 
     override fun deleteUser(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
