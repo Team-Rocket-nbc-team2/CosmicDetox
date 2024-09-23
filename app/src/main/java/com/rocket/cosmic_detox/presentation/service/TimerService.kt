@@ -38,6 +38,8 @@ class TimerService : LifecycleService() {
     lateinit var firebaseAuth: FirebaseAuth
 
     private var time: Long = 0L
+    private var initialDailyTime: Long = 0L
+    private var currentDailyTime: Long = 0L
     private val handler = Handler(Looper.getMainLooper())
     private var isTimerRunning = false
 
@@ -70,6 +72,7 @@ class TimerService : LifecycleService() {
             }
             else -> {
                 val dailyTime = intent?.getLongExtra("dailyTime", 0L) ?: 0L
+                initialDailyTime = dailyTime // 타이머 시작 시 dailyTime 저장
                 time = dailyTime // 전달받은 dailyTime으로 초기화
                 startTimer() // 타이머 시작
             }
@@ -87,23 +90,58 @@ class TimerService : LifecycleService() {
     private fun stopTimer() {
         handler.removeCallbacks(timerRunnable)
         isTimerRunning = false
-        saveDailyTimeToFirebase() // 오직 dailyTime만 저장
+        currentDailyTime = time // 타이머 종료 시의 dailyTime 저장
+
+        // dailyTime 차이 계산 후 totalTime에 반영
+        val dailyTimeDifference = currentDailyTime - initialDailyTime
+        saveTimeToFirebase(dailyTimeDifference)
     }
 
-    private fun resetTimer() {
+    private fun saveTimeToFirebase(dailyTimeDifference: Long) {
+        // 기존의 totalTime을 가져와서 dailyTime 차이를 더함
         getTotalTimeUseCase({ currentTotalTime ->
-            val updatedTotalTime = currentTotalTime + time // 기존 totalTime에 dailyTime 추가
+            val updatedTotalTime = currentTotalTime + dailyTimeDifference
 
-            // totalTime을 업데이트하고 dailyTime을 0으로 초기화
+            // totalTime 업데이트 및 dailyTime 저장
+            updateTotalTimeUseCase(updatedTotalTime, {
+                // dailyTime도 Firebase에 업데이트
+                updateDailyTimeUseCase(currentDailyTime, {
+                    updateRankingTotalTime(updatedTotalTime)
+                    Log.d("TimerService", "Total time 및 Daily time 업데이트 완료")
+                }, { exception ->
+                    Log.e("TimerService", "Daily time 업데이트 실패: $exception")
+                })
+            }, { exception ->
+                Log.e("TimerService", "Total time 업데이트 실패: $exception")
+            })
+        }, { exception ->
+            Log.e("TimerService", "Total time 가져오기 실패: $exception")
+        })
+    }
+
+    // Reset Timer 추가
+    private fun resetTimer() {
+        // 타이머가 동작 중일 때는 먼저 멈춤
+        if (isTimerRunning) {
+            handler.removeCallbacks(timerRunnable)
+            isTimerRunning = false
+            currentDailyTime = time // 타이머가 멈춘 시점의 시간을 저장
+        }
+
+        // 기존의 totalTime과 dailyTime을 가져옴
+        getTotalTimeUseCase({ currentTotalTime ->
+            val updatedTotalTime = currentTotalTime + currentDailyTime // 기존 totalTime에 currentDailyTime을 더함
+
+            // totalTime 업데이트 후 dailyTime 초기화
             updateTotalTimeUseCase(updatedTotalTime, {
                 updateDailyTimeUseCase(0L, {
-                    Log.d("TimerService", "dailyTime이 0으로 초기화")
+                    Log.d("TimerService", "dailyTime이 0으로 초기화되었습니다.")
                     time = 0L // 로컬 타이머도 0으로 초기화
+                    initialDailyTime = 0L // resetTimer 후 타이머를 재시작할 때 다시 설정되도록 초기화
                     sendTimeUpdate() // UI 업데이트
 
-                    // 랭킹 업데이트
-                    updateRankingTotalTime(updatedTotalTime)
-
+                    // 타이머를 다시 시작
+                    startTimer()
                 }, { exception ->
                     Log.e("TimerService", "dailyTime 초기화 실패: $exception")
                 })
@@ -115,14 +153,6 @@ class TimerService : LifecycleService() {
         })
     }
 
-    // Firebase에 dailyTime만 저장 (타이머 멈출 때)
-    private fun saveDailyTimeToFirebase() {
-        updateDailyTimeUseCase(time, {
-            Log.d("TimerService", "dailyTime이 성공적으로 저장되었습니다.")
-        }, { exception ->
-            Log.e("TimerService", "dailyTime 저장 실패: $exception")
-        })
-    }
 
     // UI 업데이트를 위한 타이머 시간 브로드캐스트
     private fun sendTimeUpdate() {
