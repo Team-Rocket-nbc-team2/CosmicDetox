@@ -36,7 +36,7 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.service.TimerService
-import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
