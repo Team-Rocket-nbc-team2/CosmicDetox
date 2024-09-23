@@ -138,10 +138,18 @@ class MainActivity : AppCompatActivity() {
                             Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
                         }
                     }
-                    
-                    if (!isExactAlarmAllowed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                        startActivity(intent)
+
+                    // 안드로이드 자체에서 권한을 부여하는 듯 isExactAlarmAllowed 초기값 true 임, 혹여 기기마다 다를 수 있으므로 코드 유지
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Log.d("ExactAlarm", "권한 상태 --> $isExactAlarmAllowed")
+
+                        // 권한이 자동으로 부여되면 별도의 처리 불필요
+                        if (!isExactAlarmAllowed) {
+                            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                            startActivity(intent)
+                        } else {
+                            Log.d("ExactAlarm", "정확한 알람 권한이 이미 자동으로 부여되었습니다.")
+                        }
                     }
                 },
                 onClickCancel = { }
