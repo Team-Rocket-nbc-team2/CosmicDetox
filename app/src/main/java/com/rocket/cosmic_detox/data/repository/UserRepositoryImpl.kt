@@ -100,4 +100,44 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun signOut(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+        runCatching {
+            firebaseAuth.signOut()
+        }.onSuccess {
+            onSuccess()
+        }.onFailure {
+            onFailure(it)
+        }
+    }
+
+    override fun deleteUser(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+        val currentUser = firebaseAuth.currentUser
+
+        currentUser?.delete()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                removeUserOnFireStore(currentUser.uid, onSuccess, onFailure)
+            } else {
+                onFailure(task.exception!!)
+            }
+        }
+    }
+
+    private fun removeUserOnFireStore(uid: String, onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
+        val userRef = fireStore.collection("users").document(uid)
+        val seasonRef = fireStore.collection("season").document("season-2024-08")
+            .collection("ranking").document(uid)
+
+        userRef.delete().addOnCompleteListener { userTask ->
+            if (userTask.isSuccessful) {
+                seasonRef.delete().addOnCompleteListener { seasonTask ->
+                    if (!seasonTask.isSuccessful) onFailure(seasonTask.exception!!)
+                }
+
+                onSuccess()
+            } else {
+                onFailure(userTask.exception!!)
+            }
+        }
+    }
 }

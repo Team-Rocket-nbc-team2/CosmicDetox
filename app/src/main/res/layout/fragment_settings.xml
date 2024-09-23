@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".presentation.view.fragment.settings.SettingsFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="?attr/actionBarSize"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp"/>
+
+    <ImageView
+        android:id="@+id/iv_back_my_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_left"
+        android:padding="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top_bar"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_main_title"
+        android:textSize="@dimen/text_size_16sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top_bar"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/stroke"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top_bar"/>
+
+    <TextView
+        android:id="@+id/tv_apps_management"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/settings_management_apps_title"
+        android:textColor="@color/blue_grey"
+        android:textSize="@dimen/text_size_14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/guideline_top_bar" />
+
+    <LinearLayout
+        android:id="@+id/layout_privacy_policy"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tv_apps_management">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_locked"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_management_apps_privacy_policy"
+            android:textSize="@dimen/text_size_16sp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_privacy_policy"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/stroke_dark"
+        app:layout_constraintBottom_toBottomOf="@id/layout_privacy_policy"/>
+
+    <LinearLayout
+        android:id="@+id/layout_terms_of_service"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/divider_privacy_policy">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_note"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_management_apps_terms_of_service"
+            android:textSize="@dimen/text_size_16sp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_terms_of_service"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/stroke_dark"
+        app:layout_constraintBottom_toBottomOf="@id/layout_terms_of_service"/>
+
+    <LinearLayout
+        android:id="@+id/layout_app_version"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/divider_terms_of_service">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_warning_circle"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_management_apps_app_version"
+            android:textSize="@dimen/text_size_16sp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/tv_app_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_14sp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_app_version"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/stroke_dark"
+        app:layout_constraintBottom_toBottomOf="@id/layout_app_version"/>
+
+    <TextView
+        android:id="@+id/tv_user_management"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_management_user_title"
+        android:textColor="@color/blue_grey"
+        android:textSize="@dimen/text_size_14sp"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/divider_app_version" />
+
+    <LinearLayout
+        android:id="@+id/layout_delete_user"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tv_user_management">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_remove_circle"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_management_user_delete_user"
+            android:textSize="@dimen/text_size_16sp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_delete_user"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/stroke_dark"
+        app:layout_constraintBottom_toBottomOf="@id/layout_delete_user"/>
+
+    <LinearLayout
+        android:id="@+id/layout_sign_out"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/layout_delete_user">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_exit"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_management_user_sign_out"
+            android:textSize="@dimen/text_size_16sp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_sign_out"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/stroke_dark"
+        app:layout_constraintBottom_toBottomOf="@id/layout_sign_out"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
