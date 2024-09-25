@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.presentation.view.viewmodel
+package com.rocket.cosmic_detox.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -11,6 +11,9 @@ import com.rocket.cosmic_detox.domain.usecase.timer.GetDailyTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.GetTotalTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.UpdateDailyTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.UpdateTotalTimeUseCase
+import com.rocket.cosmic_detox.domain.usecase.user.DeleteUserUseCase
+import com.rocket.cosmic_detox.domain.usecase.user.SignOutUseCase
+import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,10 +29,10 @@ class UserViewModel @Inject constructor(
     private val updateTotalTimeUseCase: UpdateTotalTimeUseCase,
     private val getDailyTimeUseCase: GetDailyTimeUseCase,
     private val updateDailyTimeUseCase: UpdateDailyTimeUseCase,
-    private val updateRankingTotalTimeUseCase: UpdateRankingTotalTimeUseCase
-
-
-    ) : ViewModel() {
+    private val updateRankingTotalTimeUseCase: UpdateRankingTotalTimeUseCase,
+    private val signOutUseCase: SignOutUseCase,
+    private val deleteUserUseCase: DeleteUserUseCase
+) : ViewModel() {
     private val _userState = MutableStateFlow<UiState<User>>(UiState.Init)
     val userState: StateFlow<UiState<User>> get() = _userState.asStateFlow()
 
@@ -39,14 +42,17 @@ class UserViewModel @Inject constructor(
     private val _dailyTimeState = MutableStateFlow<UiState<Long>>(UiState.Init)
     val dailyTimeState: StateFlow<UiState<Long>> get() = _dailyTimeState.asStateFlow()
 
+    private val _signOutState = MutableStateFlow<LoginUiState>(LoginUiState.Init)
+    val signOutState: StateFlow<LoginUiState> = _signOutState.asStateFlow()
+
+    private val _deleteUserState = MutableStateFlow<LoginUiState>(LoginUiState.Init)
+    val deleteUserState: StateFlow<LoginUiState> = _deleteUserState.asStateFlow()
+
     private var currentTotalTime: Long = 0L
     private var currentDailyTime: Long = 0L
 
-
     val currentUserUID: String?
         get() = FirebaseAuth.getInstance().currentUser?.uid
-
-
 
     fun fetchUserData() {
         viewModelScope.launch {
@@ -76,6 +82,7 @@ class UserViewModel @Inject constructor(
             )
         }
     }
+
     fun updateDailyTime(dailyTime: Long) {
         viewModelScope.launch {
             _dailyTimeState.value = UiState.Loading
@@ -128,8 +135,6 @@ class UserViewModel @Inject constructor(
         }
     }
 
-
-
     fun updateRankingTotalTime(updatedTime: Long) {
         val uid = currentUserUID
         Log.d("Uid체크", uid.toString())
@@ -156,6 +161,34 @@ class UserViewModel @Inject constructor(
             }
         } else {
             Log.e("UserViewModel", "로그인된 사용자가 없습니다.")
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            _signOutState.value = LoginUiState.Loading
+            signOutUseCase(
+                onSuccess = {
+                    _signOutState.value = LoginUiState.Success
+                },
+                onFailure = {
+                    _signOutState.value = LoginUiState.Failure(it)
+                }
+            )
+        }
+    }
+
+    fun deleteUser() {
+        viewModelScope.launch {
+            _deleteUserState.value = LoginUiState.Loading
+            deleteUserUseCase(
+                onSuccess = {
+                    _deleteUserState.value = LoginUiState.Success
+                },
+                onFailure = {
+                    _deleteUserState.value = LoginUiState.Failure(it)
+                }
+            )
         }
     }
 }
