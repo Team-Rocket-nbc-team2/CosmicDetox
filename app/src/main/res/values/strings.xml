@@ -155,6 +155,16 @@
     <string name="uranus">천왕성</string>
     <string name="venus">금성</string>
 
+    <!-- Tutorial -->
+    <string name="tutorial_next">다음</string>
+    <string name="tutorial_cosmic">코스믹 디톡스와 함께 우주 여행을 하며 \n 중독에서 벗어나볼까요?</string>
+    <string name="tutorial_app">디톡스 중 사용 가능한 허용 앱과 \n 앱의 시간 제한을 설정할 수 있어요.</string>
+    <string name="tutorial_addiction">도파민에 중독된 우리들!</string>
+    <string name="tutorial_overlay">잠깐 다른 걸 하고 싶나요? \n 코스믹 디톡스가 막아줄게요!</string>
+    <string name="tutorial_race">누가 더 많이 디톡스를 했는지 \n 레이스를 통해 경쟁해보세요.</string>
+    <string name="tutorial_planet">총 9개의 행성을 디톡스 시간에 \n 따라 앞으로 나아갈 수 있어요.</string>
+    <string name="tutorial_start">시작하기</string>
+
     <!--  Error  -->
     <string name="error_not_sign_in">로그인이 필요합니다.</string>
 
