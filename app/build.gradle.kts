@@ -86,6 +86,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    // viewpager2
+    implementation(libs.androidx.viewpager2)
+
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
