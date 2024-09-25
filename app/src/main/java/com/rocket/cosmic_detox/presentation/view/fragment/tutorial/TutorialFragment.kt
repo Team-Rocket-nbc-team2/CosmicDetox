@@ -31,8 +31,6 @@ class TutorialFragment : Fragment() {
 
         // position에 따라 이미지, 텍스트 및 버튼 설정
         setupTutorialPage(position)
-
-        // 버튼 클릭 리스너 설정
         binding.btnTutorial.setOnClickListener {
             if (position < 4) {
                 // 다음 페이지로 이동
@@ -42,7 +40,6 @@ class TutorialFragment : Fragment() {
                 (activity as? TutorialActivity)?.finishTutorial()
             }
         }
-
         return binding.root
     }
 
