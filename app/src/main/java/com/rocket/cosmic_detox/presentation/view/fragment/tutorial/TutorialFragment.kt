@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.presentation.view.fragment.tutorial
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.core.view.setPadding
@@ -36,36 +38,35 @@ class TutorialFragment : Fragment() {
             0 -> {
                 imageView.setImageResource(R.drawable.tutorial_icon)
                 textView1.text = getString(R.string.tutorial_addiction)
-                textView1.marginBottom to 100
                 textView2.text = getString(R.string.tutorial_cosmic)
             }
             1 -> {
                 imageView.setImageResource(R.drawable.tutorial_allowed_app)
                 textView2.text = getString(R.string.tutorial_app)
-                textView2.marginTop to 30
                 textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                textView2.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                 textView2.setTypeface(null, Typeface.BOLD)
             }
             2 -> {
                 imageView.setImageResource(R.drawable.tutorial_overlay)
                 textView2.text = getString(R.string.tutorial_overlay)
-                textView2.marginTop to 30
                 textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                textView2.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                 textView2.setTypeface(null, Typeface.BOLD)
             }
             3 -> {
                 imageView.setImageResource(R.drawable.tutorial_race)
                 textView2.text = getString(R.string.tutorial_race)
-                textView2.marginTop to 30
                 textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                textView2.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                 textView2.setTypeface(null, Typeface.BOLD)
             }
             4 -> {
                 imageView.setImageResource(R.drawable.tutorial_planet)
                 imageView.setPadding(15)
                 textView2.text = getString(R.string.tutorial_planet)
-                textView2.marginTop to 30
                 textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                textView2.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                 textView2.setTypeface(null, Typeface.BOLD)
                 button.text = getString(R.string.tutorial_start)
             }
