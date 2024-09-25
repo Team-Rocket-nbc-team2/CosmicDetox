@@ -246,7 +246,7 @@ class TimerFragment : Fragment() {
 
                 Log.d("Overlay디버그", "showOverlay 실행")
 
-                //windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
+                windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
                 isOverlayVisible = true // 오버레이가 보이는 상태로 변경
             }
 //            overlayView?.let {
@@ -286,7 +286,7 @@ class TimerFragment : Fragment() {
         try {   // try, catch로 통화 시 앱 꺼지는 현상 로그 확인
             overlayView?.let { // 오버레이 제거
                 if (it.isAttachedToWindow) {
-                   // windowManager.removeView(it)
+                    windowManager.removeView(it)
                     isOverlayVisible = false
                 }
             }
