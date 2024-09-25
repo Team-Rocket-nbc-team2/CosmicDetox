@@ -101,7 +101,7 @@ class TimerFragment : Fragment() {
 
         // 버전에 따른 전화 상태 감지 콜백과 리스너 분류 설정
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            telephonyManager.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback)
+            telephonyManager.registerTelephonyCallback(requireActivity().mainExecutor, telephonyCallback!!)
         } else {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
         }
@@ -117,28 +117,31 @@ class TimerFragment : Fragment() {
     }
 
     // api 31 이상 통화 상태 콜백
-    private val telephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
-    object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-        override fun onCallStateChanged(state: Int) {
-            when (state) {
-                TelephonyManager.CALL_STATE_RINGING,  // 전화가 걸려올 때
-                TelephonyManager.CALL_STATE_OFFHOOK -> {  // 통화 중일 때
-                    isCallActive = true
-                    if (!BottomSheetState.getIsBottomSheetOpen()) {
-                        removeOverlay()
+    private val telephonyCallback = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+            override fun onCallStateChanged(state: Int) {
+                when (state) {
+                    TelephonyManager.CALL_STATE_RINGING,  // 전화가 걸려올 때
+                    TelephonyManager.CALL_STATE_OFFHOOK -> {  // 통화 중일 때
+                        isCallActive = true
+                        if (!BottomSheetState.getIsBottomSheetOpen()) {
+                            removeOverlay()
+                        }
                     }
-                }
-                TelephonyManager.CALL_STATE_IDLE -> {  // 전화가 종료될 때
-                    if (isCallActive) { // 이전에 통화 중이었던 경우만 실행
-                        isCallActive = false
-                        // 통화 종료 후 바로 오버레이 띄우면 앱 꺼지는 현상 발생해서 핸들러로 오버레이를 조금 지연시켜 띄우기
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
-                        }, 1000)
+                    TelephonyManager.CALL_STATE_IDLE -> {  // 전화가 종료될 때
+                        if (isCallActive) { // 이전에 통화 중이었던 경우만 실행
+                            isCallActive = false
+                            // 통화 종료 후 바로 오버레이 띄우면 앱 꺼지는 현상 발생해서 핸들러로 오버레이를 조금 지연시켜 띄우기
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                showOverlay() // 허용된 앱이 아닐 경우 다시 오버레이 띄우기
+                            }, 1000)
+                        }
                     }
                 }
             }
         }
+    } else {
+        null
     }
 
     // api 31 미만 통화 상태 리스너 정의
@@ -243,7 +246,7 @@ class TimerFragment : Fragment() {
 
                 Log.d("Overlay디버그", "showOverlay 실행")
 
-                windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
+                //windowManager.addView(it, overlayParams) // 오버레이 뷰 추가
                 isOverlayVisible = true // 오버레이가 보이는 상태로 변경
             }
 //            overlayView?.let {
@@ -283,7 +286,7 @@ class TimerFragment : Fragment() {
         try {   // try, catch로 통화 시 앱 꺼지는 현상 로그 확인
             overlayView?.let { // 오버레이 제거
                 if (it.isAttachedToWindow) {
-                    windowManager.removeView(it)
+                   // windowManager.removeView(it)
                     isOverlayVisible = false
                 }
             }
@@ -311,7 +314,7 @@ class TimerFragment : Fragment() {
         //removeOverlay() // Fragment 종료 시 오버레이 제거
         // 콜백 해제
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            telephonyManager.unregisterTelephonyCallback(telephonyCallback)
+            telephonyManager.unregisterTelephonyCallback(telephonyCallback!!)
         } else {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
         }
