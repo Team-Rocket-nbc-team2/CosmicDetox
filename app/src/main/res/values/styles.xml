@@ -38,6 +38,15 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+
+
+
     <!-- Number Picker -->
     <style name="AppTheme.NumberPicker" parent="">
         <item name="android:textColorPrimary">@color/white</item>
