@@ -23,8 +23,8 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFrag
 import com.rocket.cosmic_detox.presentation.extensions.*
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.fragment.introduce.PlanetInfoDialogFragment
-import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

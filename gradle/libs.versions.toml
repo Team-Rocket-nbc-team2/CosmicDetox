@@ -52,7 +52,6 @@ kakao-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoV2User" 
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
-androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version = "1.0.0" }
 
 
 [plugins]
