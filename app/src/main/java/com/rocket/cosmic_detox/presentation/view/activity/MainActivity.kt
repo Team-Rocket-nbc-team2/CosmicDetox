@@ -24,7 +24,7 @@ import com.rocket.cosmic_detox.databinding.ActivityMainBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

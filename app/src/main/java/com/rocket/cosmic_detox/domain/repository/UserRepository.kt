@@ -10,5 +10,8 @@ interface UserRepository {
     fun getTotalTime(successCallback: (Long) -> Unit, failCallback: (Exception?) -> Unit)
     fun updateDailyTime(dailyTime: Long, successCallback: () -> Unit, failCallback: (Exception?) -> Unit)
     fun getDailyTime(successCallback: (Long) -> Unit, failCallback: (Exception?) -> Unit)
+
+    fun signOut(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit)
+    fun deleteUser(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit)
 }
 
