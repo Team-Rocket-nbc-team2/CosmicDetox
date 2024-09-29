@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.model.Planet
 import java.math.BigDecimal
 
 fun ImageView.loadHomePlanetImage(cumulativeTime: BigDecimal) {
@@ -73,4 +74,13 @@ fun ImageView.loadInstalledAppIcon(appIconBitmap: Bitmap) {
         .placeholder(R.drawable.shape_default_app_icon)
         .error(R.drawable.shape_default_app_icon)
         .into(this)
+}
+
+fun ImageView.loadPlanetImageWithSize(planet: Planet, width: Int, height: Int, context: Context) {
+    val layoutParams = this.layoutParams
+    layoutParams.width = width.dpToPx(context)
+    layoutParams.height = height.dpToPx(context)
+    this.layoutParams = layoutParams
+
+    this.setImageResource(planet.imageResId)
 }
