@@ -21,6 +21,8 @@ import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDesc
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.extensions.*
 import com.rocket.cosmic_detox.presentation.uistate.UiState
+import com.rocket.cosmic_detox.presentation.view.fragment.introduce.PlanetInfoDialogFragment
+import com.rocket.cosmic_detox.presentation.view.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,6 +83,12 @@ class HomeFragment : Fragment() {
             )
             dialog.isCancelable = false
             dialog.show(getParentFragmentManager(), "ConfirmDialog")
+        }
+
+        ivHomePlanetInfo.setOnClickListener {
+            Log.d("hi","hi")
+            val dialog = PlanetInfoDialogFragment()
+            dialog.show(parentFragmentManager, "PlanetInfoDialog")
         }
     }
 

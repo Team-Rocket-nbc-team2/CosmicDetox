@@ -99,6 +99,15 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_home_current_location"
                 app:layout_constraintTop_toTopOf="@+id/cl_home_text_wrapper" />
 
+
+            <ImageView
+                android:id="@+id/iv_home_planet_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_planet_introduce"
+                app:layout_constraintStart_toEndOf="@+id/tv_home_planet_name"
+                app:layout_constraintTop_toTopOf="@+id/cl_home_text_wrapper" />
             <TextView
                 android:id="@+id/tv_home_total"
                 android:layout_width="wrap_content"
