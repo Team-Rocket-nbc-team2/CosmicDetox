@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.data.model.Planet
 import com.rocket.cosmic_detox.databinding.ItemPlanetBinding
+import com.rocket.cosmic_detox.presentation.extensions.loadPlanetImageWithSize
 
 class PlanetPagerAdapter : RecyclerView.Adapter<PlanetPagerAdapter.PlanetViewHolder>() {
 
@@ -31,9 +32,8 @@ class PlanetPagerAdapter : RecyclerView.Adapter<PlanetPagerAdapter.PlanetViewHol
         fun bind(planet: Planet) {
             binding.tvPlanetName.text = planet.name
             binding.tvPlanetDescription.text = planet.description
-            binding.tvPlanetIntroduction.text=planet.introduction
-            binding.ivPlanetImage.setImageResource(planet.imageResId)
-
+            binding.tvPlanetIntroduction.text = planet.introduction
+            binding.ivPlanetImage.loadPlanetImageWithSize(planet, planet.width, planet.height, itemView.context)
         }
     }
 }
