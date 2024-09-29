@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.viewpager2.widget.ViewPager2
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.model.Planet
 import com.rocket.cosmic_detox.databinding.DialogPlanetInfoBinding
@@ -25,16 +26,51 @@ class PlanetInfoDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ViewPager2 설정 (TabLayout 제거, ViewPager만 유지)
         binding.viewPagerPlanetInfo.adapter = planetAdapter
 
-        // 행성 정보 데이터 설정
         planetAdapter.submitList(getPlanetInfoList())
 
-        // 확인 버튼 클릭 시 다이얼로그 닫기
         binding.btnConfirm.setOnClickListener {
-            dismiss() // 다이얼로그 닫기
+            dismiss()
         }
+
+        binding.viewPagerPlanetInfo.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                if (position == 0) {
+                    binding.leftIcon.visibility = View.INVISIBLE
+                    binding.rightIcon.visibility = View.VISIBLE
+                }
+                else if (position == planetAdapter.itemCount - 1) {
+                    binding.leftIcon.visibility = View.VISIBLE
+                    binding.rightIcon.visibility = View.INVISIBLE
+                }
+                else {
+                    binding.leftIcon.visibility = View.VISIBLE
+                    binding.rightIcon.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        binding.leftIcon.setOnClickListener {
+            val currentItem = binding.viewPagerPlanetInfo.currentItem
+            if (currentItem > 0) {
+                binding.viewPagerPlanetInfo.setCurrentItem(currentItem - 1, true)
+            }
+        }
+
+        binding.rightIcon.setOnClickListener {
+            val currentItem = binding.viewPagerPlanetInfo.currentItem
+            if (currentItem < planetAdapter.itemCount - 1) {
+                binding.viewPagerPlanetInfo.setCurrentItem(currentItem + 1, true)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setStyle(STYLE_NO_TITLE, R.style.TransparentDialog)  // 투명 다이얼로그 스타일 적용
+        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {

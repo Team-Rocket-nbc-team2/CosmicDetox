@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:background="@drawable/shape_dialog">
 
-    <!-- 행성 이미지 -->
     <TextView
         android:id="@+id/tv_planet_name"
         android:layout_width="wrap_content"
