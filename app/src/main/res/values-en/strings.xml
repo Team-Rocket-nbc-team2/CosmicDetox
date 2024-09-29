@@ -83,6 +83,17 @@
     <string name="dialog_personal_policy_terms_title">Do you want to check the personal information processing policy and terms of use?</string>
     <string name="dialog_personal_policy_terms_desc">Move to the Notion page.</string>
 
+    <!--  Settings  -->
+    <string name="settings_main_title">Settings</string>
+    <string name="settings_management_apps_title">App management</string>
+    <string name="settings_management_user_title">User management</string>
+    <string name="settings_management_apps_privacy_policy">Privacy policy</string>
+    <string name="settings_management_apps_terms_of_service">Terms of service</string>
+    <string name="settings_management_apps_app_version">App version</string>
+    <string name="settings_management_user_delete_user">Delete user</string>
+    <string name="settings_management_user_sign_out">Sign out</string>
+
+
     <!--  Bottom Sheet  -->
     <string name="bottom_sheet_default">BottomSheet Default Title</string>
     <string name="bottom_sheet_complete">Completion</string>
@@ -145,6 +156,16 @@
     <string name="sun">Sun</string>
     <string name="uranus">Uranus</string>
     <string name="venus">Venus</string>
+
+    <!--  Tutorial  -->
+    <string name="tutorial_next">Next</string>
+    <string name="tutorial_cosmic">Shall we travel to space with Cosmic Detox \n to get out of addiction?</string>
+    <string name="tutorial_app">You can set the time limits for the allowed apps \n and apps that can be used during detox.</string>
+    <string name="tutorial_addiction">Those of us who are addicted to dopamine!</string>
+    <string name="tutorial_overlay">Do you want to do \n something else for a second? \n Cosmic Detox will stop you!</string>
+    <string name="tutorial_race">Compete through the race \n to see who detoxed more.</string>
+    <string name="tutorial_planet">A total of nine planets can move forward \n depending on detox time.</string>
+    <string name="tutorial_start">Start</string>
 
     <!--  Error  -->
     <string name="error_not_sign_in">User is not signed in</string>
