@@ -26,9 +26,26 @@ class PlanetInfoDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewPagerPlanetInfo.adapter = planetAdapter
+        binding.viewPagerPlanetInfo.apply {
+            adapter = planetAdapter
+            offscreenPageLimit = 3 // 페이지 로드 개수 조정
+            clipToPadding = false
+            clipChildren = false
 
+            setPadding(40, 0, 40, 0)
+
+            // 페이지 간의 간격을 조절하기 위한 마진 설정임
+            setPageTransformer { page, position ->
+                val pageMargin = resources.getDimensionPixelOffset(R.dimen.page_margin)
+                val offset = position * -pageMargin
+                page.translationX = offset
+                page.alpha = 1 - kotlin.math.abs(position)
+            }
+        }
         planetAdapter.submitList(getPlanetInfoList())
+
+
+
 
         binding.btnConfirm.setOnClickListener {
             dismiss()
