@@ -99,9 +99,9 @@
 ### 스플래시 및 로그인 
 
 
-|스플래시|앱 사용 튜토리얼|로그인|
-|:-----:|:-----:|:-----:|
-|<img width="200" src="">|<img width="200" src="">|<img width="200" src="https://github.com/user-attachments/assets/492ee6c9-ee51-4c61-b2f3-81ec28c3c779" />|
+|스플래시 및 앱 사용 튜토리얼|로그인|
+|:-----:|:-----:|
+|<img width="200" src="https://github.com/user-attachments/assets/2ae58027-4ce6-4f93-a6ec-7c10973795f6">|<img width="200" src="https://github.com/user-attachments/assets/492ee6c9-ee51-4c61-b2f3-81ec28c3c779" />|
 
 
 
@@ -123,13 +123,12 @@
 
 |순위|
 |:-----:|
-|<img width="200" src="">|
+|<img width="200" src="https://github.com/user-attachments/assets/bc3447f7-04f3-49c9-aaee-c9c7dbc0bbad">|
 ### 마이페이지
 
 |허용 앱 설정|앱 사용시간 설정|환경설정|
 |:-----:|:-----:|:-----:|
-|<img width="200" src="">|<img width="200" src="">|<img width="200" src="">|
-
+|<img width="200" src="https://github.com/user-attachments/assets/38149057-b51a-4c3e-81dd-14407007f73b">|<img width="200" src="https://github.com/user-attachments/assets/8e54f765-7241-4fe5-a9ae-2579910b3f12">|<img width="200" src="https://github.com/user-attachments/assets/dbccb8ab-050e-426f-b057-dcb5842f080e">|
 
 
 <br><br>
