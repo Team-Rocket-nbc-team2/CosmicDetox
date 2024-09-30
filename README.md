@@ -101,7 +101,7 @@
 
 |스플래시 및 앱 사용 튜토리얼|로그인|
 |:-----:|:-----:|
-|<img width="200" src="https://github.com/user-attachments/assets/2ae58027-4ce6-4f93-a6ec-7c10973795f6">|<img width="200" src="https://github.com/user-attachments/assets/492ee6c9-ee51-4c61-b2f3-81ec28c3c779" />|
+|<img width="200" src="https://github.com/user-attachments/assets/2ae58027-4ce6-4f93-a6ec-7c10973795f6">|<img width="200" src="https://github.com/user-attachments/assets/00b27317-4c87-4d6e-9696-cd70a7d2a706" />|
 
 
 
