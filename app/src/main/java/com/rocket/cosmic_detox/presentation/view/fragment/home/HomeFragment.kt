@@ -187,10 +187,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestPhoneStatePermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            requestPhoneStatePermissionLauncher.launch(arrayOf(Manifest.permission.READ_PHONE_STATE))
+        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)) {
+            Toast.makeText(requireContext(), "전화 상태 권한이 필요합니다. 앱 설정에서 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            startActivity(intent)
         } else {
-            Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
+            requestPhoneStatePermissionLauncher.launch(arrayOf(Manifest.permission.READ_PHONE_STATE))
         }
     }
 
