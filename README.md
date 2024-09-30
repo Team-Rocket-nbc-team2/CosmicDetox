@@ -110,7 +110,7 @@
 
 |우주 여행|행성 소개|
 |:------:|:-----:|
-|<img width="200" src=""> |<img width="200" src="https://github.com/user-attachments/assets/32cf5ce5-2f4a-431e-b6ab-fdf3d6a3a15f">|
+|<img width="200" src="https://github.com/user-attachments/assets/23856fa9-285b-4440-9a6b-fe22519c6ce5"> |<img width="200" src="https://github.com/user-attachments/assets/32cf5ce5-2f4a-431e-b6ab-fdf3d6a3a15f">|
 
 ### 타이머
 
