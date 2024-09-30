@@ -100,7 +100,9 @@
 
 |스플래시|앱 사용 튜토리얼|로그인|
 |:-----:|:-----:|:-----:|
-|<img width="200" src="https://user-images.githubusercontent.com/44221447/207079377-583d2957-6f2d-4928-b0f9-1b38d93b0615.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207080095-5eb24b14-c827-4b6f-a8b7-ab4ceca51ac4.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207086186-77eb9038-1e16-4dea-9af9-606161c3aa1f.gif" />|
+
+
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207079377-583d2957-6f2d-4928-b0f9-1b38d93b0615.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207080095-5eb24b14-c827-4b6f-a8b7-ab4ceca51ac4.gif">|<img width="200" src="https://github.com/user-attachments/assets/492ee6c9-ee51-4c61-b2f3-81ec28c3c779" />|
 
 ### 홈
 
