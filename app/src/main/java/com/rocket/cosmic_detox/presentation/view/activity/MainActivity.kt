@@ -89,9 +89,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         requestUsageAccessLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (permissionViewModel.isUsageStatsPermissionGranted(this)) {
-                requestOverlayPermission()
-            }
+            requestOverlayPermission()
         }
 
         requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
