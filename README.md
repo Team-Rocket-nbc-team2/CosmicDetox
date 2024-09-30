@@ -11,7 +11,16 @@
     <img src="https://github.com/user-attachments/assets/aa9a0e7b-7ea9-4125-9dd7-b69420795297" width="80%"/>
 </div>
 
+<br>
 
+## 🎮 앱 설치
+<a href="https://play.google.com/store/apps/details?id=com.rocket.cosmic_detox"><img alt='Available on the Play Store' src='https://user-images.githubusercontent.com/67373938/227817080-0c069757-4000-4e3e-919b-b062e667ecc4.svg' height='60px'/></a>
+<br>
+<a href="https://play.google.com/apps/testing/com.rocket.cosmic_detox">설치 전 권한부여 링크</a>
+
+
+
+<br><br>
 ##  프로젝트 소개
 
 
@@ -22,12 +31,9 @@
 
 **쉽지 않은 도전을 코스믹 디톡스가 도와줄게요.**
 
-<br>
 
 
-
-
-
+<br><br>
 ## 🚀 Team Rocket
 
 
@@ -38,7 +44,7 @@
 
 
 
-
+<br><br>
 
 ## ⚒️ 기술 스택
 
@@ -57,7 +63,7 @@
 | Image | Glide |
 
 
-</br>
+<br><br>
 
 ## 📺 화면 구성
 
@@ -87,7 +93,7 @@
   </tr>
 </table>
 
-
+<br><br>
 ## 기능 소개
 
 ### 홈 및 보안설정
@@ -132,18 +138,7 @@
 |:-----:|:-----:|
 |<img width="200" src="https://user-images.githubusercontent.com/44221447/207090920-777e3638-0e02-44a3-9d2a-80f9fa01da93.png">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207090806-16132558-34b6-4f7f-a6b4-c36b270a26b6.png">|
 
-
-
-
-
-
-
-
-
-
-
-
-
+<br><br>
 
 
 ## 기술적 의사결정
@@ -270,5 +265,7 @@
 
 1. Custom Token 사용을 위해서
 → kakao sign in api를 이용하고 나면 전용 token이 발급되는데, 이 token을 firebase authentication에 바로 사용할 수 없고 custom token을 만들어야 합니다.  Custom Token을 만드는 데에 서버가 필요하여 Firebase Functions을 사용해서  kakao sign in api와 custom token 제작을 동시에 진행하고, android에서 custom token을 받아올 수 있도록 해주었습니다.</details>
+
+
 
 
