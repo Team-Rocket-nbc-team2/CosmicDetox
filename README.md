@@ -250,17 +250,48 @@
 
 
 <details>
-  <summary>
-    ❓   </summary> 
-  
+  <summary> Service에서 타이머 허용 앱 제한 시간 구현했을 때의 오류</summary> 
 </details>
 
 <details>
-  <summary>
-    ❓   </summary> 
-  
+  <summary> Bottom Sheet Layout을 재사용하기</summary> 
 </details>
 
+
+<details>
+  <summary> SHA-1 Key가 일치하지 않는 현상</summary> 
+</details>
+
+<details>
+  <summary> AlarmManager 사용</summary> 
+</details>
+
+<details>
+  <summary> 정확한 알람 권한 , 시스템에서 자동으로 권한을 부여하는 경우</summary> 
+</details>
+
+<details>
+  <summary> 설치된 앱 필터링하기</summary> 
+</details>
+
+
+<details>
+  <summary> 허용 앱 삭제 시 바텀시트를 펼칠 때 앱이 종료되는 버그</summary> 
+</details>
+
+
+<details>
+  <summary> PhoneStateListner로 했을 때 정상적으로 에뮬레이터 되지 않던 문제 발생</summary> 
+</details>
+
+
+<details>
+  <summary> 안드로이드 스튜디오 실제 핸드폰 연결 시 xml 미리보기와 색상 달라 보이는 이슈</summary> 
+</details>
+
+<details>
+  <summary> Api 버전에 따라 분류했을 때 31 버전 아래에서 작동하지 않는 문제 발생</summary> 
+</details>
 
 
 
