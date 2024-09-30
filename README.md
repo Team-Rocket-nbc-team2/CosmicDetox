@@ -120,6 +120,9 @@
 - 디톡스 진행 중에 마이페이지에서 설정한 허용 앱 사용 가능. 
 이용 시간을 모두 소모한 경우에는 앱 사용 불가.
 
+## 🎞️ 시연 영상
+[![alt text](https://img.youtube.com/vi/aDK1tBw06I4/0.jpg)](https://www.youtube.com/watch?v=aDK1tBw06I4)
+
 ## 🎮 앱 설치
 <a href="https://play.google.com/store/apps/details?id=com.rocket.cosmic_detox"><img alt='Available on the Play Store' src='https://user-images.githubusercontent.com/67373938/227817080-0c069757-4000-4e3e-919b-b062e667ecc4.svg' height='60px'/></a>
 <br>
