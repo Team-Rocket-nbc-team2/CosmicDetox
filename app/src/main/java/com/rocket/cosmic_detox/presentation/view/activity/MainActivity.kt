@@ -9,7 +9,10 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -36,6 +39,12 @@ class MainActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
 
+    private lateinit var requestOverlayPermissionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var requestUsageAccessLauncher: ActivityResultLauncher<Intent>
+    private lateinit var requestNotificationPermissionLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var requestPhoneStatePermissionLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var requestExactAlarmPermissionLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,6 +54,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
+
+        initPermissionLauncher()
         setBottomNavigation()
         userViewModel.fetchUserData()
 
@@ -72,6 +83,26 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
     }
 
+    private fun initPermissionLauncher() {
+        requestOverlayPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            checkPermissions()
+        }
+
+        requestUsageAccessLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (permissionViewModel.isUsageStatsPermissionGranted(this)) {
+                requestOverlayPermission()
+            }
+        }
+
+        requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            requestPhoneStatePermission()
+        }
+
+        requestPhoneStatePermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            Log.d("TelephonyManager", "READ_PHONE_STATE 권한을 요청.")
+        }
+    }
+
     private fun setBottomNavigation() = with(binding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment
@@ -95,52 +126,26 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isUsageStateAllowed = permissionViewModel.isUsageStatsPermissionGranted(this)
         val isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(this)
-
         val isPostNotificationGrantedAllowed = permissionViewModel.isPostNotificationGranted(this)
         val isReadPhoneStatePermissionAllowed = permissionViewModel.isReadPhoneStatePermissionGranted(this)
         val isExactAlarmAllowed = permissionViewModel.isExactAlarmPermissionGranted(this)
 
-        Log.d("권한 뭔 일이다냐?",
-            "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
+        Log.d("권한 뭔 일이다냐?", "isUsageStateAllowed>> $isUsageStateAllowed, isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
 
-        //거절된 퍼미션이 있다면...
         if (!isUsageStateAllowed || !isRequestOverlay || !isPostNotificationGrantedAllowed || !isReadPhoneStatePermissionAllowed || !isExactAlarmAllowed) {
-
-            //권한 요청!
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_permission_title),
                 description = getString(R.string.dialog_permission_desc),
                 onClickConfirm = {
-                    if(!isPostNotificationGrantedAllowed){
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
-                    }
-
-                    if(!isUsageStateAllowed) {
-                        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                        startActivity(intent)
-                    }
-
-                    if(!isRequestOverlay) {
-                        if (!Settings.canDrawOverlays(this)) {
-                            val intent = Intent(
-                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:${this.packageName}")
-                            )
-                            startActivity(intent)
-                        }
-                    }
-
-                    if(!isReadPhoneStatePermissionAllowed) {
-                        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_PHONE_STATE), 1)
-                        } else {
-                            Log.d("TelephonyManager", "READ_PHONE_STATE 권한이 이미 허용되어 있습니다.")
-                        }
-                    }
-
-                    // 안드로이드 자체에서 권한을 부여하는 듯 isExactAlarmAllowed 초기값 true 임, 혹여 기기마다 다를 수 있으므로 코드 유지
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (!isUsageStateAllowed) {
+                        requestUsageAccessPermission()
+                    } else if (!isRequestOverlay) {
+                        requestOverlayPermission()
+                    } else if (!isPostNotificationGrantedAllowed) {
+                        requestNotificationPermission()
+                    } else if (!isReadPhoneStatePermissionAllowed) {
+                        requestPhoneStatePermission()
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         Log.d("ExactAlarm", "권한 상태 --> $isExactAlarmAllowed")
 
                         // 권한이 자동으로 부여되면 별도의 처리 불필요
@@ -157,5 +162,42 @@ class MainActivity : AppCompatActivity() {
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "ConfirmDialog")
         }
+    }
+
+    private fun requestUsageAccessPermission() {
+        val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+        requestUsageAccessLauncher.launch(intent)
+    }
+
+    private fun requestOverlayPermission() {
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${this.packageName}"))
+            requestOverlayPermissionLauncher.launch(intent)
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+            Toast.makeText(this, "알림 권한이 필요합니다. 앱 설정에서 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+            navigateToSetting()
+        } else {
+            requestNotificationPermissionLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
+        }
+    }
+
+    private fun requestPhoneStatePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+            Toast.makeText(this, "전화 상태 권한이 필요합니다. 앱 설정에서 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+            navigateToSetting()
+        } else {
+            requestPhoneStatePermissionLauncher.launch(arrayOf(Manifest.permission.READ_PHONE_STATE))
+        }
+    }
+
+    private fun navigateToSetting() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", this.packageName, null)
+        intent.data = uri
+        startActivity(intent)
     }
 }
