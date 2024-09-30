@@ -26,6 +26,12 @@
 
 ## 🚀 Team Rocket
 
+
+| 임가람 | 김보라 | 서정우 | 김찬휘 | 정용찬 |
+| :-: | :-: | :-: | :-: | :-: |
+| <img src="https://avatars.githubusercontent.com/u/84944117?v=4" width=150 height=150 style="border-radius:100%" > | <img src="https://avatars.githubusercontent.com/u/77606317?v=4" width=150 height=150 style="border-radius:100%" > | <img src="https://avatars.githubusercontent.com/u/89926090?v=4" width=150 height=150 style="border-radius:100%" > | <img src="https://avatars.githubusercontent.com/u/93977525?v=4" width=150 height=150 style="border-radius:100%" > | <img src="https://avatars.githubusercontent.com/u/167064562?v=4" width=150 height=150 style="border-radius:100%" > |
+| [@ImGaram](https://github.com/ImGaram) | [@kkevi](https://github.com/kkevi) | [@seojw0124](https://github.com/seojw0124) | [@1chanhue1](https://github.com/1chanhue1) | [@ggilggilmonster](https://github.com/ggilggilmonster) |
+
 <table>
     <tr>
         <td align="center"><a href="https://github.com/ImGaram">임가람</a></td>
