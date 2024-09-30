@@ -98,11 +98,10 @@
 
 ### 스플래시 및 로그인 
 
-![튜토리얼 짤 (2)]()
 
 |스플래시|앱 사용 튜토리얼|로그인|
 |:-----:|:-----:|:-----:|
-|<img width="200" src="https://user-images.githubusercontent.com/44221447/207079377-583d2957-6f2d-4928-b0f9-1b38d93b0615.gif">|<img width="200" src="https://github.com/user-attachments/assets/444938d3-82ae-4e2c-a6f8-ec1fc5777093">|<img width="200" src="https://github.com/user-attachments/assets/492ee6c9-ee51-4c61-b2f3-81ec28c3c779" />|
+|<img width="200" src="">|<img width="200" src="">|<img width="200" src="https://github.com/user-attachments/assets/492ee6c9-ee51-4c61-b2f3-81ec28c3c779" />|
 
 
 
@@ -111,24 +110,24 @@
 
 |우주 여행|행성 소개|
 |:------:|:-----:|
-|<img width="200" src="https://user-images.githubusercontent.com/44221447/207081108-e8351a02-5536-426d-9030-eb87efc399d5.gif"> |<img width="200" src="https://user-images.githubusercontent.com/44221447/207081544-b7624a60-a5e5-44f4-bd7d-520a8b2b97f7.gif">|
+|<img width="200" src=""> |<img width="200" src="https://github.com/user-attachments/assets/32cf5ce5-2f4a-431e-b6ab-fdf3d6a3a15f">|
 
 ### 타이머
 
 |타이머|잠깐 쉬기|오버레이|
 |:-----:|:-----:|:-----:|
-|<img width="200" src="https://user-images.githubusercontent.com/44221447/207083881-ba2cb1d0-f8b2-4891-b5d1-b78bf0fa6cf7.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207084281-5eacbcab-3d52-40b9-a5c6-b08cb2af0774.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207086841-e98b7388-5cf7-4909-a64c-733529c587c1.gif">|
+|<img width="200" src="">|<img width="200" src="">|<img width="200" src="">|
 
 ### 레이스
 
 |순위|
 |:-----:|
-|<img width="200" src="https://user-images.githubusercontent.com/44221447/207082258-6805a2a0-0def-432d-b1c5-2fa91a0a3ef6.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207082945-486ea598-4340-4b00-a176-62b6320abe4e.gif">|
+|<img width="200" src="">|
 ### 마이페이지
 
 |허용 앱 설정|앱 사용시간 설정|환경설정|
 |:-----:|:-----:|:-----:|
-|<img width="200" src="https://user-images.githubusercontent.com/44221447/207089697-90204358-eec4-4c39-a5fa-d043d66ecab0.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207089961-487b1a57-976d-4c7c-9cb0-f05c8a7e8b2f.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207090349-c0772934-867b-4014-bafb-9a7b65beb024.gif">|
+|<img width="200" src="">|<img width="200" src="">|<img width="200" src="">|
 
 
 
