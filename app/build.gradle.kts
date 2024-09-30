@@ -103,9 +103,9 @@ dependencies {
     implementation(libs.androidx.core)
 
     // hilt
-    implementation (libs.hilt.android)
+    implementation(libs.hilt.android)
     implementation(libs.androidx.lifecycle.service)
-    ksp (libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     // glide
     implementation(libs.glide)
@@ -116,6 +116,11 @@ dependencies {
     // google one tap login
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+
+    // ViewPager2 
+    implementation(libs.androidx.viewpager2)
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
