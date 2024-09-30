@@ -116,7 +116,7 @@
 
 |타이머 및 오버레이|잠깐 쉬기|
 |:-----:|:-----:|
-|<img width="200" src="">|<img width="200" src="https://github.com/user-attachments/assets/fca0c80c-13bf-4944-9681-16b4c17faf20">|
+|<img width="200" src="https://github.com/user-attachments/assets/6511a328-4223-4314-a8d1-5f3ec78ed154">|<img width="200" src="https://github.com/user-attachments/assets/fca0c80c-13bf-4944-9681-16b4c17faf20">|
 
 
 ### 레이스
