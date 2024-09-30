@@ -30,11 +30,11 @@
         <td align="center"><a href="https://github.com/ggilggilmonster">정용찬</a></td>
     </tr>
     <tr>
-        <td align="center"><img src="https://avatars.githubusercontent.com/u/84944117?v=4" width="175" height="175"></td>
-        <td align="center"><img src="https://avatars.githubusercontent.com/u/77606317?v=4" width="175" height="175"></td>
-        <td align="center"><img src="https://avatars.githubusercontent.com/u/89926090?v=4" width="175" height="175"></td>
-        <td align="center"><img src="https://avatars.githubusercontent.com/u/93977525?v=4" width="175" height="175"></td>
-        <td align="center"><img src="https://avatars.githubusercontent.com/u/167064562?v=4" height="175"></td>
+        <td align="center"><img src="https://avatars.githubusercontent.com/u/84944117?v=4" width="150" height="150"></td>
+        <td align="center"><img src="https://avatars.githubusercontent.com/u/77606317?v=4" width="150" height="150"></td>
+        <td align="center"><img src="https://avatars.githubusercontent.com/u/89926090?v=4" width="150" height="150"></td>
+        <td align="center"><img src="https://avatars.githubusercontent.com/u/93977525?v=4" width="150" height="150"></td>
+        <td align="center"><img src="https://avatars.githubusercontent.com/u/167064562?v=4" height="150"></td>
     </tr>
     <tr>
         <td align="center" width="200">
