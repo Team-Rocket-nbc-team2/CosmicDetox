@@ -274,7 +274,50 @@
 
 
 
+## 전체 기능
 
+### 홈 화면
+| 다가오는 모임 | 메뉴별 모임 탐색 | 금액별 모임 탐색 | 키워드로 모임 탐색 |
+| --- | --- | --- | --- |
+| <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/ffec8357-6151-485a-bdca-39ed3a2fe059"> | <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/398a5359-0ac5-49c6-a4c2-1b481a5bef18"> | <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/70c300c1-661d-4bf2-96e6-1628aa2913b7"> | <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/edb542a7-c3bc-48bb-9cf7-78dd8fefe3ec"> |
+
+### 지도 화면
+| 사용자 위치 기반 모임 탐색 및 거리 필터링 | 위치 권한 처리 | 가까운 모임 정보 보기 및 참가 | 모임 거리순 정렬 |
+| --- | --- | --- | --- |
+| <video src="https://github.com/boostcampwm-2022/android10-PlzStop/assets/48354989/90d27101-5f91-4854-be62-1e1a3b7636c6"> | <img width="200" src="https://github.com/boostcampwm-2022/android10-PlzStop/assets/48354989/9e3d912b-310a-4bf8-af55-e22cc774782d"> | <video src="https://github.com/boostcampwm-2022/android10-PlzStop/assets/48354989/d22cddb3-976c-49e6-b7ce-9f58a0f67a3f"> | <video src="https://github.com/boostcampwm-2022/android10-PlzStop/assets/48354989/38119354-b05b-45ed-bf3c-4d27f85912a2"> |
+
+### 모임 모집글 생성 화면
+| 모임 생성 |
+| --- |
+| <video src="https://github.com/boostcampwm-2022/android10-PlzStop/assets/48354989/da3a68b5-23b4-4315-b2b1-f882593bb6ba"> |
+    
+### 알림 화면
+| 알림 처리 Flow |
+| --- |
+| <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/1df4e979-b874-429a-b888-cc6f41da0eb9"> |
+    
+### 로그인 & 회원가입
+| 로그인 | 회원가입 |
+| --- | --- |
+| <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/19b9521e-61ed-4bb1-b6cb-1ce5a953e634"> | <video src="https://github.com/MeetUpEat/Zipbab/assets/48354989/e11617d7-6540-438f-a7f8-1461f8550cdd"> |
+
+
+### 설정 화면
+| 사용자의 로그인 상태에 따른 로그인, 로그아웃 |
+| --- |
+| <video src="https://github.com/MeetUpEat/Zipbab/assets/48354989/d1e86f4f-f7fd-40b0-9720-ca5f95a83f72"> |
+    
+### 프로필 화면
+| 프로필 수정 | 게시글 업로드 |
+| --- | --- |
+| <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/f78285e2-61e2-48ab-b935-70863566f7fb"> | <video src="https://github.com/MeetUpEat/Zipbab/assets/48354989/ccf5dfb5-55fd-4e04-b05f-e86feb0a2fe4"> |
+    
+    
+[내 모임 보기] |
+| --- |
+| <img width="200" src="https://github.com/MeetUpEat/Zipbab/assets/48354989/b627c9f1-d464-48d4-a20f-a9c251ee307d"> |
+ 
+<br/>
 
 
 
