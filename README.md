@@ -41,33 +41,7 @@
         <td align="center"><img src="https://avatars.githubusercontent.com/u/93977525?v=4" width="150" height="150"></td>
         <td align="center"><img src="https://avatars.githubusercontent.com/u/167064562?v=4" height="150"></td>
     </tr>
-    <tr>
-        <td align="center" width="200">
-            <b>
-                Leader<br>공통 BottomSheet UI<br>타이머 화면 허용 앱 실행 제한시간 기능<br>Kakao 로그인 기능 및 Google 로그인 refactoring 설정 UI 및 기능
-            </b>
-        </td>
-        <td align="center" width="200">
-            <b>
-                Sub-Leader<br>UIUX 디자인<br>일러스트 및 디자인<br>타이머 페이지 UI<br>공통 Dialog UI<br>Google 로그인 기능<br>허용앱 리마인드 알람 기능
-            </b>
-        </td>
-        <td align="center" width="200">
-            <b>
-                레이스 페이지 UI<br>마이페이지 기능<br>오버레이뷰 띄우기 기능<br>앱 허용 제한 시간 초기화 기능<br>X 로그인 기능
-            </b>
-        </td>
-        <td align="center" width="200">
-            <b>
-                마이페이지 UI<br>타이머 동작 및 초기화 기능<br>행성 소개 dialog 기능
-            </b>
-        </td>
-        <td align="center" width="200">
-            <b>
-                회원가입 UI<br>홈 화면 UI<br>튜토리얼 UI<br>레이스 화면 기능<br>회원 탈퇴<br>로그아웃 기능<br>통화 중 최적화 기능<br>튜토리얼 기능
-            </b>
-        </td>
-    </tr>
+   
 </table>
 
 ## ⚒️ 기술 스택
