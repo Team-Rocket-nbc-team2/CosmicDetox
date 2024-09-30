@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityTutorialBinding
-import com.rocket.cosmic_detox.presentation.view.fragment.tutorial.TutorialPagerAdapter
+import com.rocket.cosmic_detox.presentation.view.fragment.tutorial.adapter.TutorialPagerAdapter
 import com.rocket.cosmic_detox.util.SharedPreferencesUtil.setFirstTimeUserCompleted
 import dagger.hilt.android.AndroidEntryPoint
 
