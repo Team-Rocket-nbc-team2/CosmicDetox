@@ -3,12 +3,9 @@ package com.rocket.cosmic_detox.presentation.viewmodel
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rocket.cosmic_detox.data.model.AllowedApp
@@ -85,7 +82,6 @@ class AllowedAppViewModel @Inject constructor(
         return Runnable {
             while (_running.value) {
                 val currentPackageName = getCurrentOpenedAppPackageName()
-                Log.d("currentPackageName", currentPackageName)
 
                 if (currentPackageName != context.packageName && currentPackageName != currentOpenAppPackage &&
                     currentPackageName != "com.sec.android.app.launcher" && currentPackageName != "com.android.systemui" &&
@@ -94,7 +90,6 @@ class AllowedAppViewModel @Inject constructor(
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         showOverlay()
-                        Log.d("currentPackageName", "if 문 실행: showOverlay")
                     }, 0)
                 }
                 Thread.sleep(1500)
@@ -127,7 +122,6 @@ class AllowedAppViewModel @Inject constructor(
             }
         }
 
-        Log.d("currentPackageName", "lastEvent: $lastEvent")
         return lastEvent
     }
 
