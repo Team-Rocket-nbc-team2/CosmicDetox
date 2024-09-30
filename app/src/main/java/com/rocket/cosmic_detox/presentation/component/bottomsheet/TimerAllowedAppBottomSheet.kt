@@ -33,6 +33,7 @@ import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,7 +42,10 @@ import kotlinx.coroutines.launch
 class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private val modalBottomSheetIconBinding by lazy { ModalBottomsheetIconBinding.inflate(layoutInflater) }
     private lateinit var modalContentAllowedAppBinding: ModalContentAllowedAppBinding
+
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
+    private val permissionViewModel: PermissionViewModel by viewModels()
+
     private var isChecked = false
 
     private var rootView: View? = null
@@ -173,15 +177,19 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
     private fun initCountDownTimer(initTimer: Long) {
         var state = false
+        val isPostNotificationGrantedAllowed = permissionViewModel.isPostNotificationGranted(requireContext())
+
         countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 // 여기여기
                 allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
-                if(millisUntilFinished < 300000 && !state){ // 원래는 300000
-                    state = true
-                    val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
-                    requireActivity().startService(serviceIntent)
-                    Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
+                if(isPostNotificationGrantedAllowed){
+                    if(millisUntilFinished < 300000 && !state){ // 원래는 300000
+                        state = true
+                        val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
+                        requireActivity().startService(serviceIntent)
+                        Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
