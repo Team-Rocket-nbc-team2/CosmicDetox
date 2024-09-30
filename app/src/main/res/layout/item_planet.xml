@@ -10,7 +10,7 @@
         android:id="@+id/tv_planet_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="40dp"
         android:clickable="false"
         android:textColor="@color/white20"
         android:textSize="22sp"
@@ -24,9 +24,9 @@
         android:id="@+id/iv_planet_image"
         android:layout_width="220dp"
         android:layout_height="220dp"
-        android:layout_marginTop="32dp"
         android:clickable="false"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/tv_planet_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_planet_name"
@@ -34,38 +34,39 @@
         tools:layout_width="200dp"
         tools:src="@drawable/mercury" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
+    <!--    <androidx.constraintlayout.widget.Guideline-->
+    <!--        android:id="@+id/guideline"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        app:layout_constraintGuide_percent="0.55" />-->
 
     <TextView
         android:id="@+id/tv_planet_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:clickable="false"
         android:textColor="@color/white20"
-        android:textSize="22sp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_planet_introduction"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline"
         tools:text="누적 6시간 미만" />
 
     <TextView
         android:id="@+id/tv_planet_introduction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="32dp"
         android:clickable="false"
         android:gravity="center"
+        android:lineSpacingMultiplier="1.2"
         android:textColor="@color/white20"
-        android:textSize="16sp"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_planet_description"
         tools:text="태양계에서 가장 작은 행성이자, 태양과 가장 가까운 천체입니다." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
