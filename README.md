@@ -54,7 +54,7 @@
         </td>
         <td align="center" width="200">
             <b>
-                마이페이지 UI<br>타이머 동작 및 초기화 기능<br>행성 소개 dialog 기능 구현 
+                마이페이지 UI<br>타이머 동작 및 초기화 기능<br>행성 소개 dialog 기능
             </b>
         </td>
         <td align="center" width="200">
