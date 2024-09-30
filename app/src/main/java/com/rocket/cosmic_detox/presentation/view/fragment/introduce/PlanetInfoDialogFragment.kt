@@ -26,9 +26,26 @@ class PlanetInfoDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewPagerPlanetInfo.adapter = planetAdapter
+        binding.viewPagerPlanetInfo.apply {
+            adapter = planetAdapter
+            offscreenPageLimit = 3 // 페이지 로드 개수 조정
+            clipToPadding = false
+            clipChildren = false
 
+            setPadding(40, 0, 40, 0)
+
+            // 페이지 간의 간격을 조절하기 위한 마진 설정임
+            setPageTransformer { page, position ->
+                val pageMargin = resources.getDimensionPixelOffset(R.dimen.page_margin)
+                val offset = position * -pageMargin
+                page.translationX = offset
+                page.alpha = 1 - kotlin.math.abs(position)
+            }
+        }
         planetAdapter.submitList(getPlanetInfoList())
+
+
+
 
         binding.btnConfirm.setOnClickListener {
             dismiss()
@@ -101,49 +118,49 @@ class PlanetInfoDialogFragment : DialogFragment() {
 
             ),
             Planet(
-                "금성", "누적 12시간 미만", "지구에서 관측할 수 있는 행성으로\n" +
+                "금성", "누적 24시간 미만", "지구에서 관측할 수 있는 행성으로\n" +
                         "태양, 달 다음으로 밝게 보입니다.", R.drawable.introduce_venus,
                 170,
                 170
 
             ),
             Planet(
-                "지구", "누적 12시간 미만", "태양계에서 유일하게 생명체가 서식하며\n" +
+                "지구", "누적 48시간 미만", "태양계에서 유일하게 생명체가 서식하며\n" +
                         "우리 은하에서 중간 거리에 위치해있습니다.", R.drawable.introduce_earth,
                 170,
                 170
 
             ),
             Planet(
-                "해왕성", "누적 12시간 미만", "명왕성 제외 이후, 태양계 마지막 행성으로\n" +
+                "해왕성", "누적 64시간 미만", "명왕성 제외 이후, 태양계 마지막 행성으로\n" +
                         "메탄 때문에 천체가 푸르게 보입니다.", R.drawable.introduce_neptune,
                 170,
                 170
 
             ),
             Planet(
-                "천왕성", "누적 12시간 미만", "천왕성의 고리는 육안으로 관찰이 어려우며\n" +
+                "천왕성", "누적 120시간 미만", "천왕성의 고리는 육안으로 관찰이 어려우며\n" +
                         "유일하게 옆으로 누워 자전하는 행성입니다.", R.drawable.introduce_uranus,
                 200,
                 200
 
             ),
             Planet(
-                "토성", "누적 12시간 미만", "태양계에서 두 번째로 큰 행성으로,\n" +
+                "토성", "누적 240시간 미만", "태양계에서 두 번째로 큰 행성으로,\n" +
                         "물에 넣으면 뜰 수 있는 가스 행성입니다.", R.drawable.introduce_saturn,
                 220,
                 220
 
             ),
             Planet(
-                "목성", "누적 12시간 미만", "태양계에서 가장 부피가 크고\n" +
+                "목성", "누적 400시간 미만", "태양계에서 가장 부피가 크고\n" +
                         "매우 빠른 속도로 자전하고 있습니다.", R.drawable.introduce_jupiter,
                 170,
                 170
 
             ),
             Planet(
-                "태양", "누적 12시간 미만", "태양계의 중심이자 유일한 항성이며\n" +
+                "태양", "누적 400시간 이상", "태양계의 중심이자 유일한 항성이며\n" +
                         "우리 은하의 중심부를 지금도 공전 중입니다.", R.drawable.introduce_sun,
                 210,
                 210
