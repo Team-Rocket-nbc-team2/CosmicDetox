@@ -5,6 +5,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.LifecycleService
 import com.google.firebase.auth.FirebaseAuth
@@ -44,8 +45,14 @@ class TimerService : LifecycleService() {
     private var isTimerRunning = false
 
     private val timerRunnable = object : Runnable {
+        private var lastTime: Long = SystemClock.elapsedRealtime()
+
         override fun run() {
-            time++
+            val currentTime = SystemClock.elapsedRealtime()
+            val timeElapsed = (currentTime - lastTime) / 1000
+            time += timeElapsed
+            lastTime = currentTime
+
             sendTimeUpdate() // 1초마다 UI에 타이머 업데이트
             handler.postDelayed(this, 1000) // 1초마다 실행
         }
