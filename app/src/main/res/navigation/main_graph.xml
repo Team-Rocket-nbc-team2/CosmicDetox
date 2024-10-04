@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_home_to_timer"
             app:destination="@id/navigation_timer" />
+        <action
+            android:id="@+id/action_home_to_timer2"
+            app:destination="@id/navigation_timer2" />
     </fragment>
     <fragment
         android:id="@+id/navigation_race"
@@ -30,6 +33,9 @@
         <action
             android:id="@+id/action_my_to_set_limit_app"
             app:destination="@id/navigation_set_limit_app_dialog" />
+        <action
+            android:id="@+id/action_navigation_my_to_navigation_setting"
+            app:destination="@id/navigation_setting" />
     </fragment>
     <fragment
         android:id="@+id/navigation_timer"
@@ -66,4 +72,20 @@
             android:name="allowedApp"
             app:argType="com.rocket.cosmic_detox.data.model.AllowedApp" />
     </dialog>
+    <fragment
+        android:id="@+id/navigation_timer2"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.timer.TimerFragment2"
+        android:label="TimerFragment2"
+        tools:layout="@layout/fragment_timer2"/>
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.rocket.cosmic_detox.presentation.view.fragment.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_navigation_setting_to_navigation_my"
+            app:destination="@id/navigation_my"
+            app:popUpTo="@id/navigation_my"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

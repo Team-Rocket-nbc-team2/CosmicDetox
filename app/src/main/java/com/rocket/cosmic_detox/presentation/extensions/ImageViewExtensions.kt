@@ -1,12 +1,14 @@
 package com.rocket.cosmic_detox.presentation.extensions
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.model.Planet
 import java.math.BigDecimal
 
 fun ImageView.loadHomePlanetImage(cumulativeTime: BigDecimal) {
@@ -47,10 +49,38 @@ fun ImageView.loadRankingPlanetImage(cumulativeTime: BigDecimal) {
     setImageResource(imageResId)
 }
 
-fun ImageView.loadAppIcon(context: Context, packageId: String) {
+fun ImageView.loadAllowedAppIcon(context: Context, packageId: String, appIcon: String) {
+    if (appIcon.isNotEmpty()) {
+        Glide.with(this)
+            .load(appIcon)
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+            .placeholder(R.drawable.shape_default_app_icon)
+            .error(R.drawable.shape_default_app_icon)
+            .into(this)
+    } else {
+        Glide.with(this)
+            .load(context.packageManager.getApplicationIcon(packageId))
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+            .placeholder(R.drawable.shape_default_app_icon)
+            .error(R.drawable.shape_default_app_icon)
+            .into(this)
+    }
+}
+
+fun ImageView.loadInstalledAppIcon(appIconBitmap: Bitmap) {
     Glide.with(this)
-        .load(context.packageManager.getApplicationIcon(packageId))
+        .load(appIconBitmap)
         .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-        .placeholder(R.color.blue_grey)
+        .placeholder(R.drawable.shape_default_app_icon)
+        .error(R.drawable.shape_default_app_icon)
         .into(this)
+}
+
+fun ImageView.loadPlanetImageWithSize(planet: Planet, width: Int, height: Int, context: Context) {
+    val layoutParams = this.layoutParams
+    layoutParams.width = width.dpToPx(context)
+    layoutParams.height = height.dpToPx(context)
+    this.layoutParams = layoutParams
+
+    this.setImageResource(planet.imageResId)
 }

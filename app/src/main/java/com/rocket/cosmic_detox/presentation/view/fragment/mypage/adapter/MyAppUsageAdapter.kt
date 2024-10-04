@@ -4,15 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.data.model.AppUsage
 import com.rocket.cosmic_detox.databinding.ItemAppUsageBinding
 import com.rocket.cosmic_detox.presentation.extensions.fromMillisecondsToSeconds
-import com.rocket.cosmic_detox.presentation.extensions.loadAppIcon
+import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.common.ViewHolder
+import com.rocket.cosmic_detox.presentation.extensions.loadInstalledAppIcon
 
 class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDiffCallback()) {
 
@@ -27,7 +25,7 @@ class MyAppUsageAdapter : ListAdapter<AppUsage, ViewHolder<AppUsage>>(AppUsageDi
     class MyAppUsageViewHolder(private val binding: ItemAppUsageBinding) : ViewHolder<AppUsage>(binding.root) {
         override fun onBind(item: AppUsage) {
             with(binding) {
-                ivAppUsageIcon.loadAppIcon(itemView.context, item.packageId)
+                item.appIcon?.let { ivAppUsageIcon.loadInstalledAppIcon(it) }
                 tvAppUsageName.text = item.appName
                 tvAppUsageTime.setCumulativeTime(item.usageTime.toBigDecimal().fromMillisecondsToSeconds())
                 progressbarAppUsage.setProgress(item.usagePercentage, true) // TODO: 퍼센트 설정해야 함.

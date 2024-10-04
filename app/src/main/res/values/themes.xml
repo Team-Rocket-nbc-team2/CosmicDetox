@@ -5,13 +5,8 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="android:colorBackground">@color/background</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialog</item>
-    </style>
+        <item name="android:windowIsTranslucent">true</item>
 
-    <style name="Theme.CosmicDetox" parent="Base.Theme.CosmicDetox" />
-
-    <style name="AppTheme.NumberPicker" parent="">
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textSize">24sp</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 </resources>

@@ -6,11 +6,13 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.core.graphics.drawable.toBitmap
 import com.rocket.cosmic_detox.data.model.AllowedApp
 import com.rocket.cosmic_detox.data.model.CheckedApp
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.util.AppCategoryManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -18,7 +20,7 @@ import javax.inject.Inject
 class AllowAppRepositoryImpl @Inject constructor(
     private val packageManager: PackageManager,
     private val userDataSource: UserDataSource,
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : AllowAppRepository {
 
 //    override fun getInstalledApps(): Flow<List<CheckedApp>> = flow {
@@ -73,12 +75,15 @@ class AllowAppRepositoryImpl @Inject constructor(
         resolveInfoList.map {
             val packageName = it.activityInfo.packageName
             val appName = context.getAppNameFromPackageName(packageName)
+            // 앱 아이콘을 Drawable로 로드 -> Bitmap으로 변환
+            val appIcon = it.loadIcon(context.packageManager).toBitmap()
 
             // 시스템 앱을 필터링
-            if (!context.isSystemPackage(packageName)) {
+            if (!context.isSystemPackage(packageName) && packageName != context.packageName) { // 시스템 앱, 우리 앱은 제외
                 val app = CheckedApp(
                     packageId = packageName,
                     appName = appName,
+                    appIcon = appIcon,
                     limitedTime = 0
                 )
                 apps.add(app)
@@ -129,6 +134,9 @@ class AllowAppRepositoryImpl @Inject constructor(
                 Log.e("AllowAppRepositoryImpl", "허용 앱 추가 실패", result.exceptionOrNull())
                 return result // 추가 작업이 실패하면 해당 실패 결과 반환
             }
+
+            // 아이콘 업로드는 백그라운드에서 진행
+            userDataSource.uploadAppIconsInBackground(uid, addedApps)
         }
 
         // 모든 작업이 성공적으로 완료되면 성공 결과 반환

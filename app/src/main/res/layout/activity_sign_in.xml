@@ -22,11 +22,11 @@
         android:text="@string/sign_rules"
         android:textColor="@color/blue_grey"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/ll_rules_policy"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gl_rules" />
+        app:layout_constraintTop_toBottomOf="@id/gl_rules"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <LinearLayout
         android:id="@+id/ll_rules_policy"
@@ -41,17 +41,17 @@
             android:id="@+id/tv_rules_policy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:text="@string/sign_rules_policy"
             android:textColor="@color/primary"
-            android:text="@string/sign_rules_policy" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_rules_policy_agree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:text="@string/sign_rules_policy_agree"
             android:textColor="@color/blue_grey"
-            android:text="@string/sign_rules_policy_agree" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -89,16 +89,16 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.69" />
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_kakao"-->
-    <!--        android:layout_width="57dp"-->
-    <!--        android:layout_height="57dp"-->
-    <!--        android:layout_marginStart="10dp"-->
-    <!--        android:layout_marginTop="10dp"-->
-    <!--        android:src="@drawable/kakao"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/social_icon_down"-->
-    <!--        app:layout_constraintStart_toStartOf="@+id/gl_start"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/social_icon_up" />-->
+    <ImageView
+        android:id="@+id/iv_kakao"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/kakao"
+        app:layout_constraintBottom_toTopOf="@+id/social_icon_down"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toTopOf="@+id/social_icon_up" />
 
     <ImageView
         android:id="@+id/iv_google"
@@ -107,19 +107,19 @@
         android:layout_marginEnd="3dp"
         android:src="@drawable/google"
         app:layout_constraintBottom_toTopOf="@+id/social_icon_down"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_x"
+        app:layout_constraintStart_toEndOf="@+id/iv_kakao"
         app:layout_constraintTop_toTopOf="@+id/social_icon_up" />
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_x"-->
-    <!--        android:layout_width="50dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_marginEnd="10dp"-->
-    <!--        android:src="@drawable/x"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/iv_google"-->
-    <!--        app:layout_constraintEnd_toStartOf="@+id/gl_end"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/iv_google" />-->
+    <ImageView
+        android:id="@+id/iv_x"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/x"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_google"
+        app:layout_constraintEnd_toStartOf="@+id/gl_end"
+        app:layout_constraintTop_toTopOf="@+id/iv_google" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/social_icon_down"
@@ -153,5 +153,21 @@
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toEndOf="@id/gl_icon"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_sign_in_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/black"
+        android:alpha=".4"
+        android:orientation="vertical">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

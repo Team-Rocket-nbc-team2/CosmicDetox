@@ -3,12 +3,11 @@ package com.rocket.cosmic_detox.data.repository
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.Ranking
 import com.rocket.cosmic_detox.domain.repository.RaceRepository
 import com.rocket.cosmic_detox.data.model.RankingInfo
-import com.rocket.cosmic_detox.data.remote.firebase.season.SeasonDataSource
-import com.rocket.cosmic_detox.data.remote.firebase.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.season.SeasonDataSource
+import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
+import com.rocket.cosmic_detox.util.RankingCalculator
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -30,8 +29,15 @@ class RaceRepositoryImpl @Inject constructor(
                 val docs = task.result?.documents?.mapNotNull {
                     it.toObject<RankingInfo>()
                 } ?: emptyList()
-                // 추후에 포인트 제도로 변경 시 totalTime point로 변경
-                trySend(docs.sortedByDescending { it.totalTime })
+
+                // totalTime 기준으로 내림차순 정렬, 동일하면 이름 오름차순 정렬, 상위 100명만 가져옴
+                val sortedDocs = docs
+                    .sortedWith(compareByDescending<RankingInfo> { it.totalTime }.thenBy { it.name })
+                    .take(100)
+
+                val rankingList = RankingCalculator.assignRanks(sortedDocs)
+
+                trySend(rankingList)
             } else {
                 Log.e("ggil", "실패")
             }

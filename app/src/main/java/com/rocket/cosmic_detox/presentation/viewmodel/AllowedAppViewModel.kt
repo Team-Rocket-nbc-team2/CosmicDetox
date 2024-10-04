@@ -84,13 +84,14 @@ class AllowedAppViewModel @Inject constructor(
                 val currentPackageName = getCurrentOpenedAppPackageName()
 
                 if (currentPackageName != context.packageName && currentPackageName != currentOpenAppPackage &&
-                    currentPackageName != "com.sec.android.app.launcher" && currentPackageName != "com.android.systemui") {
+                    currentPackageName != "com.sec.android.app.launcher" && currentPackageName != "com.android.systemui" &&
+                    currentPackageName != "com.samsung.android.incallui" && currentPackageName != "com.samsumg.android.dialer" &&
+                    currentPackageName != "com.android.incallui") {
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         showOverlay()
                     }, 0)
                 }
-
                 Thread.sleep(1500)
             }
         }
