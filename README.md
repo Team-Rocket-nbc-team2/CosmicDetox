@@ -16,7 +16,6 @@
 ## 🎮 앱 설치
 <a href="https://play.google.com/store/apps/details?id=com.rocket.cosmic_detox"><img alt='Available on the Play Store' src='https://user-images.githubusercontent.com/67373938/227817080-0c069757-4000-4e3e-919b-b062e667ecc4.svg' height='60px'/></a>
 <br>
-<a href="https://play.google.com/apps/testing/com.rocket.cosmic_detox">설치 전 권한부여 링크</a>
 
 
 
