@@ -18,14 +18,14 @@ properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.rocket.cosmic_detox"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.rocket.cosmic_detox"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 3
-        versionName = "1.1.1"
+        targetSdk = 35
+        versionCode = 4
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

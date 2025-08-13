@@ -147,7 +147,7 @@ class AllowAppRepositoryImpl @Inject constructor(
 private fun Context.isSystemPackage(packageName: String): Boolean {
     try {
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        return packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0
+        return packageInfo.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM) != 0
     } catch (e: PackageManager.NameNotFoundException) {
         Log.e("isSystemPackage", e.toString())
     }
