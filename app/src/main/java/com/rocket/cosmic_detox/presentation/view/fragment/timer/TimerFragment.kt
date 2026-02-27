@@ -52,9 +52,9 @@ class TimerFragment : Fragment() {
 
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
-    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
+    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
-    private lateinit var windowManager: WindowManager // 오버레이를 위한 WindowManager
+    private lateinit var windowManager: WindowManager
     private var overlayView: View? = null // 오버레이 뷰
 
     private val timerUpdateReceiver = object : BroadcastReceiver() {
