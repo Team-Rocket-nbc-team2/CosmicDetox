@@ -7,7 +7,7 @@ import java.util.Date
 
 interface UserDataSource {
 
-    suspend fun getUid(): String
+    suspend fun getUid(): Stringdd
 
     suspend fun getUserCreatedDate(uid: String): Result<Date>
 
