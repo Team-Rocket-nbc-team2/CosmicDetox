@@ -29,8 +29,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
-        resValue("string", "KAKAO_OAUTH_HOST", properties.getProperty("KAKAO_OAUTH_HOST"))
+        buildConfigField("String", "KAKAO_APP_KEY", "\"${properties["KAKAO_APP_KEY"]}\"")
+        resValue("string", "KAKAO_OAUTH_HOST", "\"${properties["KAKAO_OAUTH_HOST"]}\"")
     }
 
     signingConfigs {
