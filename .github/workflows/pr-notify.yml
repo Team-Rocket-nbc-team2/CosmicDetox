@@ -15,24 +15,24 @@ jobs:
       - name: Send to Slack
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PR_AUTHOR: ${{ github.event.workflow_run.actor.login }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          PR_TITLE: ${{ github.event.workflow_run.pull_requests[0].title }}
+          PR_URL: ${{ github.event.workflow_run.pull_requests[0].url }}
         run: |
           declare -A SLACK_MAP
           SLACK_MAP["seojw0124"]="U0AH1TA9RSN"
-
-          PR_NUMBER=${{ github.event.workflow_run.pull_requests[0].number }}
-          PR_TITLE="${{ github.event.workflow_run.pull_requests[0].title }}"
-          PR_URL="${{ github.event.workflow_run.pull_requests[0].url }}"
-          PR_AUTHOR="${{ github.event.workflow_run.actor.login }}"
-
+          
           AUTHOR_SLACK="${SLACK_MAP[$PR_AUTHOR]}"
           if [ -n "$AUTHOR_SLACK" ]; then
             AUTHOR_MENTION="<@$AUTHOR_SLACK>"
           else
             AUTHOR_MENTION="$PR_AUTHOR"
           fi
-
+          
           REVIEWER_LOGINS=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json reviewRequests --jq '[.reviewRequests[].login] | .[]')
-
+          
           MENTIONS=""
           for LOGIN in $REVIEWER_LOGINS; do
             SLACK_ID="${SLACK_MAP[$LOGIN]}"
@@ -42,14 +42,14 @@ jobs:
               MENTIONS="$MENTIONS $LOGIN"
             fi
           done
-
+          
           if [ -z "$MENTIONS" ]; then
             MENTIONS="없음"
           fi
-
+          
           curl -X POST \
             -H 'Content-type: application/json' \
             --data '{
               "text": "📢 *PR 알림*\n*제목:* '"${PR_TITLE}"' (#'"${PR_NUMBER}"')\n*작성자:* '"${AUTHOR_MENTION}"'\n*리뷰어:* '"${MENTIONS}"'\n*링크:* '"${PR_URL}"'"
             }' \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+            "$SLACK_WEBHOOK_URL"
