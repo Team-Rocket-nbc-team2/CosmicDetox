@@ -2,7 +2,6 @@ package com.rocket.cosmic_detox.data.repository
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -18,11 +17,10 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.BuildConfig
 import com.rocket.cosmic_detox.domain.repository.SignInRepository
 import com.rocket.cosmic_detox.util.Constants.PROVIDER_TWITTER
 import com.rocket.cosmic_detox.util.DateFormatText
-import kotlinx.coroutines.tasks.await
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -38,7 +36,7 @@ class SignInRepositoryImpl @Inject constructor(
         val credentialManager = CredentialManager.create(context)
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(context.getString(R.string.default_web_client_id))
+            .setServerClientId(BuildConfig.DEFAULT_WEB_CLIENT_ID)
             .build()
         val credentialRequest = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)

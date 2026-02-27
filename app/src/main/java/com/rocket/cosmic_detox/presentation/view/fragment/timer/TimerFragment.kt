@@ -23,7 +23,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,12 +32,12 @@ import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
+import com.rocket.cosmic_detox.presentation.service.TimerService
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.service.TimerService
-import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,9 +52,9 @@ class TimerFragment : Fragment() {
 
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
-    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>() // 허용 앱 리스트 가져오기 위한 뷰모델
+    private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
 
-    private lateinit var windowManager: WindowManager // 오버레이를 위한 WindowManager
+    private lateinit var windowManager: WindowManager
     private var overlayView: View? = null // 오버레이 뷰
 
     private val timerUpdateReceiver = object : BroadcastReceiver() {
@@ -419,9 +418,8 @@ class TimerFragment : Fragment() {
     }
 }
 
-object BottomSheetState { // 바텀시트 상태 저장 -> 이걸 해야 바텀시트에서 허용 앱 이동했을 때 오버레이뷰가 뜨는 것을 방지할 수 있음.
-    // 결국 TimerFragment에서 바텀시트로 이동해도 TimerFragment 위에 바텀시트를 덮어씌우는 거나 마찬가지라 TimerFragment도 살아있는 상태라 바텀시트랑 중복이 됨.
-    // 바텀시트에서 허용 앱 이동을 해도 TimerFragment도 이를 감지하기 때문에 중복 발생한다는 의미. 따로 동작하도록 바텀시트 상태 저장
+object BottomSheetState {
+
     private var isBottomSheetOpen = false
 
     fun setIsBottomSheetOpen(value: Boolean) {
@@ -433,20 +431,3 @@ object BottomSheetState { // 바텀시트 상태 저장 -> 이걸 해야 바텀�
         return isBottomSheetOpen
     }
 }
-
-
-// 아래 코드 혹시 몰라서 냅둔 코드! 나중에 정상 작동하는 거 확인 되면 삭제 가능
-//private fun requestOverlayPermission() { // 오버레이 권한 요청
-//    if (!Settings.canDrawOverlays(requireContext())) {
-//        val intent = Intent(
-//            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-//            Uri.parse("package:${requireContext().packageName}")
-//        )
-//        overlayPermissionLauncher.launch(intent)
-//    } else {
-//        if (!BottomSheetState.getIsBottomSheetOpen()) { // 바텀시트가 열려있지 않은 경우에만 오버레이 띄우기 -> 바텀시트가 열려있을 때는 오버레이 띄우지 않음
-//            // 이걸 안 해주면 바텀시트에서 허용 앱으로 이동할 때 TimerFragment도 살아있어서 이거 같이 호출됨. 중복 호출되는 것을 방지하기 위함.
-//            showOverlay() // 오버레이 띄우기
-//        }
-//    }
-//}

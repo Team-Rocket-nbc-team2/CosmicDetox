@@ -29,17 +29,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "KAKAO_APP_KEY", properties.getProperty("KAKAO_APP_KEY"))
-        resValue("string", "KAKAO_OAUTH_HOST", properties.getProperty("KAKAO_OAUTH_HOST"))
+        buildConfigField("String", "DEFAULT_WEB_CLIENT_ID", "\"${properties["DEFAULT_WEB_CLIENT_ID"]}\"")
+        buildConfigField("String", "KAKAO_APP_KEY", "\"${properties["KAKAO_APP_KEY"]}\"")
+        resValue("string", "KAKAO_OAUTH_HOST", "\"${properties["KAKAO_OAUTH_HOST"]}\"")
     }
 
     signingConfigs {
-        getByName("debug") {
-            storeFile = properties["storeFile"]?.toString()?.let { file(it) }
-            storePassword = properties["storePassword"]?.toString()
-            keyAlias = properties["keyAlias"]?.toString()
-            keyPassword = properties["keyPassword"]?.toString()
-        }
         create("release") {
             storeFile = properties["storeFile"]?.toString()?.let { file(it) }
             storePassword = properties["storePassword"]?.toString()
