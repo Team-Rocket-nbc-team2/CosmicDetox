@@ -23,7 +23,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,12 +32,12 @@ import com.rocket.cosmic_detox.databinding.FragmentTimerBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAppBottomSheet
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
+import com.rocket.cosmic_detox.presentation.service.TimerService
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.service.TimerService
-import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
