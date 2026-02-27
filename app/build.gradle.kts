@@ -35,12 +35,6 @@ android {
     }
 
     signingConfigs {
-        getByName("debug") {
-            storeFile = properties["storeFile"]?.toString()?.let { file(it) }
-            storePassword = properties["storePassword"]?.toString()
-            keyAlias = properties["keyAlias"]?.toString()
-            keyPassword = properties["keyPassword"]?.toString()
-        }
         create("release") {
             storeFile = properties["storeFile"]?.toString()?.let { file(it) }
             storePassword = properties["storePassword"]?.toString()
