@@ -3,7 +3,7 @@ name: "[CI] Build Check"
 on:
   pull_request:
     branches:
-      - develop
+      - dev
 
 jobs:
   build:
