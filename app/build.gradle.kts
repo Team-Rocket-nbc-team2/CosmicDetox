@@ -29,6 +29,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField("String", "DEFAULT_WEB_CLIENT_ID", "\"${properties["DEFAULT_WEB_CLIENT_ID"]}\"")
         buildConfigField("String", "KAKAO_APP_KEY", "\"${properties["KAKAO_APP_KEY"]}\"")
         resValue("string", "KAKAO_OAUTH_HOST", "\"${properties["KAKAO_OAUTH_HOST"]}\"")
     }
