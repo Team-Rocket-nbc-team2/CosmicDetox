@@ -24,6 +24,9 @@ jobs:
       - name: Create local.properties
         run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
 
+      - name: Create key.properties
+        run: touch ./app/key.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
