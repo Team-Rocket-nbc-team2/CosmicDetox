@@ -432,20 +432,3 @@ object BottomSheetState { // 바텀시트 상태 저장 -> 이걸 해야 바텀�
         return isBottomSheetOpen
     }
 }
-
-
-// 아래 코드 혹시 몰라서 냅둔 코드! 나중에 정상 작동하는 거 확인 되면 삭제 가능
-//private fun requestOverlayPermission() { // 오버레이 권한 요청
-//    if (!Settings.canDrawOverlays(requireContext())) {
-//        val intent = Intent(
-//            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-//            Uri.parse("package:${requireContext().packageName}")
-//        )
-//        overlayPermissionLauncher.launch(intent)
-//    } else {
-//        if (!BottomSheetState.getIsBottomSheetOpen()) { // 바텀시트가 열려있지 않은 경우에만 오버레이 띄우기 -> 바텀시트가 열려있을 때는 오버레이 띄우지 않음
-//            // 이걸 안 해주면 바텀시트에서 허용 앱으로 이동할 때 TimerFragment도 살아있어서 이거 같이 호출됨. 중복 호출되는 것을 방지하기 위함.
-//            showOverlay() // 오버레이 띄우기
-//        }
-//    }
-//}
