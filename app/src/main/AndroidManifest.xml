@@ -12,6 +12,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -19,7 +20,7 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
-        android:name=".presentation.CosmicDetoxApplication"
+        android:name=".CosmicDetoxApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -32,12 +33,6 @@
         <activity
             android:name=".presentation.view.activity.TutorialActivity"
             android:exported="false" />
-
-        <service
-            android:name=".presentation.service.AlarmService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="shortService" />
 
         <activity
             android:name=".presentation.view.activity.SplashActivity"
@@ -84,6 +79,11 @@
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="shortService" />
+        <service
+            android:name=".presentation.service.AllowedAppMonitorService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 
         <receiver
             android:name=".presentation.receiver.MidnightResetReceiver"
