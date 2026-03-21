@@ -33,13 +33,11 @@ import com.rocket.cosmic_detox.presentation.component.bottomsheet.TimerAllowedAp
 import com.rocket.cosmic_detox.presentation.component.dialog.OneButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
 import com.rocket.cosmic_detox.presentation.service.TimerService
-import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
+import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 //@AndroidEntryPoint
@@ -442,6 +440,14 @@ class TimerFragment : Fragment() {
         }
     }
 
+    private val openAllowedAppSheetReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == MainActivity.ACTION_OPEN_ALLOWED_APP_SHEET) {
+                openAllowedAppSheet()
+            }
+        }
+    }
+
     private val overlayPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
@@ -530,6 +536,12 @@ class TimerFragment : Fragment() {
         super.onStart()
         val intentFilter = IntentFilter("com.rocket.cosmic_detox.TIMER_UPDATE")
         requireContext().registerReceiver(timerUpdateReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+        val openAllowedAppSheetFilter = IntentFilter(MainActivity.ACTION_OPEN_ALLOWED_APP_SHEET)
+        requireContext().registerReceiver(
+            openAllowedAppSheetReceiver,
+            openAllowedAppSheetFilter,
+            Context.RECEIVER_EXPORTED
+        )
 
         if (!permissionViewModel.isOverlayPermissionGranted(requireContext()) &&
             !Settings.canDrawOverlays(requireContext())) {
@@ -544,6 +556,7 @@ class TimerFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         requireContext().unregisterReceiver(timerUpdateReceiver)
+        requireContext().unregisterReceiver(openAllowedAppSheetReceiver)
     }
 
     override fun onPause() {
@@ -648,10 +661,15 @@ class TimerFragment : Fragment() {
         }
 
         btnTimerRest.setOnClickListener {
-            val bottomSheet = TimerAllowedAppBottomSheet()
-            bottomSheet.show(parentFragmentManager, "BottomSheet")
-            BottomSheetState.setIsBottomSheetOpen(true)
+            openAllowedAppSheet()
         }
+    }
+
+    private fun openAllowedAppSheet() {
+        if (BottomSheetState.getIsBottomSheetOpen()) return
+        val bottomSheet = TimerAllowedAppBottomSheet()
+        bottomSheet.show(parentFragmentManager, "BottomSheet")
+        BottomSheetState.setIsBottomSheetOpen(true)
     }
 
     private val backPressedCallBack = object : OnBackPressedCallback(true) {

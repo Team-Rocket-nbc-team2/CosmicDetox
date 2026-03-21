@@ -117,6 +117,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 //            allowedAppViewModel.stopObserveAppOpenRunnable()
 //        }
         if (AllowedAppMonitorService.isServiceActive.value) {
+            requireContext().startService(
+                AllowedAppMonitorService.createUiReadyIntent(requireContext())
+            )
             // 서비스 종료 직전에 UI에 마지막 남은 시간을 먼저 반영
             updateRunningAppRemainTime(
                 running = true,

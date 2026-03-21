@@ -67,9 +67,11 @@ class AllowedAppMonitorService : Service() {
 
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
+        const val ACTION_UI_READY = "ACTION_UI_READY"
         const val EXTRA_PACKAGE_ID = "EXTRA_PACKAGE_ID"
         const val EXTRA_REMAIN_TIME = "EXTRA_REMAIN_TIME"
         const val EXTRA_APP_NAME = "EXTRA_APP_NAME"
+        const val EXTRA_OPEN_ALLOWED_SHEET = "EXTRA_OPEN_ALLOWED_SHEET"
 
         private const val CHANNEL_ID = "allowed_app_monitor"
         private const val NOTIFICATION_ID = 2
@@ -90,6 +92,11 @@ class AllowedAppMonitorService : Service() {
         fun createStopIntent(context: Context): Intent =
             Intent(context, AllowedAppMonitorService::class.java).apply {
                 action = ACTION_STOP
+            }
+
+        fun createUiReadyIntent(context: Context): Intent =
+            Intent(context, AllowedAppMonitorService::class.java).apply {
+                action = ACTION_UI_READY
             }
     }
 
@@ -129,6 +136,7 @@ class AllowedAppMonitorService : Service() {
                 start(packageId, remainTime, appName)
             }
             ACTION_STOP -> stop()
+            ACTION_UI_READY -> removeOverlayOnMain()
         }
         return START_STICKY
     }
@@ -318,9 +326,9 @@ class AllowedAppMonitorService : Service() {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
                             Intent.FLAG_ACTIVITY_SINGLE_TOP or
                             Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra(EXTRA_OPEN_ALLOWED_SHEET, true)
                 }
                 startActivity(intent)
-                removeOverlayOnMain()
             }
             windowManager.addView(overlayView, params)
         }
