@@ -422,6 +422,7 @@ class TimerFragment : Fragment() {
     private var _binding: FragmentTimerBinding? = null
     private val binding get() = _binding!!
     private var isFinishingTimer = false
+    private var isTimerServiceStarted = false
 
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
@@ -589,14 +590,18 @@ class TimerFragment : Fragment() {
     }
 
     private fun startTimerService(dailyTime: Long) {
+        if (isTimerServiceStarted) return
         val intent = Intent(requireContext(), TimerService::class.java)
         intent.putExtra("dailyTime", dailyTime)
         requireContext().startService(intent)
+        isTimerServiceStarted = true
     }
 
     private fun stopTimerService() {
+        if (!isTimerServiceStarted) return
         val intent = Intent(requireContext(), TimerService::class.java)
         requireContext().stopService(intent)
+        isTimerServiceStarted = false
     }
 
     private fun showOverlay() {

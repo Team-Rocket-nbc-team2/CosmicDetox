@@ -39,6 +39,7 @@ class CosmicDetoxApplication : Application(), Configuration.Provider {
         val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(context, MidnightResetReceiver::class.java)
+            .setAction(MidnightResetReceiver.ACTION_MIDNIGHT_RESET)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             0,

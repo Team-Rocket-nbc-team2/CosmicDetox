@@ -89,7 +89,7 @@
             android:name=".presentation.receiver.MidnightResetReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.rocket.cosmic_detox.ACTION_MIDNIGHT_RESET" />
             </intent-filter>
         </receiver>
         <receiver android:name=".presentation.receiver.BootCompletedReceiver" android:exported="true">

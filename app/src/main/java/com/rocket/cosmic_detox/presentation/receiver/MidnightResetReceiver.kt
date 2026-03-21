@@ -10,8 +10,12 @@ import com.rocket.cosmic_detox.CosmicDetoxApplication
 import com.rocket.cosmic_detox.presentation.service.TimerService
 
 class MidnightResetReceiver : BroadcastReceiver() {
+    companion object {
+        const val ACTION_MIDNIGHT_RESET = "com.rocket.cosmic_detox.ACTION_MIDNIGHT_RESET"
+    }
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action != ACTION_MIDNIGHT_RESET) return
         Log.d("MidnightResetReceiver", "MidnightReset 호출 성공 타이머를 초기화.")
         context?.let {
             val resetIntent = Intent(context, TimerService::class.java).apply {
