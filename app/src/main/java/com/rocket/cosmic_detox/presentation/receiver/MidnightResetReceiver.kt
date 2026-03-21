@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.rocket.cosmic_detox.presentation.CosmicDetoxApplication
+import com.rocket.cosmic_detox.CosmicDetoxApplication
 import com.rocket.cosmic_detox.presentation.service.TimerService
 
 class MidnightResetReceiver : BroadcastReceiver() {
