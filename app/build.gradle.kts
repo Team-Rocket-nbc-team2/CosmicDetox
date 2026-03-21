@@ -11,9 +11,9 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
-val keyPropertiesFile = rootProject.file("./app/key.properties")
+val keyPropertiesFile: File? = rootProject.file("./app/key.properties")
 val properties = Properties()
-properties.load(FileInputStream(keyPropertiesFile))
+properties.load(FileInputStream(keyPropertiesFile!!))
 properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
@@ -102,6 +102,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.service)
     ksp(libs.hilt.android.compiler)
 
+    // room
+    implementation(libs.room)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+    ksp(libs.room.compiler)
+
     // glide
     implementation(libs.glide)
 
@@ -111,9 +117,6 @@ dependencies {
     // google one tap login
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
-
-
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
