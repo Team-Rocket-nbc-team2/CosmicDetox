@@ -1,5 +1,6 @@
 package com.rocket.cosmic_detox.presentation.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,6 +10,7 @@ import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Handler
@@ -113,8 +115,8 @@ class AllowedAppMonitorService : Service() {
     private val usageStatsManager by lazy {
         getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     }
+    private val homeLauncherPackages by lazy { resolveHomeLauncherPackages() }
 
-    // stop 후 start 시 재생성할 수 있도록 직접 관리
     private var serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     private var currentPackageId: String? = null
@@ -177,12 +179,11 @@ class AllowedAppMonitorService : Service() {
             while (_isServiceActive.value) {
                 val foregroundApp = getCurrentForegroundApp()
                 val shouldCountDown = shouldCountDown(foregroundApp)
+                val isSystemOrOwn = isSystemOrOwnApp(foregroundApp)
 
                 when {
                     shouldCountDown -> {
-                        // 허용앱 사용 중
                         if (_elapsedOutsideTime.value > 0L) {
-                            // 이탈했다가 복귀 → 즉시 저장
                             _elapsedOutsideTime.value = 0L
                             saveCurrentSession()
                             removeOverlayOnMain()
@@ -195,13 +196,12 @@ class AllowedAppMonitorService : Service() {
                             break
                         }
                     }
-                    isSystemOrOwnApp(foregroundApp) -> {
+                    isSystemOrOwn -> {
                         // 시스템 UI or 우리 앱 → 무시
                     }
                     else -> {
-                        // 허용되지 않은 앱 감지
                         if (_elapsedOutsideTime.value == 0L) {
-                            // 처음 이탈 감지 → 즉시 저장 + 오버레이
+                            Log.d("AllowedAppMonitor", "outside detected -> overlay request, fg=$foregroundApp")
                             saveCurrentSession()
                             showOverlayOnMain()
                         }
@@ -362,7 +362,7 @@ class AllowedAppMonitorService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_note) // 프로젝트 아이콘으로 변경
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("집중 모드")
             .setContentText(contentText)
             .setContentIntent(pendingIntent)
@@ -411,9 +411,42 @@ class AllowedAppMonitorService : Service() {
     private fun isSystemOrOwnApp(packageName: String): Boolean {
         return packageName == this.packageName ||
                 packageName == "com.android.systemui" ||
-                packageName == "com.sec.android.app.launcher" ||
                 packageName == "com.samsung.android.incallui" ||
-                packageName == "com.android.incallui"
+                packageName == "com.android.incallui" ||
+                isEssentialSystemScreen(packageName) ||
+                isHomeLauncherPackage(packageName)
+    }
+
+    private fun isEssentialSystemScreen(packageName: String): Boolean {
+        return packageName == "com.android.settings" ||
+                packageName == "com.samsung.android.app.settings"
+    }
+
+    private fun isHomeLauncherPackage(packageName: String): Boolean {
+        // 일부 기기에서 설정 앱이 HOME 후보로 섞여 들어오는 케이스 제외
+        if (isEssentialSystemScreen(packageName)) return false
+        return packageName in homeLauncherPackages
+    }
+
+    private fun resolveHomeLauncherPackages(): Set<String> {
+        val homeIntent = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+        }
+
+        val launchers = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.queryIntentActivities(
+                homeIntent,
+                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.queryIntentActivities(homeIntent, PackageManager.MATCH_DEFAULT_ONLY)
+        }
+
+        return launchers
+            .mapNotNull { it.activityInfo?.packageName }
+            .filterNot { isEssentialSystemScreen(it) }
+            .toSet()
     }
 
     private fun isOwnApp(packageName: String): Boolean = packageName == this.packageName
@@ -468,6 +501,7 @@ class AllowedAppMonitorService : Service() {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun formatTime(seconds: Long): String {
         val h = seconds / 3600
         val m = (seconds % 3600) / 60
