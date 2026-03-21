@@ -15,7 +15,7 @@ import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon
 
 class AllowedAppAdapter(
     private val context: Context,
-    private val onItemClick: (String, Long) -> Unit
+    private val onItemClick: (String, Long, String) -> Unit
 ): ListAdapter<AllowedApp, AllowedAppAdapter.ViewHolder>(
     object: DiffUtil.ItemCallback<AllowedApp>() {
         override fun areItemsTheSame(oldItem: AllowedApp, newItem: AllowedApp): Boolean {
@@ -42,7 +42,7 @@ class AllowedAppAdapter(
                 if (allowedApp.limitedTime == 0L || !context.isAppInstalled(allowedApp.packageId)) emphasizeDarkerLayout.visibility = View.VISIBLE
                 else {
                     root.setOnClickListener {
-                        onItemClick(allowedApp.packageId, allowedApp.limitedTime)
+                        onItemClick(allowedApp.packageId, allowedApp.limitedTime, allowedApp.appName)
                     }
                 }
                 appIcon.loadAllowedAppIcon(context, allowedApp.packageId, allowedApp.appIcon)
