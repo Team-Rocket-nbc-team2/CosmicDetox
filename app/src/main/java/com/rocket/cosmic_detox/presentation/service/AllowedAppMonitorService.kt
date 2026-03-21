@@ -56,6 +56,9 @@ class AllowedAppMonitorService : Service() {
         private val _isServiceActive = MutableStateFlow(false)
         val isServiceActive = _isServiceActive.asStateFlow()
 
+        private val _currentPackageIdState = MutableStateFlow<String?>(null)
+        val currentPackageIdState = _currentPackageIdState.asStateFlow()
+
         private val _remainTime = MutableStateFlow(0L)
         val remainTime = _remainTime.asStateFlow()
 
@@ -113,6 +116,7 @@ class AllowedAppMonitorService : Service() {
     private var overlayView: View? = null
     private var lastSaveTime = 0L
     private var lastForegroundPackage: String = ""
+    private var lastNonSystemPackage: String = ""
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -144,8 +148,10 @@ class AllowedAppMonitorService : Service() {
 
         _isServiceActive.value = true
         currentPackageId = packageId
+        _currentPackageIdState.value = packageId
         currentAppName = appName
         lastForegroundPackage = packageId
+        lastNonSystemPackage = packageId
         _remainTime.value = remainTime
         _elapsedOutsideTime.value = 0L
         lastSaveTime = System.currentTimeMillis()
@@ -162,9 +168,10 @@ class AllowedAppMonitorService : Service() {
         serviceScope.launch {
             while (_isServiceActive.value) {
                 val foregroundApp = getCurrentForegroundApp()
+                val shouldCountDown = shouldCountDown(foregroundApp)
 
                 when {
-                    foregroundApp == currentPackageId -> {
+                    shouldCountDown -> {
                         // 허용앱 사용 중
                         if (_elapsedOutsideTime.value > 0L) {
                             // 이탈했다가 복귀 → 즉시 저장
@@ -266,9 +273,11 @@ class AllowedAppMonitorService : Service() {
 
         _isServiceActive.value = false
         currentPackageId = null
+        _currentPackageIdState.value = null
         _remainTime.value = 0L
         _elapsedOutsideTime.value = 0L
         lastForegroundPackage = ""
+        lastNonSystemPackage = ""
 
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -398,6 +407,19 @@ class AllowedAppMonitorService : Service() {
                 packageName == "com.sec.android.app.launcher" ||
                 packageName == "com.samsung.android.incallui" ||
                 packageName == "com.android.incallui"
+    }
+
+    private fun isOwnApp(packageName: String): Boolean = packageName == this.packageName
+
+    private fun shouldCountDown(foregroundApp: String): Boolean {
+        val targetPackage = currentPackageId ?: return false
+
+        if (!isSystemOrOwnApp(foregroundApp)) {
+            lastNonSystemPackage = foregroundApp
+        }
+
+        return foregroundApp == targetPackage ||
+                (isOwnApp(foregroundApp) && lastNonSystemPackage == targetPackage)
     }
 
     private fun getCurrentForegroundApp(): String {

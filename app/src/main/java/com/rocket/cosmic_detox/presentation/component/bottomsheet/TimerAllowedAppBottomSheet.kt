@@ -2,12 +2,8 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -15,8 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,18 +19,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
-import com.rocket.cosmic_detox.presentation.service.AlarmService
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
 import com.rocket.cosmic_detox.presentation.service.AllowedAppMonitorService
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
-import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -46,6 +40,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
     private val permissionViewModel: PermissionViewModel by viewModels()
+    private var cachedAllowedApps: List<AllowedApp> = emptyList()
 
     //private var isChecked = false
 
@@ -101,6 +96,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
         allowedAppViewModel.getAllAllowedApps()
         observeAllowAppList()
+        observeServiceRemainTime()
         return modalBottomSheetIconBinding.root
     }
 
@@ -121,9 +117,16 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 //            allowedAppViewModel.stopObserveAppOpenRunnable()
 //        }
         if (AllowedAppMonitorService.isServiceActive.value) {
+            // 서비스 종료 직전에 UI에 마지막 남은 시간을 먼저 반영
+            updateRunningAppRemainTime(
+                running = true,
+                packageId = AllowedAppMonitorService.currentPackageIdState.value,
+                remainTime = AllowedAppMonitorService.remainTime.value
+            )
             requireContext().startService(
                 AllowedAppMonitorService.createStopIntent(requireContext())
             )
+            allowedAppViewModel.getAllAllowedApps()
         }
     }
 
@@ -143,10 +146,46 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
                 rvAllowedAppList.isVisible = it is GetListUiState.Success
 
                 if (it is GetListUiState.Success) {
-                    adapter.submitList(it.data)
+                    cachedAllowedApps = it.data
+                    updateRunningAppRemainTime(
+                        running = AllowedAppMonitorService.isServiceActive.value,
+                        packageId = AllowedAppMonitorService.currentPackageIdState.value,
+                        remainTime = AllowedAppMonitorService.remainTime.value
+                    )
                 }
             }
         }
+    }
+
+    private fun observeServiceRemainTime() {
+        lifecycleScope.launch {
+            combine(
+                AllowedAppMonitorService.isServiceActive,
+                AllowedAppMonitorService.currentPackageIdState,
+                AllowedAppMonitorService.remainTime
+            ) { running, packageId, remainTime ->
+                Triple(running, packageId, remainTime)
+            }.collectLatest { (running, packageId, remainTime) ->
+                updateRunningAppRemainTime(running, packageId, remainTime)
+            }
+        }
+    }
+
+    private fun updateRunningAppRemainTime(
+        running: Boolean,
+        packageId: String?,
+        remainTime: Long
+    ) {
+        if (cachedAllowedApps.isEmpty()) return
+
+        val displayList = if (running && !packageId.isNullOrBlank()) {
+            cachedAllowedApps.map { app ->
+                if (app.packageId == packageId) app.copy(limitedTime = remainTime) else app
+            }
+        } else {
+            cachedAllowedApps
+        }
+        adapter.submitList(displayList)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
