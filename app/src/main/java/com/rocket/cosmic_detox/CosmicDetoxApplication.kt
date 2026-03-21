@@ -1,20 +1,30 @@
-package com.rocket.cosmic_detox.presentation
+package com.rocket.cosmic_detox
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Application
-import com.kakao.sdk.common.KakaoSdk
-import com.rocket.cosmic_detox.BuildConfig
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import com.kakao.sdk.common.KakaoSdk
 import com.rocket.cosmic_detox.presentation.receiver.MidnightResetReceiver
 import dagger.hilt.android.HiltAndroidApp
 import java.util.Calendar
+import javax.inject.Inject
 
 @HiltAndroidApp
-class CosmicDetoxApplication : Application() {
+class CosmicDetoxApplication : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
@@ -26,7 +36,7 @@ class CosmicDetoxApplication : Application() {
 
     @SuppressLint("ScheduleExactAlarm")
     fun scheduleExactAlarm(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(context, MidnightResetReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
