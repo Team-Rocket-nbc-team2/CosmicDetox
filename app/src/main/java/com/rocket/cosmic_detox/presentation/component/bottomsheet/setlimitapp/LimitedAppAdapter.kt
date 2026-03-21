@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppDepthListBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime

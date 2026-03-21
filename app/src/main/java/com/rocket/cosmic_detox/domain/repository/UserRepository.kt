@@ -1,6 +1,6 @@
 package com.rocket.cosmic_detox.domain.repository
 
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import java.lang.Exception
 
 interface UserRepository {

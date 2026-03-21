@@ -21,12 +21,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetLimitAppBinding
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
-import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

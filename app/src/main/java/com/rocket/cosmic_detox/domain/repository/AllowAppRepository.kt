@@ -1,7 +1,7 @@
 package com.rocket.cosmic_detox.domain.repository
 
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
 import kotlinx.coroutines.flow.Flow
 
 interface AllowAppRepository {

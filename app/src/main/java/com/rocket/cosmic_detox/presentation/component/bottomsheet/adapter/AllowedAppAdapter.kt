@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
 import com.rocket.cosmic_detox.databinding.ItemAppTimeListBinding
 import com.rocket.cosmic_detox.presentation.extensions.isAppInstalled
 import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon

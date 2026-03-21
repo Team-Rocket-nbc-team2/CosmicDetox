@@ -4,10 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.rocket.cosmic_detox.data.model.AppUsage
+import com.rocket.cosmic_detox.data.datasource.remote.model.AppUsage
 import com.rocket.cosmic_detox.databinding.ItemAppUsageBinding
 import com.rocket.cosmic_detox.presentation.extensions.fromMillisecondsToSeconds
-import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.common.ViewHolder
 import com.rocket.cosmic_detox.presentation.extensions.loadInstalledAppIcon

@@ -1,6 +1,6 @@
 package com.rocket.cosmic_detox.domain.repository
 
-import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.data.datasource.remote.model.RankingInfo
 import kotlinx.coroutines.flow.Flow
 
 interface RaceRepository {

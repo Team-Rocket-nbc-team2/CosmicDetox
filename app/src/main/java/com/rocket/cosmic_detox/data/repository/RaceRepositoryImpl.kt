@@ -4,9 +4,9 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.rocket.cosmic_detox.domain.repository.RaceRepository
-import com.rocket.cosmic_detox.data.model.RankingInfo
-import com.rocket.cosmic_detox.data.datasource.season.SeasonDataSource
-import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.remote.model.RankingInfo
+import com.rocket.cosmic_detox.data.datasource.remote.season.SeasonDataSource
+import com.rocket.cosmic_detox.data.datasource.remote.user.UserDataSource
 import com.rocket.cosmic_detox.util.RankingCalculator
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,6 @@
 package com.rocket.cosmic_detox.domain.usecase.timer
 
-import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
 import com.rocket.cosmic_detox.domain.repository.AllowedAppRepository
 import javax.inject.Inject
 

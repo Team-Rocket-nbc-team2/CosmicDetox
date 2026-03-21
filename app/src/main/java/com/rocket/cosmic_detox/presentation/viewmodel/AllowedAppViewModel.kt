@@ -8,7 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rocket.cosmic_detox.data.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
 import com.rocket.cosmic_detox.domain.usecase.timer.GetAllowedAppUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.UpdateLimitedTimeAppUseCase
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState

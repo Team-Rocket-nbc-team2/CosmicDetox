@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.data.datasource.season
+package com.rocket.cosmic_detox.data.datasource.remote.season
 
 interface SeasonDataSource {
 

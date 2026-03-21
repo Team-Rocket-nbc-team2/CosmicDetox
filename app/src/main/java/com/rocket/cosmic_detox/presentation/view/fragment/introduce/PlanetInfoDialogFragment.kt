@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.Planet
+import com.rocket.cosmic_detox.data.datasource.remote.model.Planet
 import com.rocket.cosmic_detox.databinding.DialogPlanetInfoBinding
 import com.rocket.cosmic_detox.presentation.view.fragment.introduce.adapter.PlanetPagerAdapter
 

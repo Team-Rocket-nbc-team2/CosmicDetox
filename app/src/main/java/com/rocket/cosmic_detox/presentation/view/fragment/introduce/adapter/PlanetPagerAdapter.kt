@@ -3,7 +3,7 @@ package com.rocket.cosmic_detox.presentation.view.fragment.introduce.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.rocket.cosmic_detox.data.model.Planet
+import com.rocket.cosmic_detox.data.datasource.remote.model.Planet
 import com.rocket.cosmic_detox.databinding.ItemPlanetBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadPlanetImageWithSize
 

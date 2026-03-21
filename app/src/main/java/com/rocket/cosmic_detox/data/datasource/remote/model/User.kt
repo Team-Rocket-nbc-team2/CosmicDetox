@@ -1,4 +1,4 @@
-package com.rocket.cosmic_detox.data.model
+package com.rocket.cosmic_detox.data.datasource.remote.model
 
 data class User(
     val uid: String = "",

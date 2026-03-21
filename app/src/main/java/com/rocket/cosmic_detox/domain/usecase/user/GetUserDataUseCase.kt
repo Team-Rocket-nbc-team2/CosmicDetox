@@ -1,6 +1,6 @@
 package com.rocket.cosmic_detox.domain.usecase
 
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import com.rocket.cosmic_detox.domain.repository.UserRepository
 import javax.inject.Inject
 

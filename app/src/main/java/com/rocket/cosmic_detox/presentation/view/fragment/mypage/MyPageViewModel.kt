@@ -3,9 +3,9 @@ package com.rocket.cosmic_detox.presentation.view.fragment.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.AppUsage
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AppUsage
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import com.rocket.cosmic_detox.presentation.uistate.MyPageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

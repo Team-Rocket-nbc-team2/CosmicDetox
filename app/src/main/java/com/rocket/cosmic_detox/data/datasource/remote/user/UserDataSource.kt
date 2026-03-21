@@ -1,8 +1,8 @@
-package com.rocket.cosmic_detox.data.datasource.user
+package com.rocket.cosmic_detox.data.datasource.remote.user
 
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.Trophy
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.Trophy
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import java.util.Date
 
 interface UserDataSource {
