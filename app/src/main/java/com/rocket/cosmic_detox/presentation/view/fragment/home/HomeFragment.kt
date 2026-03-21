@@ -2,9 +2,7 @@ package com.rocket.cosmic_detox.presentation.view.fragment.home
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -15,13 +13,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import com.rocket.cosmic_detox.databinding.FragmentHomeBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment

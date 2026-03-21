@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
-import com.rocket.cosmic_detox.data.model.Trophy
+import com.rocket.cosmic_detox.data.datasource.remote.model.Trophy
 import com.rocket.cosmic_detox.databinding.ItemMyTrophyBinding
 import com.rocket.cosmic_detox.presentation.common.ViewHolder
 

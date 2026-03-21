@@ -7,9 +7,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.CheckedApp
-import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.util.AppCategoryManager
 import dagger.hilt.android.qualifiers.ApplicationContext

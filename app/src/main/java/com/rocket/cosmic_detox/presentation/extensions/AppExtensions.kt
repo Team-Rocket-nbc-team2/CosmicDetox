@@ -1,7 +1,7 @@
 package com.rocket.cosmic_detox.presentation.extensions
 
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
 
 fun CheckedApp.toAllowedApp(): AllowedApp {
     return AllowedApp(

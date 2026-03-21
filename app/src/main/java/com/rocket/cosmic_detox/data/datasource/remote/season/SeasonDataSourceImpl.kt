@@ -1,9 +1,9 @@
-package com.rocket.cosmic_detox.data.datasource.season
+package com.rocket.cosmic_detox.data.datasource.remote.season
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.data.datasource.remote.model.RankingInfo
 import com.rocket.cosmic_detox.util.RankingCalculator
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

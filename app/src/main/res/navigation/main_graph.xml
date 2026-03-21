@@ -49,7 +49,7 @@
         tools:layout="@layout/modal_content_modify_allow_app">
         <argument
             android:name="allowedApps"
-            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp[]" />
+            app:argType="com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp[]" />
     </dialog>
     <dialog
         android:id="@+id/navigation_set_limit_app_dialog"
@@ -61,7 +61,7 @@
             app:destination="@id/navigation_set_limit_use_time_dialog" />
         <argument
             android:name="allowedApps"
-            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp[]" />
+            app:argType="com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp[]" />
     </dialog>
     <dialog
         android:id="@+id/navigation_set_limit_use_time_dialog"
@@ -70,7 +70,7 @@
         tools:layout="@layout/modal_content_set_use_time">
         <argument
             android:name="allowedApp"
-            app:argType="com.rocket.cosmic_detox.data.model.AllowedApp" />
+            app:argType="com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp" />
     </dialog>
     <fragment
         android:id="@+id/navigation_timer2"

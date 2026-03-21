@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.Planet
+import com.rocket.cosmic_detox.data.datasource.remote.model.Planet
 import java.math.BigDecimal
 
 fun ImageView.loadHomePlanetImage(cumulativeTime: BigDecimal) {

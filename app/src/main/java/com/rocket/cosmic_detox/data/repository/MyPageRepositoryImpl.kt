@@ -5,11 +5,11 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import com.google.firebase.auth.FirebaseAuth
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.AppUsage
-import com.rocket.cosmic_detox.data.model.Trophy
-import com.rocket.cosmic_detox.data.model.User
-import com.rocket.cosmic_detox.data.datasource.user.UserDataSource
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AppUsage
+import com.rocket.cosmic_detox.data.datasource.remote.model.Trophy
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.MyPageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

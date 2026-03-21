@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import com.rocket.cosmic_detox.domain.usecase.GetUserDataUseCase
 import com.rocket.cosmic_detox.domain.usecase.ranking.UpdateRankingTotalTimeUseCase
 import com.rocket.cosmic_detox.domain.usecase.timer.GetDailyTimeUseCase

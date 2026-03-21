@@ -1,9 +1,9 @@
 package com.rocket.cosmic_detox.domain.repository
 
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.AppUsage
-import com.rocket.cosmic_detox.data.model.Trophy
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AppUsage
+import com.rocket.cosmic_detox.data.datasource.remote.model.Trophy
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface MyPageRepository {

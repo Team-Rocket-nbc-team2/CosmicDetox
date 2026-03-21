@@ -15,8 +15,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import com.rocket.cosmic_detox.databinding.FragmentMyPageBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage

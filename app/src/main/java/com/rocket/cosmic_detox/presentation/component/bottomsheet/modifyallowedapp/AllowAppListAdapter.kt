@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rocket.cosmic_detox.data.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ItemAppCheckboxListBinding
-import com.rocket.cosmic_detox.presentation.extensions.loadAllowedAppIcon
 import com.rocket.cosmic_detox.presentation.extensions.loadInstalledAppIcon
 
 class AllowAppListAdapter(

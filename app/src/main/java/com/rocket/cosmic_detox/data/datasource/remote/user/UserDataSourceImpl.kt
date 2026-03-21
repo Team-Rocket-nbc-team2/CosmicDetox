@@ -1,9 +1,7 @@
-package com.rocket.cosmic_detox.data.datasource.user
+package com.rocket.cosmic_detox.data.datasource.remote.user
 
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import com.google.firebase.auth.FirebaseAuth
@@ -11,9 +9,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.Trophy
-import com.rocket.cosmic_detox.data.model.User
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.Trophy
+import com.rocket.cosmic_detox.data.datasource.remote.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ItemRankingBottomListBinding
 import com.rocket.cosmic_detox.databinding.ItemRankingTopListBinding
-import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.data.datasource.remote.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingDividerItemDecoration
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 import com.rocket.cosmic_detox.presentation.common.ViewHolder

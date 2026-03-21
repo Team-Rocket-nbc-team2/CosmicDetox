@@ -26,8 +26,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 import com.rocket.cosmic_detox.presentation.extensions.has

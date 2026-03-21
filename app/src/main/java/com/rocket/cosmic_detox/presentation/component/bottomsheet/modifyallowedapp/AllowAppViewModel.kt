@@ -3,8 +3,8 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet.modifyallowed
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rocket.cosmic_detox.data.model.AllowedApp
-import com.rocket.cosmic_detox.data.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject

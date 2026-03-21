@@ -3,12 +3,11 @@ package com.rocket.cosmic_detox.presentation.view.fragment.race.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.rocket.cosmic_detox.databinding.ItemRankingTopBinding
 import com.rocket.cosmic_detox.presentation.extensions.loadRankingPlanetImage
 import com.rocket.cosmic_detox.presentation.extensions.setCumulativeTime
 import com.rocket.cosmic_detox.presentation.extensions.setPoints
-import com.rocket.cosmic_detox.data.model.RankingInfo
+import com.rocket.cosmic_detox.data.datasource.remote.model.RankingInfo
 import com.rocket.cosmic_detox.presentation.common.ViewHolder
 import com.rocket.cosmic_detox.presentation.view.fragment.race.RankingItemClickListener
 
