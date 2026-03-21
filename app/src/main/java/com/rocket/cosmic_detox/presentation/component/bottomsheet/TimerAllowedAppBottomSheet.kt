@@ -2,8 +2,11 @@ package com.rocket.cosmic_detox.presentation.component.bottomsheet
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -11,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +29,7 @@ import com.rocket.cosmic_detox.databinding.ModalContentAllowedAppBinding
 import com.rocket.cosmic_detox.presentation.component.bottomsheet.adapter.AllowedAppAdapter
 import com.rocket.cosmic_detox.presentation.service.AllowedAppMonitorService
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
+import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
 import com.rocket.cosmic_detox.presentation.view.fragment.timer.BottomSheetState
 import com.rocket.cosmic_detox.presentation.viewmodel.AllowedAppViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
@@ -41,6 +46,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private val allowedAppViewModel: AllowedAppViewModel by viewModels<AllowedAppViewModel>()
     private val permissionViewModel: PermissionViewModel by viewModels()
     private var cachedAllowedApps: List<AllowedApp> = emptyList()
+    private var overlayView: View? = null
+    private var isLaunchingAllowedApp = false
+    private var isSheetClosing = false
 
     //private var isChecked = false
 
@@ -48,6 +56,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private val windowManager by lazy { requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager }
     private val adapter by lazy {
         AllowedAppAdapter(requireContext()) { packageId, limitedTime, appName ->
+            isLaunchingAllowedApp = true
 //            isChecked = true
 //            val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
 //            context?.startActivity(intent)
@@ -87,6 +96,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
         modalBottomSheetIconBinding.tvBottomSheetTitle.text = getString(R.string.timer_bottom_sheet_title)
         modalBottomSheetIconBinding.ivBottomSheetClose.setOnClickListener {
+            isSheetClosing = true
             BottomSheetState.setIsBottomSheetOpen(false)
             dismiss()
         }
@@ -102,6 +112,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
+        removeOverlayIfNeeded()
+        isLaunchingAllowedApp = false
+        isSheetClosing = false
 
 //        val remainTime = allowedAppViewModel.countDownRemainTime.value
 //        val selectedPackageId = allowedAppViewModel.selectedAllowedAppPackage.value
@@ -139,6 +152,13 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 //        if (!allowedAppViewModel.running.value && BottomSheetState.getIsBottomSheetOpen()) {
 //            if (rootView == null) showOverlay()
 //        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (shouldShowOverlayOnPause()) {
+            showOverlay()
+        }
     }
 
     private fun observeAllowAppList() = with(modalContentAllowedAppBinding) {
@@ -196,6 +216,7 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
         dialog.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) { // 뒤로 가기 버튼(KEYCODE_BACK)이 눌린 순간(ACTION_DOWN), ACTION_UP은 떼어졌을 때 둘다 작동은 하는 듯?
+                isSheetClosing = true
                 BottomSheetState.setIsBottomSheetOpen(false)
                 dismiss()
                 return@setOnKeyListener true
@@ -232,6 +253,46 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             val displayMetrics = DisplayMetrics()
             windowManager.defaultDisplay.getMetrics(displayMetrics)
             return displayMetrics.heightPixels
+        }
+    }
+
+    private fun shouldShowOverlayOnPause(): Boolean {
+        if (isSheetClosing) return false
+        if (isLaunchingAllowedApp) return false
+        if (AllowedAppMonitorService.isServiceActive.value) return false
+        if (!BottomSheetState.getIsBottomSheetOpen()) return false
+        return permissionViewModel.isOverlayPermissionGranted(requireContext()) &&
+                Settings.canDrawOverlays(requireContext())
+    }
+
+    private fun showOverlay() {
+        if (overlayView != null) return
+
+        val overlayParams = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            PixelFormat.TRANSLUCENT
+        )
+
+        overlayView = LayoutInflater.from(requireContext()).inflate(R.layout.activity_dialog, null)
+        overlayView?.findViewById<Button>(R.id.btn_back)?.setOnClickListener {
+            val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(intent)
+            removeOverlayIfNeeded()
+        }
+        windowManager.addView(overlayView, overlayParams)
+    }
+
+    private fun removeOverlayIfNeeded() {
+        overlayView?.let { view ->
+            if (view.isAttachedToWindow) {
+                windowManager.removeView(view)
+            }
+            overlayView = null
         }
     }
 
@@ -292,6 +353,8 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isSheetClosing = true
+        removeOverlayIfNeeded()
         BottomSheetState.setIsBottomSheetOpen(false) // 바텀시트에서 뒤로가기 눌렀을 때도 isBottomSheetOpen을 false로 변경
     }
 }
