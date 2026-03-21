@@ -2,7 +2,7 @@ package com.rocket.cosmic_detox.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.toObject
 import com.rocket.cosmic_detox.data.model.User
 import com.rocket.cosmic_detox.domain.repository.UserRepository
 import javax.inject.Inject
