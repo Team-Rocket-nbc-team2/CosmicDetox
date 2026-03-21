@@ -209,7 +209,6 @@ class AllowedAppMonitorService : Service() {
                     }
                 }
 
-                // 1분마다 Room 저장 (배터리 강제종료 대비)
                 val now = System.currentTimeMillis()
                 if (now - lastSaveTime >= SAVE_INTERVAL_MS) {
                     saveCurrentSession()

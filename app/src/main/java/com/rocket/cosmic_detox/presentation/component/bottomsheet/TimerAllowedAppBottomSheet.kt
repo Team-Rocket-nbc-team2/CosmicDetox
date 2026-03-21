@@ -50,29 +50,13 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private var isLaunchingAllowedApp = false
     private var isSheetClosing = false
 
-    //private var isChecked = false
-
-    //private var rootView: View? = null
     private val windowManager by lazy { requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager }
     private val adapter by lazy {
         AllowedAppAdapter(requireContext()) { packageId, limitedTime, appName ->
             isLaunchingAllowedApp = true
-//            isChecked = true
-//            val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
-//            context?.startActivity(intent)
-//
-//            initCountDownTimer(limitedTime)
-//            allowedAppViewModel.setSelectedAllowedAppPackage(packageId)
-//            allowedAppViewModel.startObserveAppOpenRunnable()
-//            val runnable = allowedAppViewModel.initObserveAppOpenRunnable(packageId) {
-//                if (rootView == null) showOverlay()
-//            }
-//            val thread = Thread(runnable)
-//            thread.start()
             val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
             context?.startActivity(intent)
 
-            // Service 시작 (기존 CountDownTimer, Thread, Runnable 모두 대체)
             requireContext().startService(
                 AllowedAppMonitorService.createStartIntent(
                     context = requireContext(),
@@ -116,19 +100,6 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
         isLaunchingAllowedApp = false
         isSheetClosing = false
 
-//        val remainTime = allowedAppViewModel.countDownRemainTime.value
-//        val selectedPackageId = allowedAppViewModel.selectedAllowedAppPackage.value
-//        if (remainTime != null && countDownTimer != null && selectedPackageId != null) {
-//            allowedAppViewModel.updateLimitedTimeAllowApp(
-//                packageId = selectedPackageId,
-//                remainTime = remainTime,
-//                failCallback = {}
-//            )
-//            allowedAppViewModel.getAllAllowedApps()
-//
-//            countDownTimer?.cancel()
-//            allowedAppViewModel.stopObserveAppOpenRunnable()
-//        }
         if (AllowedAppMonitorService.isServiceActive.value) {
             requireContext().startService(
                 AllowedAppMonitorService.createUiReadyIntent(requireContext())
@@ -144,14 +115,6 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             )
             allowedAppViewModel.getAllAllowedApps()
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-//        if (!allowedAppViewModel.running.value && BottomSheetState.getIsBottomSheetOpen()) {
-//            if (rootView == null) showOverlay()
-//        }
     }
 
     override fun onPause() {
@@ -295,61 +258,6 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
             overlayView = null
         }
     }
-
-//    private fun initCountDownTimer(initTimer: Long) {
-//        var state = false
-//        val isPostNotificationGrantedAllowed = permissionViewModel.isPostNotificationGranted(requireContext())
-//
-//        countDownTimer = object : CountDownTimer(initTimer * 1000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-//                // 여기여기
-//                allowedAppViewModel.updateRemainTime((millisUntilFinished / 1000).toInt())
-//                if(isPostNotificationGrantedAllowed){
-//                    if(millisUntilFinished < 300000 && !state){ // 원래는 300000
-//                        state = true
-//                        val serviceIntent = Intent(requireActivity(), AlarmService::class.java)
-//                        requireActivity().startService(serviceIntent)
-//                        Toast.makeText(requireActivity(), "Service start", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//
-//            override fun onFinish() {
-//                val intent = Intent(context, MainActivity::class.java)
-//                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-//                startActivity(intent)
-//            }
-//        }
-//
-//        countDownTimer?.start()
-//    }
-
-//    private fun showOverlay() {
-//        if (Settings.canDrawOverlays(context)) {
-//            val overlayParams = WindowManager.LayoutParams(
-//                WindowManager.LayoutParams.MATCH_PARENT,
-//                WindowManager.LayoutParams.MATCH_PARENT,
-//                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-//                PixelFormat.TRANSLUCENT
-//            )
-//            rootView = LayoutInflater.from(context).inflate(R.layout.activity_dialog, null)
-//            windowManager.addView(rootView, overlayParams)
-//
-//            rootView!!.findViewById<Button>(R.id.btn_back).setOnClickListener {
-//                val intent = Intent(context, MainActivity::class.java)
-//                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-//                context?.startActivity(intent)
-//
-//                removeOverlay()
-//            }
-//        }
-//    }
-//
-//    private fun removeOverlay() {
-//        windowManager.removeView(rootView)
-//        rootView = null
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
