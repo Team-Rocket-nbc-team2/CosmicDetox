@@ -45,10 +45,12 @@ class SyncSessionWorker @AssistedInject constructor(
             updateLimitedTimeAppUseCase(
                 packageId = session.packageId,
                 remainTime = session.remainTime.toInt(),
+                callback = {
+                    if (continuation.isActive) continuation.resume(true)
+                },
                 failCallback = {
                     if (continuation.isActive) continuation.resume(false)
                 }
             )
-            if (continuation.isActive) continuation.resume(true)
         }
 }

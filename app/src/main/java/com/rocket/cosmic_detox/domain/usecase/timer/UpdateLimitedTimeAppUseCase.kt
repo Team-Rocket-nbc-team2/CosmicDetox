@@ -6,7 +6,12 @@ import javax.inject.Inject
 class UpdateLimitedTimeAppUseCase @Inject constructor(
     private val allowedAppRepository: AllowedAppRepository
 ) {
-    operator fun invoke(packageId: String, remainTime: Int, failCallback: (Throwable?) -> Unit) {
-        allowedAppRepository.updateLimitedTimeAllowApp(packageId, remainTime, failCallback)
+    operator fun invoke(
+        packageId: String,
+        remainTime: Int,
+        callback: () -> Unit = {},
+        failCallback: (Throwable?) -> Unit
+    ) {
+        allowedAppRepository.updateLimitedTimeAllowApp(packageId, remainTime, callback, failCallback)
     }
 }

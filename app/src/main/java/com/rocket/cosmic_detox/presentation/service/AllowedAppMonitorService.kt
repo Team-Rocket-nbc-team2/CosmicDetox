@@ -44,6 +44,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -111,6 +112,7 @@ class AllowedAppMonitorService : Service() {
     private var allowedPackages = emptySet<String>()
     private var overlayView: View? = null
     private var lastSaveTime = 0L
+    private var lastForegroundPackage: String = ""
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -130,8 +132,12 @@ class AllowedAppMonitorService : Service() {
     private fun start(packageId: String, remainTime: Long, appName: String) {
         // 이미 다른 허용앱 감시 중이면 현재 상태 저장 후 scope 재생성
         if (_isServiceActive.value) {
-            saveCurrentSession()
-            syncToFirestore(currentPackageId!!, _remainTime.value)
+            currentPackageId?.let { previousPackageId ->
+                runBlocking {
+                    saveCurrentSessionNow(previousPackageId, _remainTime.value)
+                }
+                syncToFirestore(previousPackageId, _remainTime.value)
+            }
             serviceScope.cancel()
             serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
         }
@@ -139,6 +145,7 @@ class AllowedAppMonitorService : Service() {
         _isServiceActive.value = true
         currentPackageId = packageId
         currentAppName = appName
+        lastForegroundPackage = packageId
         _remainTime.value = remainTime
         _elapsedOutsideTime.value = 0L
         lastSaveTime = System.currentTimeMillis()
@@ -216,17 +223,21 @@ class AllowedAppMonitorService : Service() {
     private fun saveCurrentSession() {
         serviceScope.launch {
             currentPackageId?.let { packageId ->
-                withContext(Dispatchers.IO) {
-                    allowedAppLocalDataSource.upsertSession(
-                        AllowedAppSessionLocal(
-                            packageId = packageId,
-                            remainTime = _remainTime.value,
-                            lastUpdated = System.currentTimeMillis(),
-                            isSynced = false
-                        )
-                    )
-                }
+                saveCurrentSessionNow(packageId, _remainTime.value)
             }
+        }
+    }
+
+    private suspend fun saveCurrentSessionNow(packageId: String, remainTime: Long) {
+        withContext(Dispatchers.IO) {
+            allowedAppLocalDataSource.upsertSession(
+                AllowedAppSessionLocal(
+                    packageId = packageId,
+                    remainTime = remainTime,
+                    lastUpdated = System.currentTimeMillis(),
+                    isSynced = false
+                )
+            )
         }
     }
 
@@ -234,6 +245,7 @@ class AllowedAppMonitorService : Service() {
         updateLimitedTimeAppUseCase(
             packageId = packageId,
             remainTime = remainTime.toInt(),
+            callback = {},
             failCallback = {
                 Log.e("MonitorService", "Firestore sync 실패 → WorkManager가 재시도 예정")
             }
@@ -242,7 +254,9 @@ class AllowedAppMonitorService : Service() {
 
     private fun stop() {
         currentPackageId?.let { packageId ->
-            saveCurrentSession()
+            runBlocking {
+                saveCurrentSessionNow(packageId, _remainTime.value)
+            }
             syncToFirestore(packageId, _remainTime.value)
         }
 
@@ -251,8 +265,10 @@ class AllowedAppMonitorService : Service() {
         serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
         _isServiceActive.value = false
+        currentPackageId = null
         _remainTime.value = 0L
         _elapsedOutsideTime.value = 0L
+        lastForegroundPackage = ""
 
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -386,15 +402,33 @@ class AllowedAppMonitorService : Service() {
 
     private fun getCurrentForegroundApp(): String {
         val currentTime = System.currentTimeMillis()
-        val usageEvents = usageStatsManager.queryEvents(currentTime - 1500, currentTime)
-        var lastEvent = packageName
+        val usageEvents = usageStatsManager.queryEvents(currentTime - 5000, currentTime)
+        var hasForegroundEvent = false
 
         while (usageEvents.hasNextEvent()) {
             val event = UsageEvents.Event()
             usageEvents.getNextEvent(event)
-            if (isForeground(event)) lastEvent = event.packageName
+            if (isForeground(event)) {
+                hasForegroundEvent = true
+                lastForegroundPackage = event.packageName
+            }
         }
-        return lastEvent
+
+        if (!hasForegroundEvent) {
+            val recentPackage = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                currentTime - 10_000,
+                currentTime
+            )
+                .maxByOrNull { it.lastTimeUsed }
+                ?.packageName
+
+            if (!recentPackage.isNullOrBlank()) {
+                lastForegroundPackage = recentPackage
+            }
+        }
+
+        return if (lastForegroundPackage.isNotBlank()) lastForegroundPackage else packageName
     }
 
     private fun isForeground(event: UsageEvents.Event): Boolean {
@@ -414,8 +448,14 @@ class AllowedAppMonitorService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        currentPackageId?.let { syncToFirestore(it, _remainTime.value) }
-        saveCurrentSession()
+        if (_isServiceActive.value) {
+            currentPackageId?.let { packageId ->
+                runBlocking {
+                    saveCurrentSessionNow(packageId, _remainTime.value)
+                }
+                syncToFirestore(packageId, _remainTime.value)
+            }
+        }
         removeOverlayOnMain()
         serviceScope.cancel()
         _isServiceActive.value = false
