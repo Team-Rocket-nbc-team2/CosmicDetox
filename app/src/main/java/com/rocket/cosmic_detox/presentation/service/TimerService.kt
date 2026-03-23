@@ -41,17 +41,18 @@ class TimerService : LifecycleService() {
     private var time: Long = 0L
     private var initialDailyTime: Long = 0L
     private var currentDailyTime: Long = 0L
+    private var sessionElapsedTime: Long = 0L
+    private var lastTickRealtime: Long = 0L
     private val handler = Handler(Looper.getMainLooper())
     private var isTimerRunning = false
 
     private val timerRunnable = object : Runnable {
-        private var lastTime: Long = SystemClock.elapsedRealtime()
-
         override fun run() {
             val currentTime = SystemClock.elapsedRealtime()
-            val timeElapsed = (currentTime - lastTime) / 1000
+            val timeElapsed = (currentTime - lastTickRealtime) / 1000
             time += timeElapsed
-            lastTime = currentTime
+            sessionElapsedTime += timeElapsed
+            lastTickRealtime = currentTime
 
             sendTimeUpdate() // 1초마다 UI에 타이머 업데이트
             handler.postDelayed(this, 1000) // 1초마다 실행
@@ -73,22 +74,31 @@ class TimerService : LifecycleService() {
     // 서비스가 시작되면 실행
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        if (intent == null) {
+            // START_STICKY 재시작(null intent) 시 0초로 시작되는 문제 방지
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         when (intent?.action) {
             ACTION_RESET_TIMER -> {
                 resetTimer()
             }
             else -> {
+                if (isTimerRunning) return START_STICKY
                 val dailyTime = intent?.getLongExtra("dailyTime", 0L) ?: 0L
                 initialDailyTime = dailyTime // 타이머 시작 시 dailyTime 저장
                 time = dailyTime // 전달받은 dailyTime으로 초기화
+                sessionElapsedTime = 0L
                 startTimer() // 타이머 시작
             }
         }
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun startTimer() {
         if (!isTimerRunning) {
+            lastTickRealtime = SystemClock.elapsedRealtime()
             handler.post(timerRunnable) // 1초마다 타이머 업데이트
             isTimerRunning = true
         }
@@ -99,15 +109,15 @@ class TimerService : LifecycleService() {
         isTimerRunning = false
         currentDailyTime = time // 타이머 종료 시의 dailyTime 저장
 
-        // dailyTime 차이 계산 후 totalTime에 반영
-        val dailyTimeDifference = currentDailyTime - initialDailyTime
-        saveTimeToFirebase(dailyTimeDifference)
+        // 세션 경과시간이 꼬이더라도 누적시간이 감소하지 않도록 방어
+        val elapsedSeconds = sessionElapsedTime.coerceAtLeast((currentDailyTime - initialDailyTime).coerceAtLeast(0L))
+        saveTimeToFirebase(elapsedSeconds)
     }
 
-    private fun saveTimeToFirebase(dailyTimeDifference: Long) {
+    private fun saveTimeToFirebase(elapsedSeconds: Long) {
         // 기존의 totalTime을 가져와서 dailyTime 차이를 더함
         getTotalTimeUseCase({ currentTotalTime ->
-            val updatedTotalTime = currentTotalTime + dailyTimeDifference
+            val updatedTotalTime = currentTotalTime + elapsedSeconds
 
             // totalTime 업데이트 및 dailyTime 저장
             updateTotalTimeUseCase(updatedTotalTime, {

@@ -26,6 +26,7 @@ import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.ActivityMainBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
+import com.rocket.cosmic_detox.presentation.service.AllowedAppMonitorService
 import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
@@ -35,6 +36,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val userViewModel: UserViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
@@ -81,6 +83,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkPermissions()
+        handleOverlayIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleOverlayIntent(intent)
     }
 
     private fun initPermissionLauncher() {
@@ -197,5 +206,20 @@ class MainActivity : AppCompatActivity() {
         val uri = Uri.fromParts("package", this.packageName, null)
         intent.data = uri
         startActivity(intent)
+    }
+
+    private fun handleOverlayIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra(
+                AllowedAppMonitorService.EXTRA_OPEN_ALLOWED_SHEET,
+                false
+            ) == true
+        ) {
+            sendBroadcast(Intent(ACTION_OPEN_ALLOWED_APP_SHEET))
+            intent.removeExtra(AllowedAppMonitorService.EXTRA_OPEN_ALLOWED_SHEET)
+        }
+    }
+
+    companion object {
+        const val ACTION_OPEN_ALLOWED_APP_SHEET = "com.rocket.cosmic_detox.OPEN_ALLOWED_APP_SHEET"
     }
 }
