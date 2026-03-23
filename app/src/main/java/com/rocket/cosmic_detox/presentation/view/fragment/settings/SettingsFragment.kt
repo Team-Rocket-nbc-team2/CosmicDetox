@@ -11,10 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.rocket.cosmic_detox.BuildConfig
+import com.rocket.cosmic_detox.CosmicDetoxApplication
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.databinding.FragmentSettingsBinding
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogFragment
+import com.rocket.cosmic_detox.presentation.service.TimerService
 import com.rocket.cosmic_detox.presentation.uistate.LoginUiState
 import com.rocket.cosmic_detox.presentation.view.activity.SignInActivity
 import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
@@ -42,6 +45,21 @@ class SettingsFragment : Fragment() {
     ): View {
         with(binding) {
             tvAppVersion.text = getAppVersion()
+            if (BuildConfig.DEBUG) {
+                tvAppVersion.setOnClickListener {
+                    val app = requireContext().applicationContext as CosmicDetoxApplication
+                    app.scheduleDebugResetAlarmInOneMinute(requireContext())
+                    Toast.makeText(requireContext(), "디버그: 1분 뒤 자정 리셋 예약", Toast.LENGTH_SHORT).show()
+                }
+                tvAppVersion.setOnLongClickListener {
+                    val resetIntent = Intent(requireContext(), TimerService::class.java).apply {
+                        action = TimerService.ACTION_RESET_TIMER
+                    }
+                    requireContext().startService(resetIntent)
+                    Toast.makeText(requireContext(), "디버그: 자정 리셋 실행", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            }
 
             layoutPrivacyPolicy.setOnClickListener { startLink(Uri.parse(PRIVACY_POLICY_LINK)) }
             layoutTermsOfService.setOnClickListener { startLink(Uri.parse(TERMS_OF_USE_LINK)) }
