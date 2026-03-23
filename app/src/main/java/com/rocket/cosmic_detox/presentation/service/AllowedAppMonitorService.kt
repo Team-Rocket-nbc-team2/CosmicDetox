@@ -107,13 +107,13 @@ class AllowedAppMonitorService : Service() {
     @Inject lateinit var allowedAppLocalDataSource: AllowedAppLocalDataSource
 
     private val notificationManager by lazy {
-        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        getSystemService(NOTIFICATION_SERVICE) as NotificationManager
     }
     private val windowManager by lazy {
-        getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        getSystemService(WINDOW_SERVICE) as WindowManager
     }
     private val usageStatsManager by lazy {
-        getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
     }
     private val homeLauncherPackages by lazy { resolveHomeLauncherPackages() }
 
@@ -303,6 +303,7 @@ class AllowedAppMonitorService : Service() {
         stop()
     }
 
+    @SuppressLint("InflateParams")
     private fun showOverlayOnMain() {
         Handler(Looper.getMainLooper()).post {
             if (overlayView != null) return@post
@@ -490,7 +491,7 @@ class AllowedAppMonitorService : Service() {
             }
         }
 
-        return if (lastForegroundPackage.isNotBlank()) lastForegroundPackage else packageName
+        return lastForegroundPackage.ifBlank { packageName }
     }
 
     private fun isForeground(event: UsageEvents.Event): Boolean {
