@@ -86,4 +86,26 @@ class CosmicDetoxApplication : Application(), Configuration.Provider {
 
         Log.d("TimerService", "5분 후에 알람이 설정ㅇ")
     }
+
+    @SuppressLint("ScheduleExactAlarm")
+    fun scheduleDebugResetAlarmInOneMinute(context: Context) {
+        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, MidnightResetReceiver::class.java)
+            .setAction(MidnightResetReceiver.ACTION_MIDNIGHT_RESET)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val triggerAtMillis = System.currentTimeMillis() + 20_000L
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            triggerAtMillis,
+            pendingIntent
+        )
+
+        Log.d("TimerService", "디버그: 1분 뒤 자정 리셋 알람 예약")
+    }
 }

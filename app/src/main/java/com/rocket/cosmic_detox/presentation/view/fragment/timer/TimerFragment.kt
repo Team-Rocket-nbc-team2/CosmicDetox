@@ -37,8 +37,13 @@ import com.rocket.cosmic_detox.presentation.uistate.UiState
 import com.rocket.cosmic_detox.presentation.view.activity.MainActivity
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
+import com.rocket.cosmic_detox.util.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class TimerFragment : Fragment() {
@@ -151,7 +156,7 @@ class TimerFragment : Fragment() {
         }
 
         initView()
-        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallBack)
         observeViewModel()
         userViewModel.fetchTotalTime()
         userViewModel.fetchDailyTime()
@@ -172,7 +177,7 @@ class TimerFragment : Fragment() {
             !Settings.canDrawOverlays(requireContext())) {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${requireContext().packageName}")
+                "package:${requireContext().packageName}".toUri()
             )
             overlayPermissionLauncher.launch(intent)
         }
@@ -203,6 +208,7 @@ class TimerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        backPressedCallBack.remove()
         super.onDestroyView()
         _binding = null
         stopTimerService()
@@ -303,6 +309,7 @@ class TimerFragment : Fragment() {
 
     private val backPressedCallBack = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            if (!isAdded || _binding == null) return
             showTwoButtonDialog()
         }
     }
@@ -313,7 +320,7 @@ class TimerFragment : Fragment() {
                 when (state) {
                     is UiState.Loading -> {}
                     is UiState.Success -> {
-                        val dailyTime = state.data
+                        val dailyTime = normalizeDailyTime(state.data)
                         updateTime(dailyTime)
                         startTimerService(dailyTime)
                     }
@@ -335,11 +342,16 @@ class TimerFragment : Fragment() {
     }
 
     private fun showTwoButtonDialog() {
+        if (!isAdded || _binding == null) return
+        val fragmentManager = parentFragmentManager
+        if (fragmentManager.isStateSaved) return
+        if (fragmentManager.findFragmentByTag("ConfirmDialog") != null) return
+
         val dialog = OneButtonDialogFragment(
             getString(R.string.dialog_common_focus)
         ) {}
         dialog.isCancelable = false
-        dialog.show(parentFragmentManager, "ConfirmDialog")
+        dialog.show(fragmentManager, "ConfirmDialog")
     }
 
     private fun updateTime(time: Long) {
@@ -347,6 +359,25 @@ class TimerFragment : Fragment() {
         val minutes = (time % 3600) / 60
         val seconds = time % 60
         binding.tvTimerTime.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+    private fun normalizeDailyTime(fetchedDailyTime: Long): Long {
+        val today = getTodayKey()
+        val lastResetDate = SharedPreferencesUtil.getLastDailyResetDate(requireContext())
+
+        return if (lastResetDate != today && fetchedDailyTime > 0L) {
+            userViewModel.updateDailyTime(0L)
+            SharedPreferencesUtil.setLastDailyResetDate(requireContext(), today)
+            0L
+        } else {
+            SharedPreferencesUtil.setLastDailyResetDate(requireContext(), today)
+            fetchedDailyTime
+        }
+    }
+
+    private fun getTodayKey(): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+        return formatter.format(Date())
     }
 }
 
