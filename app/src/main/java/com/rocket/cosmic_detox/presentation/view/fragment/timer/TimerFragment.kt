@@ -156,7 +156,7 @@ class TimerFragment : Fragment() {
         }
 
         initView()
-        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), backPressedCallBack)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallBack)
         observeViewModel()
         userViewModel.fetchTotalTime()
         userViewModel.fetchDailyTime()
@@ -208,6 +208,7 @@ class TimerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        backPressedCallBack.remove()
         super.onDestroyView()
         _binding = null
         stopTimerService()
@@ -308,6 +309,7 @@ class TimerFragment : Fragment() {
 
     private val backPressedCallBack = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            if (!isAdded || _binding == null) return
             showTwoButtonDialog()
         }
     }
@@ -340,11 +342,16 @@ class TimerFragment : Fragment() {
     }
 
     private fun showTwoButtonDialog() {
+        if (!isAdded || _binding == null) return
+        val fragmentManager = parentFragmentManager
+        if (fragmentManager.isStateSaved) return
+        if (fragmentManager.findFragmentByTag("ConfirmDialog") != null) return
+
         val dialog = OneButtonDialogFragment(
             getString(R.string.dialog_common_focus)
         ) {}
         dialog.isCancelable = false
-        dialog.show(parentFragmentManager, "ConfirmDialog")
+        dialog.show(fragmentManager, "ConfirmDialog")
     }
 
     private fun updateTime(time: Long) {
