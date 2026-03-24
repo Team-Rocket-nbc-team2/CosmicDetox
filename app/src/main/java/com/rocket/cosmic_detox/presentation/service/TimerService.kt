@@ -85,8 +85,8 @@ class TimerService : LifecycleService() {
                 resetTimer()
             }
             else -> {
-                if (isTimerRunning) return START_STICKY
-                val dailyTime = intent?.getLongExtra("dailyTime", 0L) ?: 0L
+                if (isTimerRunning) return START_NOT_STICKY
+                val dailyTime = intent.getLongExtra("dailyTime", 0L)
                 initialDailyTime = dailyTime // 타이머 시작 시 dailyTime 저장
                 time = dailyTime // 전달받은 dailyTime으로 초기화
                 sessionElapsedTime = 0L
@@ -138,16 +138,27 @@ class TimerService : LifecycleService() {
 
     // Reset Timer 추가
     private fun resetTimer() {
+        val wasRunning = isTimerRunning
+
         // 타이머가 동작 중일 때는 먼저 멈춤
-        if (isTimerRunning) {
+        if (wasRunning) {
             handler.removeCallbacks(timerRunnable)
             isTimerRunning = false
             currentDailyTime = time // 타이머가 멈춘 시점의 시간을 저장
+        } else {
+            currentDailyTime = 0L
+        }
+
+        // 자정 시점에는 "이번 세션에서 아직 totalTime에 반영되지 않은 시간"만 누적
+        val elapsedSecondsToSave = if (wasRunning) {
+            sessionElapsedTime.coerceAtLeast((currentDailyTime - initialDailyTime).coerceAtLeast(0L))
+        } else {
+            0L
         }
 
         // 기존의 totalTime과 dailyTime을 가져옴
         getTotalTimeUseCase({ currentTotalTime ->
-            val updatedTotalTime = currentTotalTime + currentDailyTime // 기존 totalTime에 currentDailyTime을 더함
+            val updatedTotalTime = currentTotalTime + elapsedSecondsToSave
 
             // totalTime 업데이트 후 dailyTime 초기화
             updateTotalTimeUseCase(updatedTotalTime, {
@@ -155,10 +166,15 @@ class TimerService : LifecycleService() {
                     Log.d("TimerService", "dailyTime이 0으로 초기화되었습니다.")
                     time = 0L // 로컬 타이머도 0으로 초기화
                     initialDailyTime = 0L // resetTimer 후 타이머를 재시작할 때 다시 설정되도록 초기화
+                    sessionElapsedTime = 0L
                     sendTimeUpdate() // UI 업데이트
 
-                    // 타이머를 다시 시작
-                    startTimer()
+                    if (wasRunning) {
+                        // 타이머 실행 중 자정이 지난 경우: 0부터 즉시 재시작
+                        startTimer()
+                    } else {
+                        stopSelf()
+                    }
                 }, { exception ->
                     Log.e("TimerService", "dailyTime 초기화 실패: $exception")
                 })
