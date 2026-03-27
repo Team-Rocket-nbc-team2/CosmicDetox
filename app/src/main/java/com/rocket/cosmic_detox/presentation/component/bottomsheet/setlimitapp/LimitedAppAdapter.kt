@@ -37,7 +37,7 @@ class LimitedAppAdapter(
                 onClick(item)
             }
             with(binding) {
-                ivDepthAppIcon.loadAllowedAppIcon(context, item.packageId, item.appIcon)
+                ivDepthAppIcon.loadAllowedAppIcon(item.packageId, item.appIcon)
                 tvAppDepthName.text = item.appName
                 tvAppDepthUsageTime.setCumulativeTime(item.limitedTime.toBigDecimal())
                 emphasizeDarkerLayoutDepth.isVisible = !context.isAppInstalled(item.packageId)
