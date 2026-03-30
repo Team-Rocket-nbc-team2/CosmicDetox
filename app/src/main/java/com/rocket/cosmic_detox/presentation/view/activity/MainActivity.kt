@@ -2,7 +2,6 @@ package com.rocket.cosmic_detox.presentation.view.activity
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,10 +15,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.rocket.cosmic_detox.R
@@ -28,8 +27,8 @@ import com.rocket.cosmic_detox.presentation.component.dialog.ProgressDialogFragm
 import com.rocket.cosmic_detox.presentation.component.dialog.TwoButtonDialogDescFragment
 import com.rocket.cosmic_detox.presentation.service.AllowedAppMonitorService
 import com.rocket.cosmic_detox.presentation.uistate.UiState
-import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import com.rocket.cosmic_detox.presentation.viewmodel.PermissionViewModel
+import com.rocket.cosmic_detox.presentation.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var requestNotificationPermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var requestPhoneStatePermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var requestExactAlarmPermissionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,12 +84,21 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
         handleOverlayIntent(intent)
+        routeToTimerIfMonitoring(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleOverlayIntent(intent)
+        routeToTimerIfMonitoring(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (AllowedAppMonitorService.isServiceActive.value) {
+            startService(AllowedAppMonitorService.createUiReadyIntent(this))
+        }
     }
 
     private fun initPermissionLauncher() {
@@ -113,7 +122,7 @@ class MainActivity : AppCompatActivity() {
     private fun setBottomNavigation() = with(binding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
 
         bottomNavigationMain.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -214,8 +223,35 @@ class MainActivity : AppCompatActivity() {
                 false
             ) == true
         ) {
-            sendBroadcast(Intent(ACTION_OPEN_ALLOWED_APP_SHEET))
+            startService(AllowedAppMonitorService.createUiReadyIntent(this))
+
+            if (this::navController.isInitialized &&
+                navController.currentDestination?.id != R.id.navigation_timer
+            ) {
+                navController.navigate(R.id.navigation_timer)
+            }
+
+            binding.root.post {
+                sendBroadcast(Intent(ACTION_OPEN_ALLOWED_APP_SHEET))
+            }
             intent.removeExtra(AllowedAppMonitorService.EXTRA_OPEN_ALLOWED_SHEET)
+        }
+    }
+
+    private fun routeToTimerIfMonitoring(intent: Intent?) {
+        if (!AllowedAppMonitorService.isServiceActive.value) return
+        if (intent?.getBooleanExtra(AllowedAppMonitorService.EXTRA_OPEN_ALLOWED_SHEET, false) == true) return
+        Log.d(
+            "MainActivity",
+            "routeToTimerIfMonitoring action=${intent?.action}, categories=${intent?.categories}, currentDest=${if (this::navController.isInitialized) navController.currentDestination?.id else null}"
+        )
+
+        if (this::navController.isInitialized &&
+            navController.currentDestination?.id != R.id.navigation_timer
+        ) {
+            binding.root.post {
+                navController.navigate(R.id.navigation_timer)
+            }
         }
     }
 
