@@ -15,7 +15,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.datasource.remote.model.User
@@ -129,23 +131,26 @@ class HomeFragment : Fragment() {
         fetchUserData()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            userState.collectLatest { uiState ->
-                when (uiState) {
-                    is UiState.Success -> {
-                        bindingUserData(uiState.data)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userState.collectLatest { uiState ->
+                    when (uiState) {
+                        is UiState.Success -> bindingUserData(uiState.data)
+                        else -> { }
                     }
-                    else -> { }
                 }
             }
         }
     }
 
-    private fun bindingUserData(user: User) = with(binding) {
+    private fun bindingUserData(user: User) {
+        val safeBinding = _binding ?: return
+        with(safeBinding) {
         val totalTime = user.totalTime.toBigDecimal()
         ivHomeMyPlanet.loadHomePlanetImage(totalTime)
         tvHomePlanetName.setCurrentLocation(totalTime)
         tvHomeHoursCount.setCumulativeTime(totalTime)
         tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
+        }
     }
 
     // 오버레이 권한 확인 및 요청
