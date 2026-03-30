@@ -1,0 +1,60 @@
+name: "[CD] Release to Firebase Distribution"
+
+on:
+  push:
+    branches:
+      - release/*
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cd-firebase-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy_release:
+    runs-on: ubuntu-latest
+    environment: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Development Environment
+        uses: ./.github/actions/setup-development-environment
+        with:
+          google-services: ${{ secrets.GOOGLE_SERVICES }}
+          local-properties: ${{ secrets.LOCAL_PROPERTIES }}
+
+      - name: Setup Key Environment
+        uses: ./.github/actions/setup-key-environment
+        with:
+          key-properties: ${{ secrets.KEY_PROPERTIES }}
+          key-file: ${{ secrets.SIGNED_KEY }}
+
+      - name: Build release notes from git
+        id: release_notes
+        shell: bash
+        run: |
+          HASH="$(git rev-parse --short=8 HEAD)"
+          MSG="$(git show -s --format=%B | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | sed 's/^ //; s/ $//')"
+          echo "text=[$HASH] $MSG" >> "$GITHUB_OUTPUT"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build Release APK
+        run: ./gradlew :app:assembleRelease
+
+      - name: Check if APK exists
+        run: ls -la app/build/outputs/apk/release/
+
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
+          groups: developers
+          file: app/build/outputs/apk/release/app-release.apk
+          releaseNotes: ${{ steps.release_notes.outputs.text }}
