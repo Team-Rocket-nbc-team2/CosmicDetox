@@ -1,6 +1,5 @@
 package com.rocket.cosmic_detox.data.datasource.remote.model
 
-import android.graphics.Bitmap
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 

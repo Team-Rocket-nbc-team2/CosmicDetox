@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.rocket.cosmic_detox.databinding.DialogTwobuttonBinding
 import com.rocket.cosmic_detox.databinding.DialogTwobuttonDescBinding
 
 class TwoButtonDialogDescFragment(
