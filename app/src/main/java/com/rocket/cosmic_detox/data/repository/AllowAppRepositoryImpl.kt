@@ -8,7 +8,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
-import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.InstalledApp
 import com.rocket.cosmic_detox.data.datasource.remote.user.UserDataSource
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.util.AppCategoryManager
@@ -20,8 +20,10 @@ import javax.inject.Inject
 class AllowAppRepositoryImpl @Inject constructor(
     private val packageManager: PackageManager,
     private val userDataSource: UserDataSource,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : AllowAppRepository {
+
+    private val ourPackageName = context.packageName
 
 //    override fun getInstalledApps(): Flow<List<CheckedApp>> = flow {
 //        val apps = mutableListOf<CheckedApp>()
@@ -64,23 +66,21 @@ class AllowAppRepositoryImpl @Inject constructor(
 //        emit(apps.sortedBy { it.appName })
 //    }
 
-    override fun getInstalledApps(): Flow<List<CheckedApp>> = flow {
-        val apps = mutableListOf<CheckedApp>()
+    override fun getInstalledApps(): Flow<List<InstalledApp>> = flow {
+        val apps = mutableListOf<InstalledApp>()
         val intent = Intent(Intent.ACTION_MAIN).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
-        val resolveInfoList = context.packageManager.queryIntentActivities(intent, 0)
+        val resolveInfoList = packageManager.queryIntentActivities(intent, 0)
 
-        // 앱 목록을 순회하여 CheckedApp 리스트 생성
-        resolveInfoList.map {
+        resolveInfoList.forEach {
             val packageName = it.activityInfo.packageName
-            val appName = context.getAppNameFromPackageName(packageName)
-            // 앱 아이콘을 Drawable로 로드 -> Bitmap으로 변환
-            val appIcon = it.loadIcon(context.packageManager).toBitmap()
+            val appName = packageManager.getAppNameFromPackageName(packageName)
+            val appIcon = it.loadIcon(packageManager).toBitmap()
 
-            // 시스템 앱을 필터링
-            if (!context.isSystemPackage(packageName) && packageName != context.packageName) { // 시스템 앱, 우리 앱은 제외
-                val app = CheckedApp(
+
+            if (!packageManager.isSystemPackage(packageName) && packageName != ourPackageName) {
+                val app = InstalledApp(
                     packageId = packageName,
                     appName = appName,
                     appIcon = appIcon,
@@ -94,12 +94,17 @@ class AllowAppRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun updateAllowedApps(originApps: List<AllowedApp>, updatedApps: List<AllowedApp>): Result<Boolean> {
+    override suspend fun updateAllowedApps(
+        originApps: List<AllowedApp>,
+        updatedApps: List<AllowedApp>
+    ): Result<Boolean> {
         val uid = userDataSource.getUid()
 
         // originApps와 updatedApps를 비교하여 없어진 앱을 삭제하고 추가된 앱을 추가
-        val deletedApps = originApps.filter { originApp -> updatedApps.none { it.packageId == originApp.packageId } }
-        var addedApps = updatedApps.filter { updatedApp -> originApps.none { it.packageId == updatedApp.packageId } }
+        val deletedApps =
+            originApps.filter { originApp -> updatedApps.none { it.packageId == originApp.packageId } }
+        var addedApps =
+            updatedApps.filter { updatedApp -> originApps.none { it.packageId == updatedApp.packageId } }
 
         // 삭제할 앱이 있는 경우 삭제
         if (deletedApps.isNotEmpty()) {
@@ -114,11 +119,8 @@ class AllowAppRepositoryImpl @Inject constructor(
         // 추가할 앱의 카테고리 기반으로 제한 시간을 설정
         addedApps = addedApps.map { addedApp ->
             val packageInfo = packageManager.getApplicationInfo(addedApp.packageId, 0)
-            val appCategory = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val appCategory =
                 packageInfo.category
-            } else {
-                ApplicationInfo.CATEGORY_UNDEFINED
-            }
 
             // 카테고리별 제한 시간을 설정
             val limitedTime = AppCategoryManager.getLimitedTimeByCategory(appCategory)
@@ -144,19 +146,20 @@ class AllowAppRepositoryImpl @Inject constructor(
     }
 }
 
-private fun Context.isSystemPackage(packageName: String): Boolean {
+private fun PackageManager.isSystemPackage(packageName: String): Boolean =
     try {
-        val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        return packageInfo.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM) != 0
+        val packageInfo = getPackageInfo(packageName, 0)
+        (packageInfo.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM) ?: 0) != 0
     } catch (e: PackageManager.NameNotFoundException) {
-        Log.e("isSystemPackage", e.toString())
+        e.printStackTrace()
+        false
     }
-    return false
-}
 
-private fun Context.getAppNameFromPackageName(packageName: String): String = try {
-    val appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-    packageManager.getApplicationLabel(appInfo).toString()
-} catch (e: PackageManager.NameNotFoundException) {
-    "Unknown"
-}
+private fun PackageManager.getAppNameFromPackageName(packageName: String): String =
+    try {
+        val appInfo = getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+        getApplicationLabel(appInfo).toString()
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+        "Unknown"
+    }

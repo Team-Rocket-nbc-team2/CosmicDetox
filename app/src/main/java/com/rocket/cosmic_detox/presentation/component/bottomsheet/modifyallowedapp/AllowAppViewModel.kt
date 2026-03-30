@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
-import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.InstalledApp
 import com.rocket.cosmic_detox.domain.repository.AllowAppRepository
 import com.rocket.cosmic_detox.presentation.uistate.GetListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,13 +21,13 @@ class AllowAppViewModel @Inject constructor(
     private val repository: AllowAppRepository
 ) : ViewModel() {
 
-    private val _installedApps = MutableStateFlow<GetListUiState<List<CheckedApp>>>(GetListUiState.Init)
-    val installedApps: StateFlow<GetListUiState<List<CheckedApp>>> = _installedApps
+    private val _installedApps = MutableStateFlow<GetListUiState<List<InstalledApp>>>(GetListUiState.Init)
+    val installedApps: StateFlow<GetListUiState<List<InstalledApp>>> = _installedApps
 
     private val _updateResult = MutableStateFlow(false)
     val updateResult: StateFlow<Boolean> = _updateResult
 
-    private var currentApps: List<CheckedApp> = emptyList() // 현재 앱 리스트를 저장하는 변수
+    private var currentApps: List<InstalledApp> = emptyList() // 현재 앱 리스트를 저장하는 변수
 
     fun loadInstalledApps() {
         viewModelScope.launch {

@@ -27,7 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
-import com.rocket.cosmic_detox.data.datasource.remote.model.CheckedApp
+import com.rocket.cosmic_detox.data.datasource.remote.model.InstalledApp
 import com.rocket.cosmic_detox.databinding.ModalBottomsheetBinding
 import com.rocket.cosmic_detox.databinding.ModalContentModifyAllowAppBinding
 import com.rocket.cosmic_detox.presentation.extensions.has
@@ -175,7 +175,7 @@ class MyPageModifyAllowAppBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
-    private fun updateCheckedApp(updatedApp: CheckedApp) {
+    private fun updateCheckedApp(updatedApp: InstalledApp) {
         // 만약 체크된 앱이면 체크를 해제하고, 체크되지 않은 앱이면 체크를 함
         val index = checkedApps.indexOfFirst { it.packageId == updatedApp.packageId }
         if (index != -1) {
