@@ -15,7 +15,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.rocket.cosmic_detox.R
 import com.rocket.cosmic_detox.data.datasource.remote.model.User
@@ -79,28 +81,30 @@ class HomeFragment : Fragment() {
     }
 
     private fun initPermissionLauncher() {
-        requestOverlayPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (Settings.canDrawOverlays(requireContext())) {
-                isRequestOverlay = true
-                //navigateToTimer()
-            } else {
-                Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-            }
-            checkPermissions()
-        }
-
-        requestPhoneStatePermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissionViewModel.isReadPhoneStatePermissionGranted(requireContext())) {
-                isReadPhoneStatePermissionAllowed = true
-                if (isRequestOverlay) {
-                    navigateToTimer()
+        requestOverlayPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (Settings.canDrawOverlays(requireContext())) {
+                    isRequestOverlay = true
+                    //navigateToTimer()
                 } else {
-                    requestOverlayPermission()
+                    Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(requireContext(), "전화 상태 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                checkPermissions()
             }
-        }
+
+        requestPhoneStatePermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                if (permissionViewModel.isReadPhoneStatePermissionGranted(requireContext())) {
+                    isReadPhoneStatePermissionAllowed = true
+                    if (isRequestOverlay) {
+                        navigateToTimer()
+                    } else {
+                        requestOverlayPermission()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "전화 상태 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun initView() = with(binding) {
@@ -119,7 +123,7 @@ class HomeFragment : Fragment() {
         }
 
         ivHomePlanetInfo.setOnClickListener {
-            Log.d("hi","hi")
+            Log.d("hi", "hi")
             val dialog = PlanetInfoDialogFragment()
             dialog.show(parentFragmentManager, "PlanetInfoDialog")
         }
@@ -129,30 +133,37 @@ class HomeFragment : Fragment() {
         fetchUserData()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            userState.collectLatest { uiState ->
-                when (uiState) {
-                    is UiState.Success -> {
-                        bindingUserData(uiState.data)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userState.collectLatest { uiState ->
+                    when (uiState) {
+                        is UiState.Success -> bindingUserData(uiState.data)
+                        else -> {}
                     }
-                    else -> { }
                 }
             }
         }
     }
 
-    private fun bindingUserData(user: User) = with(binding) {
-        val totalTime = user.totalTime.toBigDecimal()
-        ivHomeMyPlanet.loadHomePlanetImage(totalTime)
-        tvHomePlanetName.setCurrentLocation(totalTime)
-        tvHomeHoursCount.setCumulativeTime(totalTime)
-        tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
+    private fun bindingUserData(user: User) {
+        val safeBinding = _binding ?: return
+        with(safeBinding) {
+            val totalTime = user.totalTime.toBigDecimal()
+            ivHomeMyPlanet.loadHomePlanetImage(totalTime)
+            tvHomePlanetName.setCurrentLocation(totalTime)
+            tvHomeHoursCount.setCumulativeTime(totalTime)
+            tvHomeTravelingTime.setTravelingTime(user.dailyTime.toBigDecimal())
+        }
     }
 
     // 오버레이 권한 확인 및 요청
     private fun checkPermissions() {
-        Log.d("권한 뭔 일이다냐?", "isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed")
+        Log.d(
+            "권한 뭔 일이다냐?",
+            "isRequestOverlay>> $isRequestOverlay, isReadPhoneStatePermissionAllowed>> $isReadPhoneStatePermissionAllowed"
+        )
         isRequestOverlay = permissionViewModel.isOverlayPermissionGranted(requireContext())
-        isReadPhoneStatePermissionAllowed = permissionViewModel.isReadPhoneStatePermissionGranted(requireContext())
+        isReadPhoneStatePermissionAllowed =
+            permissionViewModel.isReadPhoneStatePermissionGranted(requireContext())
 
         if (!isRequestOverlay || !isReadPhoneStatePermissionAllowed) {
             val dialog = TwoButtonDialogDescFragment(
@@ -178,14 +189,21 @@ class HomeFragment : Fragment() {
 
     private fun requestOverlayPermission() {
         if (!Settings.canDrawOverlays(requireContext())) {
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${requireContext().packageName}"))
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:${requireContext().packageName}")
+            )
             requestOverlayPermissionLauncher.launch(intent)
         }
     }
 
     private fun requestPhoneStatePermission() {
         if (shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)) {
-            Toast.makeText(requireContext(), "전화 상태 권한이 필요합니다. 앱 설정에서 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "전화 상태 권한이 필요합니다. 앱 설정에서 권한을 허용해주세요.",
+                Toast.LENGTH_SHORT
+            ).show()
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             val uri = Uri.fromParts("package", requireContext().packageName, null)
             intent.data = uri
