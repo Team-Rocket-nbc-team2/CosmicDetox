@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
