@@ -3,7 +3,7 @@ name: "[CD] Debug to Firebase Distribution"
 on:
   push:
     branches:
-      - dev
+      - dev2
 
 permissions:
   contents: read
