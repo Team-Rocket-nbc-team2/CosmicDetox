@@ -21,34 +21,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Setup Development Environment
+        uses: ./.github/actions/setup-development-environment
         with:
-          distribution: temurin
-          java-version: '17'
+          google-services: ${{ secrets.GOOGLE_SERVICES }}
+          local-properties: ${{ secrets.LOCAL_PROPERTIES }}
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Setup Key Environment
+        uses: ./.github/actions/setup-key-environment
+        with:
+          key-properties: ${{ secrets.KEY_PROPERTIES }}
+          key-file: ${{ secrets.SIGNED_KEY }}
 
-      - name: Create google-services.json
-        run: printf '%s' '${{ secrets.GOOGLE_SERVICES }}' | base64 --decode > ./app/google-services.json
-
-      - name: Create local.properties
-        run: printf '%s' '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
-
-      - name: Create key.properties and signed key file
+      - name: Build release notes from git
+        id: release_notes
+        shell: bash
         run: |
-          set -euo pipefail
-
-          printf '%s' '${{ secrets.KEY_PROPERTIES }}' > ./app/key.properties
-
-          STORE_FILE_PATH="$(grep -E '^storeFile=' ./app/key.properties | head -n1 | cut -d'=' -f2- | tr -d '\r')"
-          if [ -z "$STORE_FILE_PATH" ]; then
-            STORE_FILE_PATH="./app/release-key.jks"
-          fi
-
-          mkdir -p "$(dirname "$STORE_FILE_PATH")"
-          printf '%s' '${{ secrets.SIGNED_KEY }}' | base64 --decode > "$STORE_FILE_PATH"
+          HASH="$(git rev-parse --short=8 HEAD)"
+          MSG="$(git show -s --format=%B | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | sed 's/^ //; s/ $//')"
+          echo "text=[$HASH] $MSG" >> "$GITHUB_OUTPUT"
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -66,4 +57,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: developers
           file: app/build/outputs/apk/debug/app-debug.apk
-          releaseNotes: "[${{ github.sha }}] ${{ github.event.head_commit.message }}"
+          releaseNotes: ${{ steps.release_notes.outputs.text }}

@@ -1,0 +1,28 @@
+name: "Setup Key Environment"
+description: "Create key.properties and decode signed key file"
+
+inputs:
+  key-properties:
+    description: "key.properties content"
+    required: true
+  key-file:
+    description: "Base64 encoded signed key file (.jks/.keystore)"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create key.properties and signed key
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        printf '%s' '${{ inputs.key-properties }}' > ./app/key.properties
+
+        STORE_FILE_PATH="$(grep -E '^storeFile=' ./app/key.properties | head -n1 | cut -d'=' -f2- | tr -d '\r')"
+        if [ -z "$STORE_FILE_PATH" ]; then
+          STORE_FILE_PATH="./app/release-key.jks"
+        fi
+
+        mkdir -p "$(dirname "$STORE_FILE_PATH")"
+        printf '%s' '${{ inputs.key-file }}' | base64 --decode > "$STORE_FILE_PATH"
