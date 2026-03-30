@@ -1,6 +1,7 @@
 package com.rocket.cosmic_detox.presentation.extensions
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.core.view.setPadding
@@ -49,22 +50,21 @@ fun ImageView.loadRankingPlanetImage(cumulativeTime: BigDecimal) {
     setImageResource(imageResId)
 }
 
-fun ImageView.loadAllowedAppIcon(context: Context, packageId: String, appIcon: String) {
-    if (appIcon.isNotEmpty()) {
-        Glide.with(this)
-            .load(appIcon)
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-            .placeholder(R.drawable.shape_default_app_icon)
-            .error(R.drawable.shape_default_app_icon)
-            .into(this)
-    } else {
-        Glide.with(this)
-            .load(context.packageManager.getApplicationIcon(packageId))
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
-            .placeholder(R.drawable.shape_default_app_icon)
-            .error(R.drawable.shape_default_app_icon)
-            .into(this)
+fun ImageView.loadAllowedAppIcon(packageId: String, appIcon: String) {
+    val icon = try {
+        context.packageManager.getApplicationIcon(packageId)
+    } catch (e: PackageManager.NameNotFoundException) {
+        appIcon.ifEmpty {
+            R.drawable.shape_default_app_icon
+        }
     }
+
+    Glide.with(this)
+        .load(icon)
+        .apply(RequestOptions.bitmapTransform(RoundedCorners(12)))
+        .placeholder(R.drawable.shape_default_app_icon)
+        .error(R.drawable.shape_default_app_icon)
+        .into(this)
 }
 
 fun ImageView.loadInstalledAppIcon(appIconBitmap: Bitmap) {
