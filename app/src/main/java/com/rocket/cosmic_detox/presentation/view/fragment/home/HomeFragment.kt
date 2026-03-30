@@ -44,10 +44,8 @@ class HomeFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
         if (Settings.canDrawOverlays(requireContext())) {
-            // 권한이 허용된 경우 처리
             navigateToTimer()
         } else {
-            // 권한이 거부된 경우 처리
             Toast.makeText(requireContext(), "오버레이 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
         }
     }
@@ -112,8 +110,6 @@ class HomeFragment : Fragment() {
             val dialog = TwoButtonDialogFragment(
                 title = getString(R.string.home_travel_start),
                 onClickConfirm = {
-//                    val action = HomeFragmentDirections.actionHomeToTimer()
-//                    findNavController().navigate(action)
                     checkPermissions()
                 },
                 onClickCancel = { }
