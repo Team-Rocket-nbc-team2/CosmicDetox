@@ -45,7 +45,7 @@ class AllowedAppAdapter(
                         onItemClick(allowedApp.packageId, allowedApp.limitedTime, allowedApp.appName)
                     }
                 }
-                appIcon.loadAllowedAppIcon(context, allowedApp.packageId, allowedApp.appIcon)
+                appIcon.loadAllowedAppIcon(allowedApp.packageId, allowedApp.appIcon)
                 appName.text = allowedApp.appName
                 appUsageTime.text = getTimeString(allowedApp.limitedTime)
             }
