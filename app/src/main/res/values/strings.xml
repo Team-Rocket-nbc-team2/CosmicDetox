@@ -167,5 +167,6 @@
 
     <!--  Error  -->
     <string name="error_not_sign_in">로그인이 필요합니다.</string>
+    <string name="label_focus_mode">집중 모드</string>
 
 </resources>

@@ -14,8 +14,6 @@ import com.rocket.cosmic_detox.databinding.ModalBottomsheetIconBinding
 import com.rocket.cosmic_detox.databinding.ModalContentSetUseTimeBinding
 import com.rocket.cosmic_detox.presentation.extensions.fromSecondsToHours
 import com.rocket.cosmic_detox.presentation.extensions.fromSecondsToMinutes
-import com.rocket.cosmic_detox.presentation.extensions.toHours
-import com.rocket.cosmic_detox.presentation.extensions.toMinutes
 import com.rocket.cosmic_detox.presentation.view.fragment.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

@@ -1,7 +1,6 @@
 package com.rocket.cosmic_detox.data.datasource.remote.model
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 
 data class AppUsage(
     val packageId: String = "",

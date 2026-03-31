@@ -1,21 +1,21 @@
-name: "[CD] Debug to Firebase Distribution"
+name: "[CD] Release to Firebase Distribution"
 
 on:
   push:
     branches:
-      - dev
+      - release/*
 
 permissions:
   contents: read
 
 concurrency:
-  group: cd-firebase-debug-${{ github.ref }}
+  group: cd-firebase-release-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy_debug:
+  deploy_release:
     runs-on: ubuntu-latest
-    environment: Debug
+    environment: Release
 
     steps:
       - name: Checkout
@@ -44,11 +44,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug
+      - name: Build Release APK
+        run: ./gradlew :app:assembleRelease
 
       - name: Check if APK exists
-        run: ls -la app/build/outputs/apk/debug/
+        run: ls -la app/build/outputs/apk/release/
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -56,5 +56,5 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: developers
-          file: app/build/outputs/apk/debug/app-debug.apk
+          file: app/build/outputs/apk/release/app-release.apk
           releaseNotes: ${{ steps.release_notes.outputs.text }}
