@@ -364,7 +364,7 @@ class AllowedAppMonitorService : Service() {
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("집중 모드")
+            .setContentTitle(getString(R.string.label_focus_mode))
             .setContentText(contentText)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
