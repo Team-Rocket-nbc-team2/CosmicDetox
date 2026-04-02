@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.functions)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.crashlytics)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
