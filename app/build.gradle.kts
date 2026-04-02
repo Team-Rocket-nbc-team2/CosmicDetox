@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.kotlin.parcelize)
@@ -92,6 +93,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.functions)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.crashlytics)
 
     // Jetpack Navigation
     implementation(libs.bundles.navigation)
@@ -122,6 +124,12 @@ dependencies {
     // google one tap login
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+
+    // startup
+    implementation(libs.androidx.startup)
+
+    // Timber
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
