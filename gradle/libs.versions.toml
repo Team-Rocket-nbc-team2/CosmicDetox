@@ -11,6 +11,7 @@ activity = "1.13.0"
 constraintlayout = "2.2.1"
 navigation = "2.9.7"
 googleService = "4.4.4"
+firebaseCrashlyticsGradle = "3.0.6"
 firebaseBom = "34.11.0"
 core = "1.18.0"
 ksp = "2.2.21-2.0.4"
@@ -87,6 +88,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleService" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
 navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
@@ -97,4 +99,3 @@ navigation = [
     "navigation-fragment",
     "navigation-ui"
 ]
-
