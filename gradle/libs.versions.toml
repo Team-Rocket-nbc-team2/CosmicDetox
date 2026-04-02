@@ -30,6 +30,8 @@ workManager = "2.10.5"
 hiltWork = "1.2.0"
 # Startup
 startup = "1.2.0"
+# Timber
+timber = "5.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -77,6 +79,9 @@ androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", vers
 
 # Startup
 androidx-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
+
+# Timber
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -127,6 +127,9 @@ dependencies {
     // startup
     implementation(libs.androidx.startup)
 
+    // Timber
+    implementation(libs.timber)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
