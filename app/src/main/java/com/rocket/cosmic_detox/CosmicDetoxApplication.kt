@@ -9,7 +9,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.kakao.sdk.common.KakaoSdk
 import com.rocket.cosmic_detox.presentation.receiver.MidnightResetReceiver
 import dagger.hilt.android.HiltAndroidApp
 import java.util.Calendar
@@ -28,9 +27,6 @@ class CosmicDetoxApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-
-        KakaoSdk.init(this, BuildConfig.KAKAO_APP_KEY)
-
         scheduleExactAlarm(this)
     }
 
