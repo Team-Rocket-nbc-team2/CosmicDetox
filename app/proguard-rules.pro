@@ -19,3 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep line information for Crashlytics deobfuscated stack traces.
+-keepattributes SourceFile,LineNumberTable
+
+# Keep exception class names/messages readable in crash reports.
+-keep public class * extends java.lang.Exception
+
+# AndroidX Startup initializer classes are referenced by class name in
+# AndroidManifest meta-data, so keep their names and constructors.
+-keepnames class * implements androidx.startup.Initializer
+-keep class * implements androidx.startup.Initializer {
+    <init>();
+}
+
+# WorkManager may instantiate workers reflectively.
+-keep class * extends androidx.work.ListenableWorker {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
