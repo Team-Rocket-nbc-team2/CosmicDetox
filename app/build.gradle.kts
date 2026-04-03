@@ -13,10 +13,20 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
-val keyPropertiesFile: File? = rootProject.file("./app/key.properties")
 val properties = Properties()
-properties.load(FileInputStream(keyPropertiesFile!!))
-properties.load(project.rootProject.file("local.properties").inputStream())
+
+// Option B: keep key.properties at repo root (not under app/).
+// key.properties is optional for debug builds, but required for release signing.
+val keyPropertiesFile: File? = rootProject.file("key.properties")
+if (keyPropertiesFile.exists()) {
+    properties.load(FileInputStream(keyPropertiesFile!!))
+}
+
+val localPropertiesFile = project.rootProject.file("local.properties")
+if (!localPropertiesFile.exists()) {
+    throw GradleException("Missing local.properties at project root.")
+}
+properties.load(localPropertiesFile.inputStream())
 
 android {
     namespace = "com.rocket.cosmic_detox"

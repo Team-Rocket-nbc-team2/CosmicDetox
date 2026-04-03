@@ -17,12 +17,17 @@ runs:
       run: |
         set -euo pipefail
 
-        printf '%s' '${{ inputs.key-properties }}' > ./app/key.properties
-
-        STORE_FILE_PATH="$(grep -E '^storeFile=' ./app/key.properties | head -n1 | cut -d'=' -f2- | tr -d '\r')"
-        if [ -z "$STORE_FILE_PATH" ]; then
-          STORE_FILE_PATH="./app/release-key.jks"
+        # Option B: key.properties lives at repo root, but Gradle resolves `storeFile`
+        # relative to the app module directory. Standardize on `./key.jks` => `app/key.jks`.
+        printf '%s' '${{ inputs.key-properties }}' > ./key.properties
+        if grep -Eq '^[[:space:]]*storeFile[[:space:]]*=' ./key.properties; then
+          # Replace any existing storeFile with the standardized relative path.
+          sed -i.bak -E 's|^[[:space:]]*storeFile[[:space:]]*=.*$|storeFile=./key.jks|' ./key.properties
+          rm -f ./key.properties.bak
+        else
+          printf '\nstoreFile=./key.jks\n' >> ./key.properties
         fi
 
-        mkdir -p "$(dirname "$STORE_FILE_PATH")"
-        printf '%s' '${{ inputs.key-file }}' | base64 --decode > "$STORE_FILE_PATH"
+        mkdir -p ./app
+        printf '%s' '${{ inputs.key-file }}' | base64 --decode > ./app/key.jks
+        test -s ./app/key.jks
