@@ -16,6 +16,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Button
 import androidx.core.view.isVisible
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,10 +55,8 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
     private val adapter by lazy {
         AllowedAppAdapter(requireContext()) { packageId, limitedTime, appName ->
             isLaunchingAllowedApp = true
-            val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
-            context?.startActivity(intent)
-
-            requireContext().startService(
+            ContextCompat.startForegroundService(
+                requireContext(),
                 AllowedAppMonitorService.createStartIntent(
                     context = requireContext(),
                     packageId = packageId,
@@ -65,6 +64,9 @@ class TimerAllowedAppBottomSheet : BottomSheetDialogFragment() {
                     appName = appName
                 )
             )
+
+            val intent = context?.packageManager?.getLaunchIntentForPackage(packageId)
+            context?.startActivity(intent)
         }
     }
     //private var countDownTimer: CountDownTimer? = null

@@ -167,11 +167,29 @@ class AllowedAppMonitorService : Service() {
         lastSaveTime = System.currentTimeMillis()
 
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, buildNotification(appName, remainTime, 0L))
+        if (!startForegroundSafely(appName, remainTime)) return
 
         loadAllowedApps()
         startMonitoring()
         schedulePeriodicSync()
+    }
+
+    private fun startForegroundSafely(appName: String, remainTime: Long): Boolean {
+        return try {
+            startForeground(NOTIFICATION_ID, buildNotification(appName, remainTime, 0L))
+            true
+        } catch (e: SecurityException) {
+            Log.e("AllowedAppMonitor", "startForeground security error: ${e.message}", e)
+            _isServiceActive.value = false
+            stopSelf()
+            false
+        } catch (e: IllegalStateException) {
+            // ForegroundServiceStartNotAllowedException(API 31+) is a subclass of IllegalStateException.
+            Log.e("AllowedAppMonitor", "startForeground not allowed now: ${e.message}", e)
+            _isServiceActive.value = false
+            stopSelf()
+            false
+        }
     }
 
     private fun startMonitoring() {
