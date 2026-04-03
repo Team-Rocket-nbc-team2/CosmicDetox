@@ -18,8 +18,8 @@ val properties = Properties()
 // Option B: keep key.properties at repo root (not under app/).
 // key.properties is optional for debug builds, but required for release signing.
 val keyPropertiesFile: File? = rootProject.file("key.properties")
-if (keyPropertiesFile.exists()) {
-    properties.load(FileInputStream(keyPropertiesFile!!))
+if (keyPropertiesFile!!.exists()) {
+    properties.load(FileInputStream(keyPropertiesFile))
 }
 
 val localPropertiesFile = project.rootProject.file("local.properties")
