@@ -12,6 +12,9 @@ local.properties
 # API Key
 apikey.properties
 
+key.properties
+app/key.jks
+
 # Log/OS Files
 *.log
 
