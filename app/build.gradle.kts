@@ -36,7 +36,7 @@ android {
         applicationId = "com.rocket.cosmic_detox"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
+        versionCode = 7
         versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
