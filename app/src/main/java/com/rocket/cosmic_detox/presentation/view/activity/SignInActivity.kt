@@ -46,9 +46,9 @@ class SignInActivity : AppCompatActivity() {
         signInBinding.ivKakao.setOnClickListener {
             signInViewModel.kakaoLogin()
         }
-        signInBinding.ivX.setOnClickListener {
-            signInViewModel.twitterLogin(this)
-        }
+//        signInBinding.ivX.setOnClickListener {
+//            signInViewModel.twitterLogin(this)
+//        }
         signInBinding.tvRulesPolicy.setOnClickListener {
             val dialog = TwoButtonDialogDescFragment(
                 title = getString(R.string.dialog_personal_policy_terms_title),
