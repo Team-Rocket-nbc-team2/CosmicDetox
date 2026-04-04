@@ -93,10 +93,11 @@
         android:id="@+id/iv_kakao"
         android:layout_width="57dp"
         android:layout_height="57dp"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:contentDescription="@string/desc_kakao_login"
         android:src="@drawable/kakao"
         app:layout_constraintBottom_toTopOf="@+id/social_icon_down"
+        app:layout_constraintEnd_toStartOf="@id/iv_google"
         app:layout_constraintStart_toStartOf="@+id/gl_start"
         app:layout_constraintTop_toTopOf="@+id/social_icon_up" />
 
@@ -104,22 +105,22 @@
         android:id="@+id/iv_google"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="3dp"
+        android:contentDescription="@string/desc_google_login"
         android:src="@drawable/google"
         app:layout_constraintBottom_toTopOf="@+id/social_icon_down"
-        app:layout_constraintEnd_toStartOf="@+id/iv_x"
+        app:layout_constraintEnd_toEndOf="@id/gl_end"
         app:layout_constraintStart_toEndOf="@+id/iv_kakao"
         app:layout_constraintTop_toTopOf="@+id/social_icon_up" />
 
-    <ImageView
-        android:id="@+id/iv_x"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/x"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_google"
-        app:layout_constraintEnd_toStartOf="@+id/gl_end"
-        app:layout_constraintTop_toTopOf="@+id/iv_google" />
+    <!--    <ImageView-->
+    <!--        android:id="@+id/iv_x"-->
+    <!--        android:layout_width="50dp"-->
+    <!--        android:layout_height="50dp"-->
+    <!--        android:layout_marginEnd="10dp"-->
+    <!--        android:src="@drawable/x"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/iv_google"-->
+    <!--        app:layout_constraintEnd_toStartOf="@+id/gl_end"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/iv_google" />-->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/social_icon_down"
@@ -147,6 +148,7 @@
         android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
+        android:contentDescription="@string/desc_app_icon"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toTopOf="@+id/gl_social"
         app:layout_constraintEnd_toEndOf="parent"
@@ -158,16 +160,16 @@
         android:id="@+id/layout_sign_in_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="@color/black"
         android:alpha=".4"
+        android:background="@color/black"
+        android:gravity="center"
         android:orientation="vertical">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:indeterminate="true" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

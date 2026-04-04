@@ -20,6 +20,9 @@
     <string name="sign_social">소셜 계정으로 지금 바로 시작해보세요!</string>
     <string name="sign_failure">로그인에 실패했습니다.</string>
     <string name="sign_canceled">로그인을 취소했습니다.</string>
+    <string name="desc_kakao_login">카카오 로그인 버튼</string>
+    <string name="desc_google_login">구글 로그인 버튼</string>
+    <string name="desc_app_icon">앱 아이콘 이미지</string>
 
     <!--  Home  -->
     <string name="home_current_location">현재 위치</string>

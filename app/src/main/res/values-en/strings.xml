@@ -54,6 +54,9 @@
     <string name="sign_social">Start right now with your Social account!</string>
     <string name="sign_failure">SignIn failed.</string>
     <string name="sign_canceled">SignIn canceled.</string>
+    <string name="desc_kakao_login">kakao login button</string>
+    <string name="desc_google_login">google login button</string>
+    <string name="desc_app_icon">app icon image</string>
 
     <!-- My Page -->
     <string name="withdrawal">Withdrawal</string>
@@ -169,5 +172,6 @@
 
     <!--  Error  -->
     <string name="error_not_sign_in">User is not signed in</string>
+    <string name="label_focus_mode">focus mode</string>
 
 </resources>
