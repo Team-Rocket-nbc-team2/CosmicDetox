@@ -68,7 +68,7 @@ class SignInRepositoryImpl @Inject constructor(
             if (task.isSuccessful) {
                 initUserData(onSuccess, onFailure)
             } else {
-                onFailure(task.exception!!)
+                onFailure(task.exception ?: IllegalStateException("Google sign-in failed without exception"))
             }
         }
     }
@@ -131,7 +131,7 @@ class SignInRepositoryImpl @Inject constructor(
     private fun kakaoSignInWithFirebaseAuth(customToken: String, onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) {
         auth.signInWithCustomToken(customToken).addOnCompleteListener { result ->
             if (result.isSuccessful) initUserData(onSuccess, onFailure)
-            else onFailure(result.exception!!)
+            else onFailure(result.exception ?: IllegalStateException("Kakao sign-in failed without exception"))
         }
     }
 
@@ -167,10 +167,14 @@ class SignInRepositoryImpl @Inject constructor(
                         )
 
                         userRef.set(userMap).addOnCompleteListener { userSetTask ->
-                            if (!userSetTask.isSuccessful) throw userSetTask.exception!!
+                            if (!userSetTask.isSuccessful) {
+                                onFailure(userSetTask.exception ?: IllegalStateException("Failed to initialize user data"))
+                            }
                         }
                         rankingUserRef.collection("ranking").document(uid).set(userRankingMap).addOnCompleteListener { rankingSetTask ->
-                            if (!rankingSetTask.isSuccessful) throw rankingSetTask.exception!!
+                            if (!rankingSetTask.isSuccessful) {
+                                onFailure(rankingSetTask.exception ?: IllegalStateException("Failed to initialize ranking data"))
+                            }
                         }
                     }
                     onSuccess()
