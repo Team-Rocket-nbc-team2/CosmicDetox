@@ -37,3 +37,22 @@
 -keep class * extends androidx.work.ListenableWorker {
     public <init>(android.content.Context, androidx.work.WorkerParameters);
 }
+
+# --- Kakao SDK ---
+# Kakao SDK uses reflection/metadata; keep it to avoid release-only crashes when minify is enabled.
+-keep class com.kakao.sdk.** { *; }
+-dontwarn com.kakao.sdk.**
+
+# --- Firebase / Google Play Services ---
+# Keep public APIs commonly accessed reflectively.
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+
+# --- Navigation SafeArgs custom types ---
+# These types are referenced by fully-qualified class name in navigation XML (app:argType).
+-keepnames class com.rocket.cosmic_detox.data.datasource.remote.model.AllowedApp
+
+# --- Firestore POJOs (Kotlin data classes) ---
+# Firestore maps properties via JavaBean getters (getX/isX). Keep names from obfuscation.
+-keepclassmembers class com.rocket.cosmic_detox.data.datasource.remote.model.** { *; }
+-keepnames class com.rocket.cosmic_detox.data.datasource.remote.model.**
